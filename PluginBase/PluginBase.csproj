@@ -51,14 +51,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Transformation.cs" />
+    <Compile Include="Editors\SpriteDefinitionEditor.cs" />
     <Compile Include="Editors\TextureEditor.cs" />
     <Compile Include="Inspectors\ProjectIns.cs" />
     <Compile Include="Inspectors\SceneIns.cs" />
+    <Compile Include="Inspectors\SpriteDefinitionIns.cs" />
     <Compile Include="Inspectors\TextureIns.cs" />
     <Compile Include="GameObjects\Folder.cs" />
     <Compile Include="GameObjects\Project.cs" />
     <Compile Include="GameObjects\Scene.cs" />
-    <Compile Include="GameObjects\Sprite.cs" />
+    <Compile Include="GameObjects\SpriteDefinition.cs" />
     <Compile Include="GameObjects\Texture.cs" />
     <Compile Include="Inspectors\TransformationIns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

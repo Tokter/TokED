@@ -180,6 +180,11 @@ namespace TokED.UI
             return Bind(control, null, o, property, null);
         }
 
+        public static Control Bind(this Control control, INotifyPropertyChanged o, string property, Func<object, object> targetValueConverter)
+        {
+            return Bind(control, null, o, property, targetValueConverter);
+        }
+
         public static Control Bind(this Control control, string controlProperty, INotifyPropertyChanged o, string property)
         {
             return Bind(control, controlProperty, o, property, null);

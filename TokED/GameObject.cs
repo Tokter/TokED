@@ -18,6 +18,7 @@ namespace TokED
         private List<GameObject> _children = new List<GameObject>();
         private Dictionary<Type, Component> _components = new Dictionary<Type, Component>();
         private string _name;
+        private GameObject _parent = null;
         private bool _expanded = true;
         private bool _visible = true;
 
@@ -26,8 +27,13 @@ namespace TokED
             get { return _name; }
             set { _name = value; NotifyChange(); }
         }
-        public GameObject Parent { get; set; }
-        public string TextureName { get; set; }
+
+
+        public GameObject Parent
+        {
+            get { return _parent; }
+            set { _parent = value; NotifyChange(); }
+        }
 
         public bool Expanded
         {
@@ -204,10 +210,15 @@ namespace TokED
 
         public void NotifyChange([CallerMemberName] string propertyName = "")
         {
+            OnPropertyChanged(propertyName);
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public virtual void OnPropertyChanged(string name)
+        {
         }
 
         #endregion

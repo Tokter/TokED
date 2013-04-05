@@ -57,6 +57,14 @@ namespace TokGL
             _bufferSize = 0;
         }
 
+        public void AddBox(float x1, float y1, float width, float height, Color color)
+        {
+            Add(new Vector2(x1, y1), new Vector2(x1 + width, y1), color);
+            Add(new Vector2(x1 + width, y1 + height));
+            Add(new Vector2(x1, y1 + height));
+            Add(new Vector2(x1, y1));
+        }
+
         public void Add(Vector3 a, Vector3 b, Color color)
         {
             _bufferSize += 2; if (_bufferSize > _buffer.Length) Resize();

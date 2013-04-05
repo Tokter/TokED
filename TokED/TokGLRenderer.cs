@@ -141,6 +141,7 @@ namespace TokED
             _textures.Add(1005, new TextureInfo { Name = "ArrowHead-Right", X = 126, Y = 15, Width = 14, Height = 14 });
             _textures.Add(1006, new TextureInfo { Name = "ArrowHead-Down", X = 140, Y = 15, Width = 14, Height = 14 });
             _textures.Add(1007, new TextureInfo { Name = "Transformation", X = 154, Y = 15, Width = 14, Height = 14 });
+            _textures.Add(1008, new TextureInfo { Name = "SpriteDefinition", X = 168, Y = 15, Width = 14, Height = 14 });
         }
 
         public void Resize(int width, int height)

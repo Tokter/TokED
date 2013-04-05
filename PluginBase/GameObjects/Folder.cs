@@ -14,7 +14,6 @@ namespace PluginBase.GameObjects
         public Folder()
         {
             Name = "Folder";
-            TextureName = "Folder";
         }
 
     }

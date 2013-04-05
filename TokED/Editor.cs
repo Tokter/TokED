@@ -84,8 +84,6 @@ namespace TokED
 
         private void SelectedGameObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            UnLoad();
-            Load();
             SelectedGameObjectChanged(e.PropertyName);
         }
 
@@ -121,21 +119,24 @@ namespace TokED
         {
             _manager.Camera = _editorCamera;
             _manager.Begin();
-            _spriteBatch.Begin(_manager);
             _lineBatch.Begin(_manager);
+            _spriteBatch.Begin(_manager);
             DrawGrid();
-            DrawContent(_lineBatch, _spriteBatch);
             _lineBatch.End();
+            _manager.Flush();
+            _lineBatch.Begin(_manager);
+            DrawContent(_lineBatch, _spriteBatch);
             _spriteBatch.End();
+            _lineBatch.End();
             _manager.End();
 
             _manager.Camera = _guiCamera;
             _manager.Begin();
-            _spriteBatch.Begin(_manager);
             _lineBatch.Begin(_manager);
+            _spriteBatch.Begin(_manager);
             DrawGui(_lineBatch, _spriteBatch);
-            _lineBatch.End();
             _spriteBatch.End();
+            _lineBatch.End();
             _manager.End();
         }
 

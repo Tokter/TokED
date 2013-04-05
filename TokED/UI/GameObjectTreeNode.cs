@@ -36,7 +36,7 @@ namespace TokED.UI
                 .Bind("Opacity", _gameObject, "NumChildrens", (num) => { return (int)num > 0 ? 1.0f : 0.0f; });
 
             var imageFrame = this.AddFrame(18, 18, DockStyle.Left);
-            imageFrame.AddImage(gameObject.TextureName, 14, 14, DockStyle.Center);
+            imageFrame.AddImage(gameObject.ExportName, 14, 14, DockStyle.Center);
             Elements.Add(imageFrame);
 
             _label = this.AddButton("item", 1, 1, DockStyle.Fill);

@@ -18,7 +18,6 @@ namespace PluginBase.GameObjects
         public Project()
         {
             Name = "Project";
-            TextureName = "Project";
         }
 
         public int Width

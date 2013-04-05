@@ -18,7 +18,6 @@ namespace PluginBase.GameObjects
         public Scene()
         {
             Name = "Scene";
-            TextureName = "Scene";
         }
 
         public int TransitionInTime
