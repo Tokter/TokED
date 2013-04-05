@@ -1,0 +1,153 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TokED.UI
+{
+    public class KeyboardMapper
+    {
+        private Dictionary<OpenTK.Input.Key, int> _keys = new Dictionary<OpenTK.Input.Key, int>();
+
+        public KeyboardMapper()
+        {
+            _keys.Add(OpenTK.Input.Key.Unknown, 0);
+            _keys.Add(OpenTK.Input.Key.ShiftLeft, 42);
+            _keys.Add(OpenTK.Input.Key.ShiftRight, 54);
+            _keys.Add(OpenTK.Input.Key.ControlLeft, 29);
+            _keys.Add(OpenTK.Input.Key.ControlRight, 157);
+            _keys.Add(OpenTK.Input.Key.AltLeft, 56);
+            _keys.Add(OpenTK.Input.Key.AltRight, 184);
+            _keys.Add(OpenTK.Input.Key.WinLeft, 219);
+            _keys.Add(OpenTK.Input.Key.WinRight, 220);
+            _keys.Add(OpenTK.Input.Key.Menu, 184);
+            _keys.Add(OpenTK.Input.Key.F1, 59);
+            _keys.Add(OpenTK.Input.Key.F2, 60);
+            _keys.Add(OpenTK.Input.Key.F3, 61);
+            _keys.Add(OpenTK.Input.Key.F4, 62);
+            _keys.Add(OpenTK.Input.Key.F5, 63);
+            _keys.Add(OpenTK.Input.Key.F6, 64);
+            _keys.Add(OpenTK.Input.Key.F7, 65);
+            _keys.Add(OpenTK.Input.Key.F8, 66);
+            _keys.Add(OpenTK.Input.Key.F9, 67);
+            _keys.Add(OpenTK.Input.Key.F10, 68);
+            _keys.Add(OpenTK.Input.Key.F11, 0);
+            _keys.Add(OpenTK.Input.Key.F12, 0);
+            _keys.Add(OpenTK.Input.Key.F13, 0);
+            _keys.Add(OpenTK.Input.Key.F14, 0);
+            _keys.Add(OpenTK.Input.Key.F15, 0);
+            _keys.Add(OpenTK.Input.Key.F16, 0);
+            _keys.Add(OpenTK.Input.Key.F17, 0);
+            _keys.Add(OpenTK.Input.Key.F18, 0);
+            _keys.Add(OpenTK.Input.Key.F19, 0);
+            _keys.Add(OpenTK.Input.Key.F20, 0);
+            _keys.Add(OpenTK.Input.Key.F21, 0);
+            _keys.Add(OpenTK.Input.Key.F22, 0);
+            _keys.Add(OpenTK.Input.Key.F23, 0);
+            _keys.Add(OpenTK.Input.Key.F24, 0);
+            _keys.Add(OpenTK.Input.Key.F25, 0);
+            _keys.Add(OpenTK.Input.Key.F26, 0);
+            _keys.Add(OpenTK.Input.Key.F27, 0);
+            _keys.Add(OpenTK.Input.Key.F28, 0);
+            _keys.Add(OpenTK.Input.Key.F29, 0);
+            _keys.Add(OpenTK.Input.Key.F30, 0);
+            _keys.Add(OpenTK.Input.Key.F31, 0);
+            _keys.Add(OpenTK.Input.Key.F32, 0);
+            _keys.Add(OpenTK.Input.Key.F33, 0);
+            _keys.Add(OpenTK.Input.Key.F34, 0);
+            _keys.Add(OpenTK.Input.Key.F35, 0);
+            _keys.Add(OpenTK.Input.Key.Up, 200);
+            _keys.Add(OpenTK.Input.Key.Down, 208);
+            _keys.Add(OpenTK.Input.Key.Left, 203);
+            _keys.Add(OpenTK.Input.Key.Right, 205);
+            _keys.Add(OpenTK.Input.Key.Enter, 28);
+            _keys.Add(OpenTK.Input.Key.Escape, 1);
+            _keys.Add(OpenTK.Input.Key.Space, 57);
+            _keys.Add(OpenTK.Input.Key.Tab, 15);
+            _keys.Add(OpenTK.Input.Key.BackSpace, 14);
+            _keys.Add(OpenTK.Input.Key.Insert, 210);
+            _keys.Add(OpenTK.Input.Key.Delete, 211);
+            _keys.Add(OpenTK.Input.Key.PageUp, 201);
+            _keys.Add(OpenTK.Input.Key.PageDown, 209);
+            _keys.Add(OpenTK.Input.Key.Home, 199);
+            _keys.Add(OpenTK.Input.Key.End, 207);
+            _keys.Add(OpenTK.Input.Key.CapsLock, 58);
+            _keys.Add(OpenTK.Input.Key.ScrollLock, 0);
+            _keys.Add(OpenTK.Input.Key.PrintScreen, 0);
+            _keys.Add(OpenTK.Input.Key.Pause, 197);
+            _keys.Add(OpenTK.Input.Key.NumLock, 69);
+            _keys.Add(OpenTK.Input.Key.Clear, 0);
+            _keys.Add(OpenTK.Input.Key.Sleep, 223);
+            _keys.Add(OpenTK.Input.Key.Keypad0, 82);
+            _keys.Add(OpenTK.Input.Key.Keypad1, 79);
+            _keys.Add(OpenTK.Input.Key.Keypad2, 80);
+            _keys.Add(OpenTK.Input.Key.Keypad3, 81);
+            _keys.Add(OpenTK.Input.Key.Keypad4, 75);
+            _keys.Add(OpenTK.Input.Key.Keypad5, 76);
+            _keys.Add(OpenTK.Input.Key.Keypad6, 77);
+            _keys.Add(OpenTK.Input.Key.Keypad7, 71);
+            _keys.Add(OpenTK.Input.Key.Keypad8, 72);
+            _keys.Add(OpenTK.Input.Key.Keypad9, 73);
+            _keys.Add(OpenTK.Input.Key.KeypadDivide, 53);
+            _keys.Add(OpenTK.Input.Key.KeypadMultiply, 55);
+            _keys.Add(OpenTK.Input.Key.KeypadMinus, 74);
+            _keys.Add(OpenTK.Input.Key.KeypadPlus, 78);
+            _keys.Add(OpenTK.Input.Key.KeypadDecimal, 83);
+            _keys.Add(OpenTK.Input.Key.KeypadEnter, 156);
+            _keys.Add(OpenTK.Input.Key.A, 30);
+            _keys.Add(OpenTK.Input.Key.B, 48);
+            _keys.Add(OpenTK.Input.Key.C, 46);
+            _keys.Add(OpenTK.Input.Key.D, 32);
+            _keys.Add(OpenTK.Input.Key.E, 18);
+            _keys.Add(OpenTK.Input.Key.F, 33);
+            _keys.Add(OpenTK.Input.Key.G, 34);
+            _keys.Add(OpenTK.Input.Key.H, 35);
+            _keys.Add(OpenTK.Input.Key.I, 23);
+            _keys.Add(OpenTK.Input.Key.J, 36);
+            _keys.Add(OpenTK.Input.Key.K, 37);
+            _keys.Add(OpenTK.Input.Key.L, 38);
+            _keys.Add(OpenTK.Input.Key.M, 50);
+            _keys.Add(OpenTK.Input.Key.N, 49);
+            _keys.Add(OpenTK.Input.Key.O, 24);
+            _keys.Add(OpenTK.Input.Key.P, 25);
+            _keys.Add(OpenTK.Input.Key.Q, 16);
+            _keys.Add(OpenTK.Input.Key.R, 19);
+            _keys.Add(OpenTK.Input.Key.S, 31);
+            _keys.Add(OpenTK.Input.Key.T, 20);
+            _keys.Add(OpenTK.Input.Key.U, 22);
+            _keys.Add(OpenTK.Input.Key.V, 47);
+            _keys.Add(OpenTK.Input.Key.W, 17);
+            _keys.Add(OpenTK.Input.Key.X, 45);
+            _keys.Add(OpenTK.Input.Key.Y, 21);
+            _keys.Add(OpenTK.Input.Key.Z, 44);
+            _keys.Add(OpenTK.Input.Key.Number0, 11);
+            _keys.Add(OpenTK.Input.Key.Number1, 2);
+            _keys.Add(OpenTK.Input.Key.Number2, 3);
+            _keys.Add(OpenTK.Input.Key.Number3, 4);
+            _keys.Add(OpenTK.Input.Key.Number4, 5);
+            _keys.Add(OpenTK.Input.Key.Number5, 6);
+            _keys.Add(OpenTK.Input.Key.Number6, 7);
+            _keys.Add(OpenTK.Input.Key.Number7, 8);
+            _keys.Add(OpenTK.Input.Key.Number8, 9);
+            _keys.Add(OpenTK.Input.Key.Number9, 10);
+            _keys.Add(OpenTK.Input.Key.Tilde, 41);
+            _keys.Add(OpenTK.Input.Key.Minus, 12);
+            _keys.Add(OpenTK.Input.Key.Plus, 13);
+            _keys.Add(OpenTK.Input.Key.BracketLeft, 26);
+            _keys.Add(OpenTK.Input.Key.BracketRight, 27);
+            _keys.Add(OpenTK.Input.Key.Semicolon, 39);
+            _keys.Add(OpenTK.Input.Key.Quote, 40);
+            _keys.Add(OpenTK.Input.Key.Comma, 41);
+            _keys.Add(OpenTK.Input.Key.Period, 52);
+            _keys.Add(OpenTK.Input.Key.Slash, 53);
+            _keys.Add(OpenTK.Input.Key.BackSlash, 43);
+            _keys.Add(OpenTK.Input.Key.LastKey, 0);
+        }
+
+        public int Map(OpenTK.Input.Key key)
+        {
+            return _keys[key];
+        }
+    }
+}
