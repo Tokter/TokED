@@ -34,11 +34,11 @@ namespace TokED
             _manager = new RenderManager();
             _editorCamera = new Camera();
             _editorCamera.CameraType = CameraType.Orthogonal;
-            _editorCamera.Position = new Vector3(0, 0, -200);
+            _editorCamera.Position = new Vector3(0, 0, 200);
             _editorCamera.LookAt = new Vector3(0, 0, 0);
             _editorCamera.ZNear = 0;
             _editorCamera.ZFar = 10000;
-            _editorCamera.Up = new Vector3(0, -1, 0);
+            _editorCamera.Up = new Vector3(0, 1, 0);
             _editorCamera.Fov = 1.0f;
 
             _guiCamera = new Camera();
@@ -104,6 +104,11 @@ namespace TokED
         public bool HasActiveTools
         {
             get { return _tools.HasAvtiveTools; }
+        }
+
+        public void ActivateTool(string name)
+        {
+            _tools.Activate(name);
         }
 
         #region Rendering

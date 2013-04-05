@@ -33,6 +33,7 @@ namespace PluginBase.Editors
                 _textureFound = true;
                 Camera.Position = new Vector3(texture.Width / 2.0f, texture.Height / 2.0f, Camera.Position.Z);
                 Camera.LookAt = new Vector3(texture.Width / 2.0f, texture.Height / 2.0f, Camera.LookAt.Z);
+                ActivateTool("Bottom View");
             }
         }
 

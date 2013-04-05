@@ -24,22 +24,43 @@ namespace TokED
             _tools.Add(tool);
         }
 
+        public void Activate(string name)
+        {
+            foreach (var tool in _tools)
+            {
+                if (tool.ExportName == name)
+                {
+                    Activate(tool);
+                    return;
+                }
+            }
+            throw new Exception(string.Format("Tool {0} does not exist! Could not activate it...", name));
+        }
+
         private void Push(ToolEvent se)
         {
             CheckIfCurrentToolIsDone();
 
             foreach (var tool in _tools)
             {
-                tool.Editor = _editor;
-                if (tool.Trigger == se && tool.Availbable())
+                if (tool.Trigger == se)
                 {
-                    tool.Activated();
-                    if (tool.StaysActivated)
-                    {
-                        tool.Done = false;
-                        _activeTools.Push(tool);
-                    }
+                    Activate(tool);
                     break;
+                }
+            }
+        }
+
+        private void Activate(EditorTool tool)
+        {
+            tool.Editor = _editor;
+            if (tool.Availbable())
+            {
+                tool.Activated();
+                if (tool.StaysActivated)
+                {
+                    tool.Done = false;
+                    _activeTools.Push(tool);
                 }
             }
         }
