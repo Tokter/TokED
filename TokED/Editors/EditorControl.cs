@@ -74,7 +74,7 @@ namespace TokED.Editors
                         break;
 
                     case SnapType.Half:
-                        _position = new Vector3((float)Math.Round(value.X + 0.5f) - 0.5f, (float)Math.Round(value.Y + 0.5f) - 0.5f, (float)Math.Round(value.Z + 0.5f) - 0.5f);
+                        _position = new Vector3((float)Math.Round(value.X * 2.0f) / 2.0f, (float)Math.Round(value.Y * 2.0f) / 2.0f, (float)Math.Round(value.Z * 2.0f) / 2.0f);
                         break;
                 }
                 NotifyChange();
