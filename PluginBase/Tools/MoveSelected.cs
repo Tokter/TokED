@@ -71,12 +71,9 @@ namespace PluginBase.Tools
         {
             if (e.Button == MouseButton.Right)
             {
-                foreach (var control in Editor.Selection)
+                foreach (var control in _startPositions.Keys)
                 {
-                    if (_startPositions.ContainsKey(control))
-                    {
-                        control.Position = _startPositions[control];
-                    }
+                    control.Position = _startPositions[control];
                 }
             }
             Done = true;

@@ -140,6 +140,15 @@ namespace TokED.Editors
             _selection.Clear();
         }
 
+        public void SelectAll()
+        {
+            _rootControl.DoRecurive((c) =>
+            {
+                Select(c);
+                return true;
+            });
+        }
+
         public void Select(EditorControl control)
         {
             control.Selected = true;

@@ -76,6 +76,7 @@
     <Compile Include="Tools\ResetZoom.cs" />
     <Compile Include="Tools\RotateCamera.cs" />
     <Compile Include="Tools\Select.cs" />
+    <Compile Include="Tools\SelectAll.cs" />
     <Compile Include="Tools\SelectToggle.cs" />
     <Compile Include="Tools\SideView.cs" />
     <Compile Include="Tools\ToggleCameraType.cs" />

@@ -176,6 +176,11 @@ namespace TokED.Editors
             return (pos - _screenPos).Length;
         }
 
+        /// <summary>
+        /// Executes a recursive function, and keeps going as long as true is returned
+        /// </summary>
+        /// <param name="f">Function to execute</param>
+        /// <returns>Whether or not to continue any deeper</returns>
         public bool DoRecurive(Func<EditorControl, bool> f)
         {
             if (f(this))
