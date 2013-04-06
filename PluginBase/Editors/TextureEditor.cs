@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TokED;
+using TokED.Editors;
 using TokGL;
 
 namespace PluginBase.Editors
@@ -22,7 +23,7 @@ namespace PluginBase.Editors
         public override void Load()
         {
             if (_textureMat != null) throw new ArgumentOutOfRangeException("_textureMat should have been null!");
-            var textureObj = (SelectedGameObject as GameObjects.Texture);
+            var textureObj = SelectedGameObject.FindParent<GameObjects.Texture>();
             if (textureObj != null && File.Exists(textureObj.FileName))
             {
                 var texture = new Texture();

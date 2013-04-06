@@ -63,7 +63,7 @@ namespace PluginBase.GameObjects
         public override void ReadXml(XmlReader reader)
         {
             base.ReadXml(reader);
-            _fileName = reader.GetAttribute("FileName");
+            FileName = reader.GetAttribute("FileName");
             if (reader.GetAttribute("PreMultipliedAlpha") != null) _preMultiplyAlpha = reader.GetAttribute("PreMultipliedAlpha").ToUpper() == "TRUE";
         }
 

@@ -228,6 +228,7 @@ namespace TokGL
             _noKerning.Add((byte)'=');
             _noKerning.Add((byte)'.');
             _noKerning.Add((byte)',');
+            _noKerning.Add((byte)'_');
         }
 
         private byte CalculateKerning(int left, int right)

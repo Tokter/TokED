@@ -63,7 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Component.cs" />
-    <Compile Include="Editor.cs" />
+    <Compile Include="Editors\BindingManager.cs" />
+    <Compile Include="Editors\Editor.cs" />
+    <Compile Include="Editors\EditorControl.cs" />
+    <Compile Include="Editors\Handle.cs" />
     <Compile Include="EditorTool.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UI\Bindings.cs" />

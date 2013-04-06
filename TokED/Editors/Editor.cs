@@ -10,44 +10,54 @@ using System.Text;
 using System.Threading.Tasks;
 using TokGL;
 
-namespace TokED
+namespace TokED.Editors
 {
     [Export("Editor", typeof(Editor)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class Editor : IDisposable
     {
+        private static Camera _editorCamera;
+        private static Camera _guiCamera;
+
         private Tools _tools;
         private RenderManager _manager;
         private SpriteBatch _spriteBatch;
         private LineBatch _lineBatch;
-        private Camera _editorCamera;
-        private Camera _guiCamera;
         private TokGL.Font _guiFont;
         private GameObject _selectedGameObject;
         private Color BRIGHT = Color.FromArgb(50, 255, 255, 255);
         private Color DARK = Color.FromArgb(10, 255, 255, 255);
         private Vector2 _mousePos;
+        private EditorControl _rootControl = new EditorControl();
+        private EditorControl _mouseOverControl = null;
+        private List<EditorControl> _selection = new List<EditorControl>();
 
         public Editor()
         {
             _tools = new Tools(this);
 
             _manager = new RenderManager();
-            _editorCamera = new Camera();
-            _editorCamera.CameraType = CameraType.Orthogonal;
-            _editorCamera.Position = new Vector3(0, 0, 200);
-            _editorCamera.LookAt = new Vector3(0, 0, 0);
-            _editorCamera.ZNear = 0;
-            _editorCamera.ZFar = 10000;
-            _editorCamera.Up = new Vector3(0, 1, 0);
-            _editorCamera.Fov = 1.0f;
+            if (_editorCamera == null)
+            {
+                _editorCamera = new Camera();
+                _editorCamera.CameraType = CameraType.Orthogonal;
+                _editorCamera.Position = new Vector3(0, 0, 200);
+                _editorCamera.LookAt = new Vector3(0, 0, 0);
+                _editorCamera.ZNear = 0;
+                _editorCamera.ZFar = 10000;
+                _editorCamera.Up = new Vector3(0, 1, 0);
+                _editorCamera.Fov = 1.0f;
+            }
 
-            _guiCamera = new Camera();
-            _guiCamera.CameraType = CameraType.HUD;
-            _guiCamera.Position = new Vector3(0, 0, 200);
-            _guiCamera.LookAt = new Vector3(0, 0, 0);
-            _guiCamera.ZNear = 0;
-            _guiCamera.ZFar = 10000;
-            _guiCamera.Up = new Vector3(0, 1, 0);
+            if (_guiCamera == null)
+            {
+                _guiCamera = new Camera();
+                _guiCamera.CameraType = CameraType.HUD;
+                _guiCamera.Position = new Vector3(0, 0, 200);
+                _guiCamera.LookAt = new Vector3(0, 0, 0);
+                _guiCamera.ZNear = 0;
+                _guiCamera.ZFar = 10000;
+                _guiCamera.Up = new Vector3(0, 1, 0);
+            }
 
             _guiFont = new TokGL.Font("ArialWhite.png", "ArialWhite.info");
 
@@ -63,6 +73,16 @@ namespace TokED
         public TokGL.Font GuiFont
         {
             get { return _guiFont; }
+        }
+
+        public EditorControl RootControl
+        {
+            get { return _rootControl; }
+        }
+
+        public EditorControl MouseOverControl
+        {
+            get { return _mouseOverControl; }
         }
 
         public Vector2 MousePos
@@ -109,32 +129,78 @@ namespace TokED
             _tools.Activate(name);
         }
 
+        #region Control Selection
+
+        public void SelectNone()
+        {
+            foreach (var control in _selection)
+            {
+                control.Selected = false;
+            }
+            _selection.Clear();
+        }
+
+        public void Select(EditorControl control)
+        {
+            control.Selected = true;
+            _selection.Add(control);
+        }
+
+        public void UnSelect(EditorControl control)
+        {
+            control.Selected = false;
+            _selection.Remove(control);
+        }
+
+        public IEnumerable<EditorControl> Selection
+        {
+            get { return _selection; }
+        }
+
+        public int SelectionCount
+        {
+            get { return _selection.Count; }
+        }
+
+        #endregion
+
         #region Rendering
 
         public void Update(FrameEventArgs e)
         {
+            _rootControl.Update(this, e);
         }
 
         public void Draw()
         {
+            //Draw World
             _manager.Camera = _editorCamera;
             _manager.Begin();
             _lineBatch.Begin(_manager);
             _spriteBatch.Begin(_manager);
+            
             DrawGrid();
+
             _lineBatch.End();
             _manager.Flush();
             _lineBatch.Begin(_manager);
+
             DrawContent(_lineBatch, _spriteBatch);
+            _rootControl.DrawWorld(_lineBatch);
+
             _spriteBatch.End();
             _lineBatch.End();
             _manager.End();
 
+            //Draw Gui
             _manager.Camera = _guiCamera;
             _manager.Begin();
             _lineBatch.Begin(_manager);
             _spriteBatch.Begin(_manager);
+            
             DrawGui(_lineBatch, _spriteBatch);
+            _rootControl.DrawGui(_lineBatch);
+
             _spriteBatch.End();
             _lineBatch.End();
             _manager.End();
@@ -164,14 +230,50 @@ namespace TokED
             if (_selectedGameObject != null) _selectedGameObject.PropertyChanged -= SelectedGameObject_PropertyChanged;
             _spriteBatch.Dispose();
             _lineBatch.Dispose();
+            _rootControl.Dispose();
         }
 
         #region Input Handling
+
+        private void SetMouseOverControl(EditorControl control)
+        {
+            if (_mouseOverControl != control)
+            {
+                if (_mouseOverControl != null) _mouseOverControl.MouseLeave();
+                _mouseOverControl = control;
+                if (_mouseOverControl != null) _mouseOverControl.MouseEnter();
+            }
+        }
 
         public void MouseMove(MouseMoveEventArgs e)
         {
             _tools.MouseMove(e);
             _mousePos = new Vector2(e.X, e.Y);
+
+            //Controls
+            EditorControl closestControl = null;
+            float closestDistance = float.MaxValue;
+
+            _rootControl.DoRecurive(c =>
+            {
+                if (c.ExactHitTest && c.Intersects(new Vector2(e.X, e.Y)))
+                {
+                    SetMouseOverControl(c);
+                    return false;
+                }
+                else
+                {
+                    var distance = c.Distance(new Vector2(e.X, e.Y));
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestControl = c;
+                    }
+                    return true;
+                }
+            });
+            SetMouseOverControl(closestControl);
+            if (_mouseOverControl != null) _mouseOverControl.MouseMove(e);
         }
 
         public void MouseWheel(MouseWheelEventArgs e)

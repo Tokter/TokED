@@ -111,6 +111,19 @@ namespace TokED
             return result;
         }
 
+        public T FindParent<T>() where T : GameObject
+        {
+            if (this is T)
+                return this as T;
+            else
+            {
+                if (Parent != null)
+                    return Parent.FindParent<T>();
+                else
+                    return null;
+            }
+        }
+
         public void RemoveChild(string name)
         {
             var child = FindChild(name);

@@ -72,8 +72,10 @@
     <Compile Include="Tools\BottomView.cs" />
     <Compile Include="Tools\FrontView.cs" />
     <Compile Include="Tools\MoveCamera.cs" />
+    <Compile Include="Tools\MoveSelected.cs" />
     <Compile Include="Tools\ResetZoom.cs" />
     <Compile Include="Tools\RotateCamera.cs" />
+    <Compile Include="Tools\Select.cs" />
     <Compile Include="Tools\SideView.cs" />
     <Compile Include="Tools\ToggleCameraType.cs" />
     <Compile Include="Tools\TopView.cs" />
