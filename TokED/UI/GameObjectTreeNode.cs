@@ -98,6 +98,7 @@ namespace TokED.UI
             _label.DragDrop -= label_DragDrop;
             _label.MouseDrag -= label_MouseDrag;
             _gameObject.PropertyChanged -= GameObject_PropertyChanged;
+            _gameObject = null;
             this.UnBind();
         }
     }

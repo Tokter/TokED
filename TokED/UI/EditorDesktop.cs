@@ -61,6 +61,7 @@ namespace TokED.UI
             _addGameObject.MouseClick += AddGameObject_MouseClick;
             _removeGameObject = _toolbarFrame.AddDropDownButton(Width - 22, 2, DropDownButtonType.Minus);
             _removeGameObject.Tooltip = Resources.RemoveGameObject;
+            _removeGameObject.MouseClick += RemoveGameObject_MouseClick;
 
             _splitContainer = _frameLeft.AddSplitContainer(Orientation.Vertical);
 
@@ -126,6 +127,42 @@ namespace TokED.UI
             }
         }
 
+        void RemoveGameObject_MouseClick(Control sender, MouseEventArgs args)
+        {
+            if (_selectedGameObject != null)
+            {
+                _selectedGameObject.Parent.RemoveChild(_selectedGameObject);
+                var parentGameObject = (_gameObjectTree.SelectedNode.Parent as GameObjectTreeNode).GameObject;
+                _gameObjectTree.SelectedNode = null;
+                RefreshGameObjectTree();
+                var parent = FindGOTreeNode(_gameObjectTree.Nodes, parentGameObject);
+                if (parent.Nodes.Count > 0)
+                {
+                    parent.Nodes[0].Selected = true;
+                }
+                else
+                {
+                    parent.Selected = true;
+                }
+            }
+        }
+
+        private GameObjectTreeNode FindGOTreeNode(ActiveList<TreeNode> nodes, GameObject gameObject)
+        {
+            foreach (var node in nodes)
+            {
+                var goNode = (node as GameObjectTreeNode);
+                if (goNode.GameObject == gameObject)
+                    return goNode;
+                else
+                {
+                    var result = FindGOTreeNode(goNode.Nodes, gameObject);
+                    if (result != null) return result;
+                }
+            }
+            return null;
+        }
+
         void GameObjectDropDown_SelectedItemChanged(Control sender, ListBoxItem value)
         {
             _addGameObject.Enabled = true;
@@ -136,7 +173,7 @@ namespace TokED.UI
             if (value != null && value is GameObjectTreeNode)
             {
                 var newObject = (value as GameObjectTreeNode).GameObject;
-                if (newObject != _selectedGameObject)
+                if (newObject != null && newObject != _selectedGameObject)
                 {
                     _selectedGameObject = newObject;
                     RefreshGameObjectList();

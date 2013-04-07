@@ -126,7 +126,11 @@ namespace TokED
 
         public void RemoveChild(string name)
         {
-            var child = FindChild(name);
+            RemoveChild(FindChild(name));
+        }
+
+        public void RemoveChild(GameObject child)
+        {
             if (child != null) _children.Remove(child);
         }
 

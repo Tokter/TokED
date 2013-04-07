@@ -97,7 +97,7 @@ namespace TokED.Editors
             {
                 if (_selectedGameObject != null) _selectedGameObject.PropertyChanged -= SelectedGameObject_PropertyChanged;
                 _selectedGameObject = value;
-                _selectedGameObject.PropertyChanged += SelectedGameObject_PropertyChanged;
+                if (_selectedGameObject != null) _selectedGameObject.PropertyChanged += SelectedGameObject_PropertyChanged;
                 Load();
             }
         }
