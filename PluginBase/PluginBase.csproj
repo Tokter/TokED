@@ -53,6 +53,7 @@
     <Compile Include="Components\Transformation.cs" />
     <Compile Include="Editors\SpriteDefinitionEditor.cs" />
     <Compile Include="Editors\TextureEditor.cs" />
+    <Compile Include="GameObjects\Empty.cs" />
     <Compile Include="Inspectors\ProjectIns.cs" />
     <Compile Include="Inspectors\SceneIns.cs" />
     <Compile Include="Inspectors\SpriteDefinitionIns.cs" />
