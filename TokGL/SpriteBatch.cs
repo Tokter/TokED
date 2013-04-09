@@ -71,6 +71,12 @@ namespace TokGL
             _bufferI = newBufferI;
         }
 
+        public void Flush(Matrix4 transformation)
+        {
+            End(transformation);
+            Begin(_manager);
+        }
+
         public void Begin(RenderManager manager)
         {
             _manager = manager;
@@ -120,6 +126,11 @@ namespace TokGL
         }
 
         public void End()
+        {
+            End(Matrix4.Identity);
+        }
+
+        public void End(Matrix4 transformation)
         {
             foreach (var mat in _sprites.Keys)
             {
@@ -176,6 +187,7 @@ namespace TokGL
                     ro.DrawType = BeginMode.Triangles;
                     ro.ElementType = DrawElementsType.UnsignedInt;
                     ro.Material = mat;
+                    ro.Transformation = transformation;
 
                     //The vertex array object has to be bound first, so that the following BindBuffer & VertexAtrribPointer calls
                     //are associated with it.

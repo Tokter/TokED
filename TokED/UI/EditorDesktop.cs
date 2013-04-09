@@ -181,8 +181,18 @@ namespace TokED.UI
                     _removeGameObject.Enabled = (_selectedGameObject != null && _selectedGameObject != _project);
 
                     if (_editor != null) _editor.Dispose();
-                    _editor = Plugins.Container.ResolveOptionalNamed<Editor>(_selectedGameObject.ExportName);
+
+                    var go = _selectedGameObject;
+                    _editor = null;
+                    //Look for an editor
+                    while (go != null && _editor == null)
+                    {
+                        _editor = Plugins.Container.ResolveOptionalNamed<Editor>(go.ExportName);
+                        if (_editor == null) go = go.Parent;
+                    }
+                    //If we did not find an editor, show empty default editor;
                     if (_editor == null) _editor = Plugins.Container.ResolveOptionalNamed<Editor>("Editor");
+
                     _editor.SelectedGameObject = _selectedGameObject;
                 }
             }

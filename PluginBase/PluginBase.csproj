@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Transformation.cs" />
+    <Compile Include="Editors\SceneEditor.cs" />
     <Compile Include="Editors\SpriteDefinitionEditor.cs" />
     <Compile Include="Editors\TextureEditor.cs" />
     <Compile Include="GameObjects\Empty.cs" />

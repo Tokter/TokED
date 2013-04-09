@@ -184,15 +184,13 @@ namespace TokED.Editors
         {
             //Draw World
             _manager.Camera = _editorCamera;
+
             _manager.Begin();
+            DrawGrid();
+            _manager.Flush();
+            
             _lineBatch.Begin(_manager);
             _spriteBatch.Begin(_manager);
-            
-            DrawGrid();
-
-            _lineBatch.End();
-            _manager.Flush();
-            _lineBatch.Begin(_manager);
 
             DrawContent(_lineBatch, _spriteBatch);
             _rootControl.DrawWorld(_lineBatch);
@@ -311,6 +309,7 @@ namespace TokED.Editors
 
         private void DrawGrid()
         {
+            _lineBatch.Begin(_manager);
             switch (this.Camera.CameraType)
             {
                 case CameraType.Orthogonal:
@@ -350,6 +349,7 @@ namespace TokED.Editors
                     }
                     break;
             }
+            _lineBatch.End();
         }
 
         private void GridLines(float from, float to, float unitSize, Func<float, Vector3> a, Func<float, Vector3> b)

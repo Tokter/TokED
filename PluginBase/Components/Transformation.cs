@@ -51,20 +51,20 @@ namespace PluginBase.Components
 
         public float RotX
         {
-            get { return _rotation.X; }
-            set { _rotation.X = value; _isDirty = true; }
+            get { return 180.0f * _rotation.X / (float)Math.PI; }
+            set { _rotation.X = (float)Math.PI * value / 180.0f; _isDirty = true; }
         }
 
         public float RotY
         {
-            get { return _rotation.Y; }
-            set { _rotation.Y = value; _isDirty = true; }
+            get { return 180.0f * _rotation.Y / (float)Math.PI; ; }
+            set { _rotation.Y = (float)Math.PI * value / 180.0f; _isDirty = true; }
         }
 
         public float RotZ
         {
-            get { return _rotation.Z; }
-            set { _rotation.Z = value; _isDirty = true; }
+            get { return 180.0f * _rotation.Z / (float)Math.PI; ; }
+            set { _rotation.Z = (float)Math.PI * value / 180.0f; _isDirty = true; }
         }
 
         public Vector3 Scale
@@ -98,11 +98,11 @@ namespace PluginBase.Components
                 if (_isDirty)
                 {
                     _isDirty = false;
-                    _transform = Matrix4.CreateTranslation(Translation)
+                    _transform = Matrix4.Scale(Scale)
                         * Matrix4.CreateRotationX(Rotation.X)
                         * Matrix4.CreateRotationY(Rotation.Y)
                         * Matrix4.CreateRotationZ(Rotation.Z)
-                        * Matrix4.Scale(Scale);
+                        * Matrix4.CreateTranslation(Translation);
                 }
                 return _transform;
             }

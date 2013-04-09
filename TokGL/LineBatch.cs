@@ -51,6 +51,12 @@ namespace TokGL
             _material.SmoothLines = false;
         }
 
+        public void Flush(Matrix4 transformation)
+        {
+            End(transformation);
+            Begin(_manager);
+        }
+
         public void Begin(RenderManager manager)
         {
             _manager = manager;
@@ -160,31 +166,40 @@ namespace TokGL
 
         public void End()
         {
-            //Get Render Object
-            var ro = RenderObject.Get();
-            ro.RenderType = RenderObjectType.Arrays;
-            ro.DrawType = BeginMode.Lines;
-            ro.Material = _material;
+            End(Matrix4.Identity);
+        }
 
-            //The vertex array object has to be bound first, so that the following BindBuffer & VertexAtrribPointer calls
-            //are associated with it.
-            GL.BindVertexArray(ro.VAO);
-            GL.EnableVertexAttribArray(ro.Material.Shader.VertexLocation);
-            GL.EnableVertexAttribArray(ro.Material.Shader.ColorLocation);
+        public void End(Matrix4 transformation)
+        {
+            if (_bufferSize > 0)
+            {
+                //Get Render Object
+                var ro = RenderObject.Get();
+                ro.RenderType = RenderObjectType.Arrays;
+                ro.DrawType = BeginMode.Lines;
+                ro.Material = _material;
+                ro.Transformation = transformation;
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, ro.VBO);
-            GL.BufferData<LineVertex>(BufferTarget.ArrayBuffer, new IntPtr(_bufferSize * LineVertex.SizeInBytes), _buffer, BufferUsageHint.StreamDraw);
+                //The vertex array object has to be bound first, so that the following BindBuffer & VertexAtrribPointer calls
+                //are associated with it.
+                GL.BindVertexArray(ro.VAO);
+                GL.EnableVertexAttribArray(ro.Material.Shader.VertexLocation);
+                GL.EnableVertexAttribArray(ro.Material.Shader.ColorLocation);
 
-            GL.VertexAttribPointer(ro.Material.Shader.VertexLocation, 3, VertexAttribPointerType.Float, false, LineVertex.SizeInBytes, LineVertex.PositionStart);
-            GL.VertexAttribPointer(ro.Material.Shader.ColorLocation, 4, VertexAttribPointerType.UnsignedByte, true, LineVertex.SizeInBytes, LineVertex.ColorStart);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, ro.VBO);
+                GL.BufferData<LineVertex>(BufferTarget.ArrayBuffer, new IntPtr(_bufferSize * LineVertex.SizeInBytes), _buffer, BufferUsageHint.StreamDraw);
 
-            GL.BindVertexArray(0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.VertexAttribPointer(ro.Material.Shader.VertexLocation, 3, VertexAttribPointerType.Float, false, LineVertex.SizeInBytes, LineVertex.PositionStart);
+                GL.VertexAttribPointer(ro.Material.Shader.ColorLocation, 4, VertexAttribPointerType.UnsignedByte, true, LineVertex.SizeInBytes, LineVertex.ColorStart);
 
-            ro.DrawStart = 0;
-            ro.DrawEnd = _bufferSize;
+                GL.BindVertexArray(0);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            _manager.Add(ro);
+                ro.DrawStart = 0;
+                ro.DrawEnd = _bufferSize;
+
+                _manager.Add(ro);
+            }
         }
 
         private void Resize()
