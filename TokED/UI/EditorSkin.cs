@@ -522,7 +522,7 @@ namespace TokED.UI
             return checkBox;
         }
 
-        public static TextBox AddTextBox(this Control parent, int x, int y, int width)
+        public static TextBoxEx AddTextBox(this Control parent, int x, int y, int width)
         {
             var textBox = new TextBoxEx();
             textBox.Parent = parent;
@@ -532,7 +532,7 @@ namespace TokED.UI
             return textBox;
         }
 
-        public static TextBox AddTextBox(this Control parent)
+        public static TextBoxEx AddTextBox(this Control parent)
         {
             var textBox = new TextBoxEx();
             textBox.Parent = parent;
@@ -577,13 +577,14 @@ namespace TokED.UI
             return panel;
         }
 
-        public static TextBox AddLabeledTextBox(this Control parent, int width, string text)
+        public static TextBox AddLabeledTextBox(this Control parent, int width, string text, float scale = 1.0f)
         {
             var frame = parent.AddFrame(0, 20, DockStyle.Top);
             frame.AddLabel(width, text);
-            frame.Margin = new Margin(10, 0, 0, 0);
+            frame.Margin = new Margin(10, 0, 0, 0);            
             var textBox = frame.AddTextBox();
             textBox.TabIndex = tabStopIndex++;
+            textBox.Scale = scale;
             return textBox;
         }
 

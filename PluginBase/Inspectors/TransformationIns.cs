@@ -27,12 +27,12 @@ namespace PluginBase.Inspectors
             _posX = this.AddLabeledTextBox(100, "X Position:");
             _posY = this.AddLabeledTextBox(100, "Y Position:");
             _posZ = this.AddLabeledTextBox(100, "Z Position:");
-            _rotX = this.AddLabeledTextBox(100, "X Rotation:");
-            _rotY = this.AddLabeledTextBox(100, "Y Rotation:");
-            _rotZ = this.AddLabeledTextBox(100, "Z Rotation:");
-            _scaleX = this.AddLabeledTextBox(100, "X Scale:");
-            _scaleY = this.AddLabeledTextBox(100, "Y Scale:");
-            _scaleZ = this.AddLabeledTextBox(100, "Z Scale:");
+            _rotX = this.AddLabeledTextBox(100, "X Rotation:", 0.5f);
+            _rotY = this.AddLabeledTextBox(100, "Y Rotation:", 0.5f);
+            _rotZ = this.AddLabeledTextBox(100, "Z Rotation:", 0.5f);
+            _scaleX = this.AddLabeledTextBox(100, "X Scale:", 0.01f);
+            _scaleY = this.AddLabeledTextBox(100, "Y Scale:", 0.01f);
+            _scaleZ = this.AddLabeledTextBox(100, "Z Scale:", 0.01f);
         }
 
         protected override void Bind()
