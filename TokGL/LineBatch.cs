@@ -183,14 +183,14 @@ namespace TokGL
                 //The vertex array object has to be bound first, so that the following BindBuffer & VertexAtrribPointer calls
                 //are associated with it.
                 GL.BindVertexArray(ro.VAO);
-                GL.EnableVertexAttribArray(ro.Material.Shader.VertexLocation);
-                GL.EnableVertexAttribArray(ro.Material.Shader.ColorLocation);
+                GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Vertex));
+                GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color));
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, ro.VBO);
                 GL.BufferData<LineVertex>(BufferTarget.ArrayBuffer, new IntPtr(_bufferSize * LineVertex.SizeInBytes), _buffer, BufferUsageHint.StreamDraw);
 
-                GL.VertexAttribPointer(ro.Material.Shader.VertexLocation, 3, VertexAttribPointerType.Float, false, LineVertex.SizeInBytes, LineVertex.PositionStart);
-                GL.VertexAttribPointer(ro.Material.Shader.ColorLocation, 4, VertexAttribPointerType.UnsignedByte, true, LineVertex.SizeInBytes, LineVertex.ColorStart);
+                GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Vertex), 3, VertexAttribPointerType.Float, false, LineVertex.SizeInBytes, LineVertex.PositionStart);
+                GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color), 4, VertexAttribPointerType.UnsignedByte, true, LineVertex.SizeInBytes, LineVertex.ColorStart);
 
                 GL.BindVertexArray(0);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

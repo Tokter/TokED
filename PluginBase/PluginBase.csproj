@@ -81,6 +81,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Shaders\DiffuseShader.cs" />
+    <Compile Include="Shaders\DiffuseWithDetail.cs" />
     <Compile Include="Shaders\TestShader.cs" />
     <Compile Include="Tools\BottomView.cs" />
     <Compile Include="Tools\FrontView.cs" />

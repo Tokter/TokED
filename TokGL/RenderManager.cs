@@ -55,8 +55,8 @@ namespace TokGL
                         currentMaterial = ro.Material;
                         currentMaterial.Activate();
                     }
-                    currentMaterial.Shader.Model = ro.Transformation;
-                    currentMaterial.Shader.Camera = Camera.ViewProjectMatrix;
+                    currentMaterial.Shader.SetModel(ro.Transformation);
+                    currentMaterial.Shader.SetCamera(Camera.ViewProjectMatrix);
 
                     GL.BindVertexArray(ro.VAO);
                     switch (ro.RenderType)

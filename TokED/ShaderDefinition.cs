@@ -4,28 +4,14 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TokGL;
 
 namespace TokED
 {
-    public enum ShaderParamaterType
+    public class ShaderDefinition
     {
-        Float,
-        Vec2,
-        Vec3,
-        Vec4,
-    }
-
-    public struct ShaderParameter
-    {
-        public ShaderParamaterType Type;
-        public string Name;
-        public string Desc;
-        public object Value;
-    }
-
-    public class Shader
-    {
-        private List<ShaderParameter> _parameters = new List<ShaderParameter>();
+        private List<ShaderAttribute> _attributes = new List<ShaderAttribute>();
+        private List<ShaderParam> _parameters = new List<ShaderParam>();
 
         public string VertexProgram { get; set; }
         public string FragmentProgram { get; set; }
@@ -48,12 +34,22 @@ namespace TokED
             }
         }
 
-        public void AddParameter(ShaderParameter param)
+        public void AddAttribute(ShaderAttribute attrib)
+        {
+            _attributes.Add(attrib);
+        }
+
+        public IEnumerable<ShaderAttribute> Attributes
+        {
+            get { return _attributes; }
+        }
+
+        public void AddParameter(ShaderParam param)
         {
             _parameters.Add(param);
         }
 
-        public IEnumerable<ShaderParameter> Parameters
+        public IEnumerable<ShaderParam> Parameters
         {
             get { return _parameters; }
         }

@@ -73,7 +73,7 @@
     <Compile Include="EditorTool.cs" />
     <Compile Include="IDrawable.cs" />
     <Compile Include="Renderer.cs" />
-    <Compile Include="Shader.cs" />
+    <Compile Include="ShaderDefinition.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UI\Bindings.cs" />
     <Compile Include="UI\ComponentIns.cs" />

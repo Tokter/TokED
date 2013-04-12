@@ -45,7 +45,6 @@ namespace TokED.UI
             itemStyle.SelectedPressed.Texture = "listbox_item_selected_hot";
             itemStyle.SelectedFocused.Texture = "listbox_item_selected_hot";
             itemStyle.SelectedHot.Texture = "listbox_item_selected_hot";
-
             itemStyle.TextAlign = Alignment.MiddleLeft;
 
             ControlStyle buttonStyle = new ControlStyle(baseStyle);
@@ -255,6 +254,20 @@ namespace TokED.UI
             comboItemStyle.Font = "White";
             comboItemStyle.TextColor = ColorInt.RGBA(1, 1, 1, 1);
 
+            ControlStyle comboItemNoImageStyle = new ControlStyle();
+            comboItemNoImageStyle.Tiling = TextureMode.Grid;
+            comboItemNoImageStyle.Grid = new Margin(7);
+            comboItemNoImageStyle.TextPadding = new Margin(2, 0, 0, 0);
+            comboItemNoImageStyle.Texture = "listbox_item";
+            comboItemNoImageStyle.Hot.Texture = "listbox_item_hot";
+            comboItemNoImageStyle.Focused.Texture = "listbox_item_hot";
+            comboItemNoImageStyle.Selected.Texture = "listbox_item_selected";
+            comboItemNoImageStyle.SelectedPressed.Texture = "listbox_item_selected_hot";
+            comboItemNoImageStyle.SelectedFocused.Texture = "listbox_item_selected_hot";
+            comboItemNoImageStyle.SelectedHot.Texture = "listbox_item_selected_hot";
+            comboItemNoImageStyle.Font = "White";
+            comboItemNoImageStyle.TextColor = ColorInt.RGBA(1, 1, 1, 1);
+
             ControlStyle comboLabelStyle = new ControlStyle();
             comboLabelStyle.TextPadding = new Margin(5, 0, 0, 0);
             comboLabelStyle.Default.Texture = "combo";
@@ -345,6 +358,7 @@ namespace TokED.UI
             skin.Styles.Add("hsplitter", hSplitterStyle);
             skin.Styles.Add("vsplitter", vSplitterStyle);
             skin.Styles.Add("comboItem", comboItemStyle);
+            skin.Styles.Add("comboItemNoImage", comboItemNoImageStyle);
             skin.Styles.Add("comboLabel", comboLabelStyle);
             skin.Styles.Add("comboButton", comboButtonStyle);
             skin.Styles.Add("comboPlusButton", comboButtonPlusStyle);
@@ -659,7 +673,7 @@ namespace TokED.UI
             var values = Enum.GetValues(enumType);
             foreach (var value in values)
             {
-                list.Items.Add(new ListBoxItem() { Text = value.ToString(), Style="itemStyle" });
+                list.Items.Add(new ListBoxItem() { Text = value.ToString(), Style = "comboItemNoImage" });
             }
 
             list.TabIndex = tabStopIndex++;
@@ -675,7 +689,7 @@ namespace TokED.UI
 
             foreach (var s in strings)
             {
-                list.Items.Add(new ListBoxItem() { Text = s, Style = "itemStyle" });
+                list.Items.Add(new ListBoxItem() { Text = s, Style = "comboItemNoImage" });
             }
 
             list.TabIndex = tabStopIndex++;

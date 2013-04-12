@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TokED;
 using TokED.UI;
+using TokGL;
 
 
 namespace PluginBase.Inspectors
@@ -34,7 +35,7 @@ namespace PluginBase.Inspectors
         {
             base.Build();
 
-            _shader = this.AddStringList(100, "Shader", Plugins.GetKeys<Shader>());
+            _shader = this.AddStringList(100, "Shader", Plugins.GetKeys<ShaderDefinition>());
             _shader.Bind(this.GameObject, "Shader");
 
             _details = this.AddFrame(0, 0, DockStyle.Top);
@@ -52,7 +53,7 @@ namespace PluginBase.Inspectors
             _details.UnBind();
             _details.Controls.Clear();
 
-            var shader = Plugins.Container.ResolveNamed<TokED.Shader>((this.GameObject as Material).Shader);
+            var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>((this.GameObject as PluginBase.GameObjects.Material).Shader);
             if (shader.Texture0Enabled)
             {
                 _fileBox0 = _details.AddLabeledFilename(100, "Texture 0:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
@@ -108,8 +109,8 @@ namespace PluginBase.Inspectors
             {
                 switch (p.Type)
                 {
-                    case ShaderParamaterType.Float:
-                        var field = _details.AddLabeledTextBox(100, p.Desc + ":", (float)p.Value);
+                    case ShaderParamType.Float:
+                        var field = _details.AddLabeledTextBox(100, p.LongName + ":", p.FloatValue);
                         //field.Bind(this.Component, "PosX");
                         break;
                 }

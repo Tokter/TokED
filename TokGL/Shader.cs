@@ -8,28 +8,95 @@ using System.Threading.Tasks;
 
 namespace TokGL
 {
+    public enum ShaderParamType
+    {
+        Int,
+        Float,       
+        Vec2,
+        Vec3,
+        Vec4,
+        Texture,
+        Model,
+        Camera,
+    }
+
+    public enum ShaderAttributeType
+    {
+        Vertex,
+        Color,
+        UV,
+    }
+
+    public class ShaderAttribute
+    {
+        public ShaderAttributeType Type;
+        public int Location;
+        public string Name;
+
+        public ShaderAttribute(ShaderAttributeType type, string name)
+        {
+            Type = type;
+            Location = -1;
+            Name = name;
+        }
+    }
+
+    public class ShaderParam
+    {
+        public ShaderParamType Type;
+        public int Location;
+        public string Name;
+        public string LongName;
+        public int IntValue;
+        public float FloatValue;
+        public Matrix4 MatrixValue;
+        public Vector2 Vec2Value;
+        public Vector3 Vec3Value;
+        public Vector4 Vec4Value;
+
+        public ShaderParam(ShaderParamType type, string name, string longName, object value)
+        {
+            Type = type;
+            Location = -1;
+            Name = name;
+            LongName = longName;
+            IntValue = 0;
+            FloatValue = 0;
+            MatrixValue = Matrix4.Identity;
+            Vec2Value = new Vector2();
+            Vec3Value = new Vector3();
+            Vec4Value = new Vector4();
+            Set(value);
+        }
+
+        public void Set(object value)
+        {
+            switch (Type)
+            {
+                case ShaderParamType.Int: IntValue = (int)value; break;
+                case ShaderParamType.Float: FloatValue = (float)value; break;
+                case ShaderParamType.Vec2: Vec2Value = (Vector2)value; break;
+                case ShaderParamType.Vec3: Vec3Value = (Vector3)value; break;
+                case ShaderParamType.Vec4: Vec4Value = (Vector4)value; break;
+                case ShaderParamType.Texture: IntValue = (int)value; break;
+                case ShaderParamType.Model: MatrixValue = (Matrix4)value; break;
+                case ShaderParamType.Camera: MatrixValue = (Matrix4)value; break;
+            }
+        }
+    }
+
     public class Shader : IDisposable
     {
         private int _vertexShader;
         private int _fragShader;
         private int _shader;
 
-        private int _vertexLocation;
-        private int _colorLocation;
-        private int _uvLocation;
+        private Dictionary<ShaderAttributeType, ShaderAttribute> _attributes = new Dictionary<ShaderAttributeType, ShaderAttribute>();
+        private Dictionary<string, ShaderParam> _parameters = new Dictionary<string, ShaderParam>();
+        private string _camera;
+        private string _model;
 
-        private int _textureLocation;
-        private int _texture;
-
-        private int _modelLocation;
-        private Matrix4 _model;
-
-        private int _cameraLocation;
-        private Matrix4 _camera;
-
-        private Dictionary<string, int> _locations = new Dictionary<string, int>();
-
-        public Shader(string vertexProgram, string fragmentProgram)
+        public Shader(string vertexProgram, string fragmentProgram, IEnumerable<ShaderAttribute> attributes, IEnumerable<ShaderParam> parameters)
         {
             int result;
 
@@ -70,22 +137,27 @@ namespace TokGL
                 GL.DeleteProgram(_shader);
             }
 
+            //Get Attribute and Parameter locations and apply values
             Activate();
-            FindLocations();
+            foreach (var a in attributes) _attributes.Add(a.Type, a);
+            foreach (var key in _attributes.Keys)
+            {
+                var a = _attributes[key];
+                a.Location = GL.GetAttribLocation(_shader, a.Name);
+            }
+            foreach (var p in parameters) _parameters.Add(p.Name, p);
+            foreach (var key in _parameters.Keys)
+            {
+                var p = _parameters[key];
+                p.Location = GL.GetUniformLocation(_shader, key);
+                switch (p.Type)
+                {
+                    case ShaderParamType.Camera: _camera = key; break;
+                    case ShaderParamType.Model: _model = key; break;
+                }
+            }
+            ApplyParameters();
             Deactivate();
-        }
-
-        public virtual void FindLocations()
-        {
-            //Attributes
-            _vertexLocation = GetAttribLocation("in_vertex");
-            _colorLocation = GetAttribLocation("in_color");
-            _uvLocation = GetAttribLocation("in_uv");
-
-            //Uniforms
-            _cameraLocation = GetUniformLocation("camera");
-            _modelLocation = GetUniformLocation("model");
-            _textureLocation = GetAttribLocation("tex");
         }
 
         public void Activate()
@@ -98,73 +170,43 @@ namespace TokGL
             GL.UseProgram(0);
         }
 
-        public int GetAttribLocation(string name)
+        public void SetParameter(string name, object value)
         {
-            return GL.GetAttribLocation(_shader, name);
+            _parameters[name].Set(value);
+            ApplyParameter(_parameters[name]);
         }
 
-        public int GetUniformLocation(string name)
+        public void SetCamera(Matrix4 camera)
         {
-            return GL.GetUniformLocation(_shader, name);
+            SetParameter(_camera, camera);
         }
 
-        public int VertexLocation
+        public void SetModel(Matrix4 model)
         {
-            get { return _vertexLocation; }
+            SetParameter(_model, model);
         }
 
-        public int ColorLocation
+        private void ApplyParameter(ShaderParam param)
         {
-            get { return _colorLocation; }
-        }
-
-        public int UVLocation
-        {
-            get { return _uvLocation; }
-        }
-
-        public int TextureLocation
-        {
-            get { return _textureLocation; }
-        }
-
-        public Matrix4 Model
-        {
-            get { return _model; }
-            set
+            switch (param.Type)
             {
-                _model = value;
-                GL.UniformMatrix4(_modelLocation, false, ref _model);
+                case ShaderParamType.Int: GL.Uniform1(param.Location, param.IntValue); break;
+                case ShaderParamType.Float: GL.Uniform1(param.Location, param.FloatValue); break;
+                case ShaderParamType.Texture: GL.Uniform1(param.Location, param.IntValue); break;
+                case ShaderParamType.Vec2: GL.Uniform2(param.Location, ref param.Vec2Value); break;
+                case ShaderParamType.Vec3: GL.Uniform3(param.Location, ref param.Vec3Value); break;
+                case ShaderParamType.Vec4: GL.Uniform4(param.Location, ref param.Vec4Value); break;
+                case ShaderParamType.Model: GL.UniformMatrix4(param.Location, 1, false, ref param.MatrixValue.Row0.X); break;
+                case ShaderParamType.Camera: GL.UniformMatrix4(param.Location, 1, false, ref param.MatrixValue.Row0.X); break;
             }
         }
 
-        public Matrix4 Camera
+        public void ApplyParameters()
         {
-            get { return _camera; }
-            set
+            foreach (var param in _parameters.Values)
             {
-                _camera = value;
-                GL.UniformMatrix4(_cameraLocation, false, ref _camera);
+                ApplyParameter(param);
             }
-        }
-
-        public int Texture
-        {
-            get { return _texture; }
-            set
-            {
-                _texture = value;
-                GL.Uniform1(_textureLocation, _texture);
-            }
-        }
-
-        public void SetUniform(string location, float value)
-        {
-            if (!_locations.ContainsKey(location))
-            {
-                _locations.Add(location, GetUniformLocation(location));
-            }
-            GL.Uniform1(_locations[location], value);
         }
 
         public void Dispose()
@@ -174,5 +216,9 @@ namespace TokGL
             if (_fragShader > 0) GL.DeleteShader(_fragShader); _fragShader = 0;
         }
 
+        public int GetAttributeLocation(ShaderAttributeType type)
+        {
+            return _attributes[type].Location;
+        }
     }
 }

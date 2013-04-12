@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -100,6 +101,15 @@ namespace TokGL
         public static Material CreateColor()
         {
             var mat = new Material();
+
+            var attributes = new List<ShaderAttribute>();
+            attributes.Add(new ShaderAttribute(ShaderAttributeType.Vertex, "in_vertex"));
+            attributes.Add(new ShaderAttribute(ShaderAttributeType.Color, "in_color"));
+
+            var parameters = new List<ShaderParam>();
+            parameters.Add(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
+            parameters.Add(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
+
             mat.Shader = new Shader(
 @"#version 150
 
@@ -122,7 +132,7 @@ out vec4 final_color;
 void main()
 {
     final_color = frag_color;
-}");
+}", attributes, parameters);
             mat.Texture0 = null;
             mat.Texture1 = null;
             mat.Texture2 = null;
@@ -136,6 +146,17 @@ void main()
         public static Material CreateTextureColor(Texture texture)
         {
             var mat = new Material();
+
+            var attributes = new List<ShaderAttribute>();
+            attributes.Add(new ShaderAttribute(ShaderAttributeType.Vertex, "in_vertex"));
+            attributes.Add(new ShaderAttribute(ShaderAttributeType.Color, "in_color"));
+            attributes.Add(new ShaderAttribute(ShaderAttributeType.UV, "in_uv"));
+
+            var parameters = new List<ShaderParam>();
+            parameters.Add(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
+            parameters.Add(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
+            parameters.Add(new ShaderParam(ShaderParamType.Texture, "tex", "Texture", 0));
+
             mat.Shader = new Shader(
 @"#version 150
 
@@ -163,7 +184,7 @@ out vec4 final_color;
 void main()
 {
     final_color = texture(tex, frag_TexCoord) * frag_Color;
-}");
+}", attributes, parameters);
             mat.Texture0 = texture;
             mat.Texture1 = null;
             mat.Texture2 = null;

@@ -301,9 +301,9 @@ namespace TokGL
                     //The vertex array object has to be bound first, so that the following BindBuffer & VertexAtrribPointer calls
                     //are associated with it.
                     GL.BindVertexArray(ro.VAO);
-                    GL.EnableVertexAttribArray(ro.Material.Shader.VertexLocation);
-                    GL.EnableVertexAttribArray(ro.Material.Shader.ColorLocation);
-                    GL.EnableVertexAttribArray(ro.Material.Shader.UVLocation);
+                    GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Vertex));
+                    GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color));
+                    GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.UV));
 
                     GL.BindBuffer(BufferTarget.ArrayBuffer, ro.VBO);
                     GL.BufferData<SpriteVertex>(BufferTarget.ArrayBuffer, new IntPtr(_bufferSize * SpriteVertex.SizeInBytes), _buffer, BufferUsageHint.StreamDraw);
@@ -311,9 +311,9 @@ namespace TokGL
                     GL.BindBuffer(BufferTarget.ElementArrayBuffer, ro.IBO);
                     GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(_bufferISize * sizeof(uint)), _bufferI, BufferUsageHint.StreamDraw);
 
-                    GL.VertexAttribPointer(ro.Material.Shader.VertexLocation, 3, VertexAttribPointerType.Float, false, SpriteVertex.SizeInBytes, SpriteVertex.PositionStart);
-                    GL.VertexAttribPointer(ro.Material.Shader.UVLocation, 2, VertexAttribPointerType.Float, true, SpriteVertex.SizeInBytes, SpriteVertex.TextureStart);
-                    GL.VertexAttribPointer(ro.Material.Shader.ColorLocation, 4, VertexAttribPointerType.UnsignedByte, true, SpriteVertex.SizeInBytes, SpriteVertex.ColorStart);
+                    GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Vertex), 3, VertexAttribPointerType.Float, false, SpriteVertex.SizeInBytes, SpriteVertex.PositionStart);
+                    GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.UV), 2, VertexAttribPointerType.Float, true, SpriteVertex.SizeInBytes, SpriteVertex.TextureStart);
+                    GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color), 4, VertexAttribPointerType.UnsignedByte, true, SpriteVertex.SizeInBytes, SpriteVertex.ColorStart);
 
                     GL.BindVertexArray(0);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

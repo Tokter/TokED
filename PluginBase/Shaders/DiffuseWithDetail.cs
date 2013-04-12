@@ -10,13 +10,13 @@ using TokGL;
 
 namespace PluginBase.Shaders
 {
-    [Export("Test", typeof(ShaderDefinition)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class TestShader : ShaderDefinition
+    [Export("DiffuseWithDetail", typeof(ShaderDefinition)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class DiffuseWithDetail : ShaderDefinition
     {
-        public TestShader()
+        public DiffuseWithDetail()
         {
-            Texture0Enabled = false;
-            Texture1Enabled = false;
+            Texture0Enabled = true;
+            Texture1Enabled = true;
             Texture2Enabled = false;
             Texture3Enabled = false;
 
@@ -41,16 +41,15 @@ void main()
             FragmentProgram =
 @"#version 150
 
-uniform float freq1;
-uniform float freq2;
-uniform float freq3;
+uniform sampler2D tex;
+uniform sampler2D detail;
 in vec4 frag_Color;
 in vec2 frag_TexCoord;
 out vec4 final_color;
 
 void main()
 {
-    final_color = vec4(sin(frag_TexCoord.t * freq1),sin(frag_TexCoord.s * freq2),sin(frag_TexCoord.s * frag_TexCoord.t * freq3),1);
+    final_color = texture(tex, frag_TexCoord) * texture(detail, frag_TexCoord * 4) * frag_Color;
 }";
 
             AddAttribute(new ShaderAttribute(ShaderAttributeType.Vertex, "in_vertex"));
@@ -58,9 +57,8 @@ void main()
             AddAttribute(new ShaderAttribute(ShaderAttributeType.UV, "in_uv"));
             AddParameter(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
             AddParameter(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
-            AddParameter(new ShaderParam(ShaderParamType.Float, "freq1", "Frequency 1", 3.0f));
-            AddParameter(new ShaderParam(ShaderParamType.Float, "freq2", "Frequency 2", 6.0f));
-            AddParameter(new ShaderParam(ShaderParamType.Float, "freq3", "Frequency 3", 9.0f));
+            AddParameter(new ShaderParam(ShaderParamType.Int, "tex", "Base Texture", 0));
+            AddParameter(new ShaderParam(ShaderParamType.Int, "detail", "Detail Texture", 1));
         }
     }
 }

@@ -1,15 +1,17 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TokED;
+using TokGL;
 
 namespace PluginBase.Shaders
 {
-    [Export("Diffuse", typeof(Shader)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class DiffuseShader : Shader
+    [Export("Diffuse", typeof(ShaderDefinition)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class DiffuseShader : ShaderDefinition
     {
         public DiffuseShader()
         {
@@ -48,6 +50,12 @@ void main()
 {
     final_color = texture(tex, frag_TexCoord) * frag_Color;
 }";
+            AddAttribute(new ShaderAttribute(ShaderAttributeType.Vertex, "in_vertex"));
+            AddAttribute(new ShaderAttribute(ShaderAttributeType.Color, "in_color"));
+            AddAttribute(new ShaderAttribute(ShaderAttributeType.UV, "in_uv"));
+            AddParameter(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
+            AddParameter(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
+            AddParameter(new ShaderParam(ShaderParamType.Int, "tex", "Base Texture", 0));
         }
     }
 }

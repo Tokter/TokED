@@ -118,20 +118,11 @@ namespace PluginBase.GameObjects
         protected override void OnLoad()
         {
             _material = new TokGL.Material();
-            var shader = Plugins.Container.ResolveNamed<TokED.Shader>(_shader);
+            var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>(_shader);
             if (shader == null) throw new Exception(string.Format("Did not find shader {0}!", _shader));
-            _material.Shader = new TokGL.Shader(shader.VertexProgram, shader.FragmentProgram);
+            _material.Shader = new TokGL.Shader(shader.VertexProgram, shader.FragmentProgram, shader.Attributes, shader.Parameters);
             _material.Activate();
             _material.Color = _color;
-
-            //Apply Parameters
-            foreach (var p in shader.Parameters)
-            {
-                switch(p.Type)
-                {
-                    case ShaderParamaterType.Float: _material.Shader.SetUniform(p.Name, (float)p.Value); break;
-                } 
-            }
 
             if (File.Exists(_fileName0))
             {
