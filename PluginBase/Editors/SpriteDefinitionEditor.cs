@@ -15,7 +15,7 @@ using TokGL;
 namespace PluginBase.Editors
 {
     [Export("SpriteDefinition", typeof(Editor)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class SpriteDefinitionEditor : TextureEditor
+    public class SpriteDefinitionEditor : MaterialEditor
     {
         private Handle[] _handles = { new Handle(), new Handle(), new Handle(), new Handle(), new Handle() };
         private GameObjects.SpriteDefinition _spriteDef;
@@ -46,9 +46,9 @@ namespace PluginBase.Editors
             Camera.LookAt = new Vector3(middle.X, middle.Y, Camera.LookAt.Z);
         }
 
-        public override void UnLoad()
+        protected override void OnDispose()
         {
-            base.UnLoad();
+            base.OnDispose();
             _bindingManager.Dispose();
         }
 

@@ -17,13 +17,13 @@ namespace TokGL
         private int _height;
 
         public TextureMinFilter MinFilter { get; set; }
-        public TextureMinFilter MagFilter { get; set; }
+        public TextureMagFilter MagFilter { get; set; }
 
         public Texture()
         {
             _textureID = GL.GenTexture();
             MinFilter = TextureMinFilter.Linear;
-            MagFilter = TextureMinFilter.Linear;
+            MagFilter = TextureMagFilter.Linear;
         }
 
         public int TextureID
@@ -53,18 +53,16 @@ namespace TokGL
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        public static Texture CreateFromResource(string resource, bool preMultiplyAlpha, bool createAlpha)
+        public static Texture CreateFromStream(Stream stream, bool preMultiplyAlpha, bool createAlpha)
         {
             var texture = new Texture();
-            texture.LoadFromResource(resource, preMultiplyAlpha, createAlpha);
+            texture.LoadFromStream(stream, preMultiplyAlpha, createAlpha);
             return texture;
         }
 
-        public unsafe void LoadFromResource(string resource, bool preMultiplyAlpha, bool createAlpha)
+        public unsafe void LoadFromStream(Stream stream, bool preMultiplyAlpha, bool createAlpha)
         {
-            var names = System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceNames();
-            var name = names.First((n) => n.EndsWith(resource));
-            var bmp = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream(name));
+            var bmp = new Bitmap(stream);
             LoadFromBitmap(bmp, preMultiplyAlpha, createAlpha);
             bmp.Dispose();
         }
@@ -77,6 +75,13 @@ namespace TokGL
                 LoadFromBitmap(bmp, preMultiplyAlpha, createAlpha);
                 bmp.Dispose();
             }
+        }
+
+        public static Texture FromFile(string filename, bool preMultiplyAlpha, bool createAlpha)
+        {
+            var result = new Texture();
+            result.LoadFromFile(filename, preMultiplyAlpha, createAlpha);
+            return result;
         }
 
         public unsafe void LoadFromBitmap(Bitmap image, bool preMultiplyAlpha, bool createAlpha)

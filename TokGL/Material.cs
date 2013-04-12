@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace TokGL
     public class Material : IDisposable
     {
         public Shader Shader { get; set; }
+        public Color Color { get; set; }
         public Texture Texture0 { get; set; }
         public Texture Texture1 { get; set; }
         public Texture Texture2 { get; set; }

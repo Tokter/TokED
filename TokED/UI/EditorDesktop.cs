@@ -180,6 +180,7 @@ namespace TokED.UI
                     RefreshGameObjectEditors();
                     _removeGameObject.Enabled = (_selectedGameObject != null && _selectedGameObject != _project);
 
+                    _project.UnLoad();
                     if (_editor != null) _editor.Dispose();
 
                     var go = _selectedGameObject;

@@ -28,10 +28,6 @@ namespace PluginBase.Editors
             _scene = SelectedGameObject.FindParent<GameObjects.Scene>();
         }
 
-        public override void UnLoad()
-        {
-        }
-
         public override void DrawContent(LineBatch lineBatch, SpriteBatch spriteBatch)
         {
             _lineBatch = lineBatch;
@@ -41,26 +37,46 @@ namespace PluginBase.Editors
 
         private void RenderGameObject(GameObject gameObject, Matrix4 parentTransformation)
         {
-            var transComponent = gameObject.Component<Transformation>();
-            Matrix4 transformation;
+            if (gameObject.Visible)
+            {
+                var transComponent = gameObject.Component<Transformation>();
+                Matrix4 transformation;
 
-            if (transComponent != null)
-            {
-                transformation = transComponent.Transform;
-                transformation *= parentTransformation;
-                _lineBatch.Add(new Vector3(-10, 0, 0), new Vector3(10, 0, 0), Color.Red);
-                _lineBatch.Add(new Vector3(0, -10, 0), new Vector3(0, 10, 0), Color.Green);
-                _lineBatch.Add(new Vector3(0, 0, -10), new Vector3(0, 0, 10), Color.Blue);
-                _lineBatch.Flush(transformation);
-            }
-            else
-            {
-                transformation = parentTransformation;
-            }
+                if (transComponent != null)
+                {
+                    transformation = transComponent.Transform;
+                    transformation *= parentTransformation;
 
-            foreach (var go in gameObject.Children)
-            {
-                RenderGameObject(go, transformation);
+                    bool drawn = false;
+                    foreach (var c in gameObject.Components)
+                    {
+                        var drawable = c as IDrawable;
+                        if (drawable != null)
+                        {
+                            drawable.Draw(_lineBatch, _spriteBatch);
+                            _lineBatch.Flush(transformation);
+                            _spriteBatch.Flush(transformation);
+                            drawn = true;
+                        }
+                    }
+
+                    if (!drawn)
+                    {
+                        _lineBatch.Add(new Vector3(-10, 0, 0), new Vector3(10, 0, 0), Color.Red);
+                        _lineBatch.Add(new Vector3(0, -10, 0), new Vector3(0, 10, 0), Color.Green);
+                        _lineBatch.Add(new Vector3(0, 0, -10), new Vector3(0, 0, 10), Color.Blue);
+                        _lineBatch.Flush(transformation);
+                    }
+                }
+                else
+                {
+                    transformation = parentTransformation;
+                }
+
+                foreach (var go in gameObject.Children)
+                {
+                    RenderGameObject(go, transformation);
+                }
             }
         }
     }

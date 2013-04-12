@@ -44,11 +44,21 @@ namespace TokED.UI
                         sourcePropertyName = "Checked";
                         (_source as CheckBox).CheckedChanged += Binding_CheckedChanged;
                         break;
+
+                    case "DropDownList":
+                        sourcePropertyName = "SelectedItem";
+                        (_source as DropDownList).SelectedItemChanged += Binding_SelectedItemChanged;
+                        break;
                 }
             }
             if (sourcePropertyName == null) throw new NotImplementedException(string.Format("No default property defined for control {0}!", _source.GetType().Name));
             _sourceProperty = source.GetType().GetProperty(sourcePropertyName);
             TargetPropertyChanged(_source, null);
+        }
+
+        void Binding_SelectedItemChanged(Control sender, ListBoxItem value)
+        {
+            SourcePropertyChanged(sender, null);
         }
 
         void Binding_CheckedChanged(Control sender)
@@ -95,7 +105,7 @@ namespace TokED.UI
                 if (!Object.Equals(sourceValue, targetValue))
                 {
                     _applyTargetChanges = false;
-                    _targetProperty.SetValue(_target, Transform(sourceValue, targetValue), null);
+                    _targetProperty.SetValue(_target, Transform(sourceValue, targetValue, _source, _target), null);
                     _applyTargetChanges = true;
                 }
             }
@@ -110,47 +120,99 @@ namespace TokED.UI
                 if (!Object.Equals(sourceValue, targetValue))
                 {
                     _applySourceChanges = false;
-                    _sourceProperty.SetValue(_source, Transform(_targetValueConverter == null ? targetValue : _targetValueConverter(targetValue), sourceValue), null);
+                    _sourceProperty.SetValue(_source, Transform(_targetValueConverter == null ? targetValue : _targetValueConverter(targetValue), sourceValue, _target, _source), null);
                     _applySourceChanges = true;
                 }
             }
         }
 
-        private object Transform(object source, object target)
+        private string GetTypeName(object value, object source)
         {
-            switch (source.GetType().Name)
-            {
-                case "Single":
-                    switch (target.GetType().Name)
-                    {
-                        case "String": return source.ToString();
-                    }
-                    break;
+            if (source is Enum) return "Enum";
+            if (source is DropDownList) return "DropDownList";
+            if (value == null) return source.GetType().Name;
+            if (value is Enum) return "Enum";
+            return value.GetType().Name;
+        }
 
-                case "Boolean":
-                    switch (target.GetType().Name)
-                    {
-                        case "String": return source.ToString();
-                    }
-                    break;
+        private object Transform(object sourceValue, object targetValue, object source, object target)
+        {
+            //if (sourceValue is Enum && target is DropDownList)
+            //{
+            //    foreach (var item in (target as DropDownList).Items)
+            //    {
+            //        if (item.Text == sourceValue.ToString()) return item;
+            //    }
+            //}
+            //else if (targetValue is Enum && source is DropDownList)
+            //{
+            //    return Enum.Parse(targetValue.GetType(), (sourceValue as ListBoxItem).Text);
+            //}
+            //else
+            //{
+                switch (GetTypeName(sourceValue, source))
+                {
+                    case "DropDownList":
+                        switch (GetTypeName(targetValue, target))
+                        {
+                            case "Enum":
+                                return Enum.Parse(targetValue.GetType(), (sourceValue as ListBoxItem).Text);
 
-                case "String":
-                    switch (target.GetType().Name)
-                    {
-                        case "Int32": return Convert.ToInt32(source);
-                        case "Boolean": return Convert.ToBoolean(source);
-                        case "Single": return Convert.ToSingle(source);
-                    }
-                    break;
+                            case "String":
+                                return (sourceValue as ListBoxItem).Text;
+                        }
+                        break;
 
-                case "Int32":
-                    switch (target.GetType().Name)
-                    {
-                        case "String": return source.ToString();
-                    }
-                    break;
-            }
-            return source;
+                    case "Enum":
+                        switch (GetTypeName(targetValue, target))
+                        {
+                            case "DropDownList":
+                                foreach (var item in (target as DropDownList).Items)
+                                {
+                                    if (item.Text == sourceValue.ToString()) return item;
+                                }
+                                break;
+                        }
+                        break;
+
+                    case "Single":
+                        switch (GetTypeName(targetValue, target))
+                        {
+                            case "String": return sourceValue.ToString();
+                        }
+                        break;
+
+                    case "Boolean":
+                        switch (GetTypeName(targetValue, target))
+                        {
+                            case "String": return sourceValue.ToString();
+                        }
+                        break;
+
+                    case "String":
+                        switch (GetTypeName(targetValue, target))
+                        {
+                            case "Int32": return Convert.ToInt32(sourceValue);
+                            case "Boolean": return Convert.ToBoolean(sourceValue);
+                            case "Single": return Convert.ToSingle(sourceValue);
+                            case "DropDownList":
+                                foreach (var item in (target as DropDownList).Items)
+                                {
+                                    if (item.Text == sourceValue.ToString()) return item;
+                                }
+                                break;
+                        }
+                        break;
+
+                    case "Int32":
+                        switch (GetTypeName(targetValue, target))
+                        {
+                            case "String": return sourceValue.ToString();
+                        }
+                        break;
+                }
+            //}
+            return sourceValue;
         }
 
         public void Dispose()

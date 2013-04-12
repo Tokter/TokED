@@ -28,6 +28,7 @@ namespace TokED
         }
         private static IContainer _container = null;
         private static AggregateCatalog _catalog = new AggregateCatalog();
+        private static List<Assembly> _assemblies = new List<Assembly>();
 
         public static string PluginPath
         {
@@ -47,9 +48,11 @@ namespace TokED
                 foreach (var plugin in plugins)
                 {
                     var assembly = Assembly.LoadFile(plugin);
+                    _assemblies.Add(assembly);
                     _catalog.Catalogs.Add(new AssemblyCatalog(assembly));
                 }
                 _catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+                _assemblies.Add(Assembly.GetExecutingAssembly());
 
                 try
                 {
@@ -69,6 +72,20 @@ namespace TokED
                 }
 
             }
+        }
+
+        public static Stream LoadResourceStream(string resourceName)
+        {
+            foreach (var a in _assemblies)
+            {
+                var names = a.GetManifestResourceNames();
+                var name = names.FirstOrDefault((n) => n.EndsWith("."+resourceName));
+                if (!String.IsNullOrWhiteSpace(name))
+                {
+                    return a.GetManifestResourceStream(name);
+                }
+            }
+            return null;
         }
 
         public static List<string> GetKeys<T>()

@@ -35,9 +35,9 @@ namespace TokGL
         private byte[] _kerning = new byte[256 * 256];
         private Material _material;
 
-        public Font(string fontName, string fontInfoName)
+        public Font(Stream fontStream, Stream fontInfoStream)
 	    {
-            CreateMaterial(fontName, fontInfoName);
+            CreateMaterial(fontStream, fontInfoStream);
 	    }
 
         public Material Material
@@ -45,15 +45,11 @@ namespace TokGL
             get { return _material; }
         }
 
-        private void CreateMaterial(string fontName, string fontInfoName)
+        private void CreateMaterial(Stream fontStream, Stream fontInfoStream)
         {
             var texture = new Texture();
-            texture.LoadFromResource(fontName, true, false);
-
-            var names = System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceNames();
-            var name = names.First((n) => n.EndsWith(fontInfoName));
-
-            using (var sr = System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream(name))
+            texture.LoadFromStream(fontStream, true, false);
+            using (var sr = fontInfoStream)
             {
                 using (var br = new BinaryReader(sr))
                 {

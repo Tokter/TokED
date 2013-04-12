@@ -67,9 +67,8 @@ namespace Squid
             base.OnUpdate();
             if (_active)
             {
-                var delta = GuiHost.MousePosition - _startPosition;
-                var distance = (float)Math.Sqrt(delta.x * delta.x + delta.y * delta.y) * Math.Sign(delta.x);
-                this.Text = (_startValue + distance * _scale).ToString();
+                var delta = GuiHost.MousePosition.x - _startPosition.x;
+                this.Text = (_startValue + delta * _scale).ToString();
             }
         }
     }

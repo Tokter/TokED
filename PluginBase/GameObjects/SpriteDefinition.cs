@@ -10,7 +10,7 @@ using TokED;
 
 namespace PluginBase.GameObjects
 {
-    [Export("SpriteDefinition", typeof(GameObject)), PartCreationPolicy(CreationPolicy.NonShared), RequiresParent("Texture"), DoesNotAllowChildren()]
+    [Export("SpriteDefinition", typeof(GameObject)), PartCreationPolicy(CreationPolicy.NonShared), RequiresParent("Material"), DoesNotAllowChildren()]
     public class SpriteDefinition : GameObject
     {
         private Vector2 _p1 = new Vector2(0, 0);
@@ -22,22 +22,6 @@ namespace PluginBase.GameObjects
         public SpriteDefinition()
         {
             Name = "SpriteDefinition";
-        }
-
-        public override void OnPropertyChanged(string name)
-        {
-            base.OnPropertyChanged(name);
-            switch (name)
-            {
-                case "Parent":
-                    var texture = Parent as GameObjects.Texture;
-                    _p1 = new Vector2(0, 0);
-                    _p2 = new Vector2(texture.Width, 0);
-                    _p3 = new Vector2(texture.Width, texture.Height);
-                    _p4 = new Vector2(0, texture.Height);
-                    _origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-                    break;
-            }
         }
 
         public Vector2 P1

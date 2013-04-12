@@ -58,8 +58,7 @@ namespace TokED.Editors
                 _guiCamera.ZFar = 10000;
                 _guiCamera.Up = new Vector3(0, 1, 0);
             }
-
-            _guiFont = new TokGL.Font("ArialWhite.png", "ArialWhite.info");
+            _guiFont = new TokGL.Font(Plugins.LoadResourceStream("ArialWhite.png"), Plugins.LoadResourceStream("ArialWhite.info"));
 
             _spriteBatch = new SpriteBatch();
             _lineBatch = new LineBatch();
@@ -108,10 +107,6 @@ namespace TokED.Editors
         }
 
         public virtual void Load()
-        {
-        }
-
-        public virtual void UnLoad()
         {
         }
 
@@ -233,11 +228,15 @@ namespace TokED.Editors
 
         public void Dispose()
         {
-            UnLoad();
+            OnDispose();
             if (_selectedGameObject != null) _selectedGameObject.PropertyChanged -= SelectedGameObject_PropertyChanged;
             _spriteBatch.Dispose();
             _lineBatch.Dispose();
             _rootControl.Dispose();
+        }
+
+        protected virtual void OnDispose()
+        {
         }
 
         #region Input Handling

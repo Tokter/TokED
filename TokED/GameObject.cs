@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 
 namespace TokED
 {
-    public class GameObject : IXmlSerializable, INotifyPropertyChanged
+    public class GameObject : IXmlSerializable, INotifyPropertyChanged, IDisposable
     {
         private List<GameObject> _children = new List<GameObject>();
         private Dictionary<Type, Component> _components = new Dictionary<Type, Component>();
@@ -22,17 +22,29 @@ namespace TokED
         private bool _expanded = true;
         private bool _visible = true;
 
+        /// <summary>
+        /// Helper Property to get to the name that the GameObject is exported as
+        /// </summary>
+        public string ExportName
+        {
+            get
+            {
+                var test = this.GetType().GetCustomAttributes(typeof(ExportAttribute), false);
+                var test2 = test.Where(a => a is ExportAttribute && (a as ExportAttribute).ContractName != null).Select(a => (a as ExportAttribute).ContractName);
+                return this.GetType().GetCustomAttributes(typeof(ExportAttribute), false)
+                    .Where(a => a is ExportAttribute && (a as ExportAttribute).ContractName != null)
+                    .Select(a => (a as ExportAttribute).ContractName)
+                    .FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// Name of this GameObject instance
+        /// </summary>
         public string Name
         {
             get { return _name; }
             set { _name = value; NotifyChange(); }
-        }
-
-
-        public GameObject Parent
-        {
-            get { return _parent; }
-            set { _parent = value; NotifyChange(); }
         }
 
         public bool Expanded
@@ -59,17 +71,12 @@ namespace TokED
             }
         }
 
-        public string ExportName
+        #region GameObject Children/Parent
+
+        public GameObject Parent
         {
-            get
-            {
-                var test = this.GetType().GetCustomAttributes(typeof(ExportAttribute), false);
-                var test2 = test.Where(a => a is ExportAttribute && (a as ExportAttribute).ContractName != null).Select(a => (a as ExportAttribute).ContractName);
-                return this.GetType().GetCustomAttributes(typeof(ExportAttribute), false)
-                    .Where(a => a is ExportAttribute && (a as ExportAttribute).ContractName != null)
-                    .Select(a => (a as ExportAttribute).ContractName)
-                    .FirstOrDefault();
-            }
+            get { return _parent; }
+            set { _parent = value; NotifyChange(); }
         }
 
         public IEnumerable<GameObject> Children
@@ -139,6 +146,10 @@ namespace TokED
             get { return _children.Count; }
         }
 
+        #endregion
+
+        #region Components
+
         public int NumComponents
         {
             get { return _components.Count; }
@@ -192,15 +203,7 @@ namespace TokED
             return false;
         }
 
-        public void Clear()
-        {
-            _components.Clear();
-            foreach (var obj in _children)
-            {
-                obj.Clear();
-            }
-            _children.Clear();
-        }
+        #endregion
 
         #region XML Serialization
 
@@ -399,5 +402,55 @@ namespace TokED
         }
 
         #endregion
+
+        #region Loading, UnLoading, Clearing & Disposing
+
+        public void Load()
+        {
+            OnLoad();
+            foreach (var child in _children)
+            {
+                child.Load();
+            }
+        }
+
+        public void UnLoad()
+        {
+            OnUnLoad();
+            foreach (var child in _children)
+            {
+                child.UnLoad();
+            }
+        }
+
+        public void Clear()
+        {
+            OnUnLoad();
+            _components.Clear();
+            foreach (var obj in _children)
+            {
+                obj.Clear();
+            }
+            _children.Clear();
+        }
+
+        protected virtual void OnLoad()
+        {
+        }
+
+        protected virtual void OnUnLoad()
+        {
+        }
+
+        public void Dispose()
+        {
+            Clear();
+        }
+
+        #endregion
+
+
+
     }
 }
+

@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.0.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Configuration">
+      <HintPath>..\packages\Autofac.3.0.2\lib\net40\Autofac.Configuration.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\opentk_unoffical.1.1.788.3121\lib\OpenTK.dll</HintPath>
@@ -50,27 +56,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Sprite.cs" />
     <Compile Include="Components\Transformation.cs" />
     <Compile Include="Editors\SceneEditor.cs" />
     <Compile Include="Editors\SpriteDefinitionEditor.cs" />
-    <Compile Include="Editors\TextureEditor.cs" />
+    <Compile Include="Editors\MaterialEditor.cs" />
     <Compile Include="GameObjects\Empty.cs" />
     <Compile Include="Inspectors\ProjectIns.cs" />
     <Compile Include="Inspectors\SceneIns.cs" />
     <Compile Include="Inspectors\SpriteDefinitionIns.cs" />
-    <Compile Include="Inspectors\TextureIns.cs" />
+    <Compile Include="Inspectors\SpriteIns.cs" />
+    <Compile Include="Inspectors\MaterialIns.cs" />
     <Compile Include="GameObjects\Folder.cs" />
     <Compile Include="GameObjects\Project.cs" />
     <Compile Include="GameObjects\Scene.cs" />
     <Compile Include="GameObjects\SpriteDefinition.cs" />
-    <Compile Include="GameObjects\Texture.cs" />
+    <Compile Include="GameObjects\Material.cs" />
     <Compile Include="Inspectors\TransformationIns.cs" />
+    <Compile Include="PluginBaseTextures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Shaders\DiffuseShader.cs" />
+    <Compile Include="Shaders\TestShader.cs" />
     <Compile Include="Tools\BottomView.cs" />
     <Compile Include="Tools\FrontView.cs" />
     <Compile Include="Tools\MoveCamera.cs" />
@@ -104,7 +115,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Content\PluginBaseUI.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(ProjectDir)$(OutDir)$(ProjectName).*" "$(SolutionDir)TokEd\bin\Debug\*" /y 

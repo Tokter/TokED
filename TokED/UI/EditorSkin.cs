@@ -466,6 +466,25 @@ namespace TokED.UI
             return combo;
         }
 
+        public static DropDownList AddDropDownList(this Control parent)
+        {
+            var combo = new DropDownList();
+            combo.Parent = parent;
+            combo.Dock = DockStyle.Fill;
+            combo.Label.Style = "comboLabel";
+            combo.Button.Style = "flatComboButton";
+            combo.Button.Size = new Point(10, 20);
+            combo.Listbox.ClipFrame.Margin = new Margin(8, 8, 8, 8);
+            combo.Listbox.Style = "commboListboxFrame";
+            combo.Listbox.Scrollbar.Size = new Squid.Point(13, 13);
+            combo.Listbox.Scrollbar.Slider.Style = "vscrollTrack";
+            combo.Listbox.Scrollbar.Slider.Button.Style = "vscrollButton";
+            combo.Listbox.Scrollbar.ButtonUp.Visible = false;
+            combo.Listbox.Scrollbar.ButtonDown.Visible = false;
+            combo.Listbox.Scrollbar.Slider.Margin = new Margin(0, 2, 0, 2);
+            return combo;
+        }
+
         public static Button AddDropDownButton(this Control parent, int x, int y, DropDownButtonType buttonType)
         {
             var dropDownButton = new Button();
@@ -628,6 +647,39 @@ namespace TokED.UI
             var checkBox = frame.AddCheckBox();
             checkBox.TabIndex = tabStopIndex++;
             return checkBox;
+        }
+
+        public static DropDownList AddEnumList(this Control parent, int width, string text, Type enumType)
+        {
+            var frame = parent.AddFrame(0, 20, DockStyle.Top);
+            frame.AddLabel(width, text);
+            frame.Margin = new Margin(10, 0, 0, 0);
+            var list = frame.AddDropDownList();
+
+            var values = Enum.GetValues(enumType);
+            foreach (var value in values)
+            {
+                list.Items.Add(new ListBoxItem() { Text = value.ToString(), Style="itemStyle" });
+            }
+
+            list.TabIndex = tabStopIndex++;
+            return list;
+        }
+
+        public static DropDownList AddStringList(this Control parent, int width, string text, List<string> strings)
+        {
+            var frame = parent.AddFrame(0, 20, DockStyle.Top);
+            frame.AddLabel(width, text);
+            frame.Margin = new Margin(10, 0, 0, 0);
+            var list = frame.AddDropDownList();
+
+            foreach (var s in strings)
+            {
+                list.Items.Add(new ListBoxItem() { Text = s, Style = "itemStyle" });
+            }
+
+            list.TabIndex = tabStopIndex++;
+            return list;
         }
     }
 }
