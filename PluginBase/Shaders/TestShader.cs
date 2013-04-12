@@ -13,6 +13,11 @@ namespace PluginBase.Shaders
     {
         public TestShader()
         {
+            Texture0Enabled = false;
+            Texture1Enabled = false;
+            Texture2Enabled = false;
+            Texture3Enabled = false;
+
             VertexProgram =
 @"#version 150
 
@@ -34,15 +39,22 @@ void main()
             FragmentProgram =
 @"#version 150
 
-uniform sampler2D tex;
+uniform float freq1;
+uniform float freq2;
+uniform float freq3;
 in vec4 frag_Color;
 in vec2 frag_TexCoord;
 out vec4 final_color;
 
 void main()
 {
-    final_color = vec4(0,0,0,1);
+    final_color = vec4(sin(frag_TexCoord.t * freq1),sin(frag_TexCoord.s * freq2),sin(frag_TexCoord.s * frag_TexCoord.t * freq3),1);
 }";
+
+            AddParameter(new ShaderParameter { Type = ShaderParamaterType.Float, Name = "freq1", Desc = "Frequency 1", Value = 3.0f });
+            AddParameter(new ShaderParameter { Type = ShaderParamaterType.Float, Name = "freq2", Desc = "Frequency 2", Value = 6.0f });
+            AddParameter(new ShaderParameter { Type = ShaderParamaterType.Float, Name = "freq3", Desc = "Frequency 3", Value = 9.0f });
+
         }
     }
 }

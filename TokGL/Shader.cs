@@ -27,6 +27,8 @@ namespace TokGL
         private int _cameraLocation;
         private Matrix4 _camera;
 
+        private Dictionary<string, int> _locations = new Dictionary<string, int>();
+
         public Shader(string vertexProgram, string fragmentProgram)
         {
             int result;
@@ -154,6 +156,15 @@ namespace TokGL
                 _texture = value;
                 GL.Uniform1(_textureLocation, _texture);
             }
+        }
+
+        public void SetUniform(string location, float value)
+        {
+            if (!_locations.ContainsKey(location))
+            {
+                _locations.Add(location, GetUniformLocation(location));
+            }
+            GL.Uniform1(_locations[location], value);
         }
 
         public void Dispose()

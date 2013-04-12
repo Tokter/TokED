@@ -13,6 +13,11 @@ namespace PluginBase.Shaders
     {
         public DiffuseShader()
         {
+            Texture0Enabled = true;
+            Texture1Enabled = false;
+            Texture2Enabled = false;
+            Texture3Enabled = false;
+
             VertexProgram =
 @"#version 150
 

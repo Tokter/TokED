@@ -23,9 +23,9 @@ namespace PluginBase.Inspectors
             _heightBox = this.AddLabeledTextBox(100, "Screen Height:");
         }
 
-        protected override void Bind()
+        protected override void Build()
         {
-            base.Bind();
+            base.Build();
             _widthBox.Bind(this.GameObject, "Width");
             _heightBox.Bind(this.GameObject, "Height");
         }

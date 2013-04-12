@@ -23,16 +23,8 @@ namespace TokED.UI
             set
             {
                 _gameObject = value;
-                Bind();
+                Build();
             }
-        }
-
-        public GameObjectIns()
-        {
-            this.ResetTabIndex();
-            this.AutoSize = Squid.AutoSize.Vertical;
-            this.Dock = DockStyle.Top;
-            _textBox = this.AddLabeledTextBox(100, "Name:");
         }
 
         protected void AddBinding(Binding binding)
@@ -40,9 +32,19 @@ namespace TokED.UI
             _bindings.Add(binding);
         }
 
-        protected virtual void Bind()
+        protected virtual void Build()
         {
+            this.ResetTabIndex();
+            this.AutoSize = Squid.AutoSize.Vertical;
+            this.Dock = DockStyle.Top;
+            _textBox = this.AddLabeledTextBox(100, "Name:");             
             _textBox.Bind(this.GameObject, "Name");
+        }
+
+        protected void ReBuild()
+        {
+            this.UnBind();
+            Build();
         }
 
         public virtual void Dispose()

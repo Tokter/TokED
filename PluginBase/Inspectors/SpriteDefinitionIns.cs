@@ -39,9 +39,9 @@ namespace PluginBase.Inspectors
             _oY = this.AddLabeledTextBox(100, "Origin Y:");
         }
 
-        protected override void Bind()
+        protected override void Build()
         {
-            base.Bind();
+            base.Build();
             _p1X.Bind(this.GameObject, "P1X");
             _p1Y.Bind(this.GameObject, "P1Y");
             _p2X.Bind(this.GameObject, "P2X");

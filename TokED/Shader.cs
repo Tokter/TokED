@@ -7,10 +7,32 @@ using System.Threading.Tasks;
 
 namespace TokED
 {
+    public enum ShaderParamaterType
+    {
+        Float,
+        Vec2,
+        Vec3,
+        Vec4,
+    }
+
+    public struct ShaderParameter
+    {
+        public ShaderParamaterType Type;
+        public string Name;
+        public string Desc;
+        public object Value;
+    }
+
     public class Shader
     {
+        private List<ShaderParameter> _parameters = new List<ShaderParameter>();
+
         public string VertexProgram { get; set; }
         public string FragmentProgram { get; set; }
+        public bool Texture0Enabled { get; set; }
+        public bool Texture1Enabled { get; set; }
+        public bool Texture2Enabled { get; set; }
+        public bool Texture3Enabled { get; set; }
 
         public string ExportName
         {
@@ -26,6 +48,14 @@ namespace TokED
             }
         }
 
+        public void AddParameter(ShaderParameter param)
+        {
+            _parameters.Add(param);
+        }
 
+        public IEnumerable<ShaderParameter> Parameters
+        {
+            get { return _parameters; }
+        }
     }
 }

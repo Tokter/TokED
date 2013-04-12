@@ -21,9 +21,9 @@ namespace PluginBase.Inspectors
             _transitionOut = this.AddLabeledTextBox(100, "Transition Out:");
         }
 
-        protected override void Bind()
+        protected override void Build()
         {
-            base.Bind();
+            base.Build();
             _transitionIn.Bind(this.GameObject, "TransitionInTime");
             _transitionOut.Bind(this.GameObject, "TransitionOutTime");
         }

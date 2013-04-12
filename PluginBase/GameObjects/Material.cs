@@ -119,9 +119,20 @@ namespace PluginBase.GameObjects
         {
             _material = new TokGL.Material();
             var shader = Plugins.Container.ResolveNamed<TokED.Shader>(_shader);
-            _material.Shader = new TokGL.Shader(shader.VertexProgram, shader.FragmentProgram);
             if (shader == null) throw new Exception(string.Format("Did not find shader {0}!", _shader));
+            _material.Shader = new TokGL.Shader(shader.VertexProgram, shader.FragmentProgram);
+            _material.Activate();
             _material.Color = _color;
+
+            //Apply Parameters
+            foreach (var p in shader.Parameters)
+            {
+                switch(p.Type)
+                {
+                    case ShaderParamaterType.Float: _material.Shader.SetUniform(p.Name, (float)p.Value); break;
+                } 
+            }
+
             if (File.Exists(_fileName0))
             {
                 _material.Texture0 = Texture.FromFile(_fileName0, _preMultiplyAlpha, false);
@@ -149,6 +160,7 @@ namespace PluginBase.GameObjects
             _material.DepthTest = _depthTest;
             _material.AlphaBlend = _alphaBlend;
             _material.SmoothLines = _smoothLines;
+            _material.Deactivate();
         }
 
         protected override void OnUnLoad()

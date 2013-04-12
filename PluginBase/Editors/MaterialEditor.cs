@@ -43,10 +43,18 @@ namespace PluginBase.Editors
 
         public override void DrawContent(LineBatch lineBatch, SpriteBatch spriteBatch)
         {
-            if (_material != null && _material.Mat.Texture0 != null)
+            if (_material != null)
             {
-                spriteBatch.AddSprite(_material.Mat, 0, 0, 0, 0, _material.Mat.Texture0.Width, _material.Mat.Texture0.Height);
-                lineBatch.AddBox(0, 0, _material.Mat.Texture0.Width, _material.Mat.Texture0.Height, Color.Red);
+                if (_material.Mat.Texture0 != null)
+                {
+                    spriteBatch.AddSprite(_material.Mat, 0, 0, 0, 0, _material.Mat.Texture0.Width, _material.Mat.Texture0.Height);
+                    lineBatch.AddBox(0, 0, _material.Mat.Texture0.Width, _material.Mat.Texture0.Height, Color.Red);
+                }
+                else
+                {
+                    spriteBatch.AddSprite(_material.Mat, new Vector2(0, 0), new Vector2(256, 256), 0.0f, 0.0f, 1.0f, 1.0f);
+                    lineBatch.AddBox(0, 0, 256, 256, Color.Red);
+                }
             }
             else
             {

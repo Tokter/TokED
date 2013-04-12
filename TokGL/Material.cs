@@ -23,26 +23,18 @@ namespace TokGL
         public void Activate()
         {
             Shader.Activate();
-            if (Texture0 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture0);
-                Texture0.Bind();
-            }
-            if (Texture1 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture1);
-                Texture1.Bind();
-            }
-            if (Texture2 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture2);
-                Texture2.Bind();
-            }
-            if (Texture3 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture3);
-                Texture3.Bind();
-            }
+            GL.ActiveTexture(TextureUnit.Texture0);
+            if (Texture0 != null) Texture0.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            GL.ActiveTexture(TextureUnit.Texture1);
+            if (Texture1 != null) Texture1.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
+            
+            GL.ActiveTexture(TextureUnit.Texture2);
+            if (Texture2 != null) Texture2.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            GL.ActiveTexture(TextureUnit.Texture3);
+            if (Texture3 != null) Texture3.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
+            
             if (DepthTest)
             {
                 GL.Enable(EnableCap.DepthTest);
