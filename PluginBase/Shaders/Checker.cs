@@ -11,16 +11,11 @@ using TokGL;
 
 namespace PluginBase.Shaders
 {
-    [Export("Test", typeof(ShaderDefinition)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class TestShader : ShaderDefinition
+    [Export("Checker", typeof(ShaderDefinition)), PartCreationPolicy(CreationPolicy.Shared)]
+    public class Checker : ShaderDefinition
     {
-        public TestShader()
+        public Checker()
         {
-            Texture0Enabled = false;
-            Texture1Enabled = false;
-            Texture2Enabled = false;
-            Texture3Enabled = false;
-
             VertexProgram =
 @"#version 150
 
@@ -42,15 +37,25 @@ void main()
             FragmentProgram =
 @"#version 150
 
-uniform vec4 testColor;
+uniform vec4 color0;
+uniform vec4 color1;
+uniform int frequency;
 in vec4 frag_Color;
 in vec2 frag_TexCoord;
 out vec4 final_color;
 
 void main()
 {
-    //final_color = vec4(sin(frag_TexCoord.t * freq1),sin(frag_TexCoord.s * freq2),sin(frag_TexCoord.s * frag_TexCoord.t * freq3),1);
-    final_color = testColor;
+    vec2 tcmod = mod(frag_TexCoord * float(frequency), 1.0);
+
+    if (tcmod.s < 0.5)
+    {
+        if (tcmod.t < 0.5) final_color = color1; else final_color = color0;
+    }
+    else
+    {
+        if (tcmod.t < 0.5) final_color = color0; else final_color = color1;
+    }
 }";
 
             AddAttribute(new ShaderAttribute(ShaderAttributeType.Vertex, "in_vertex"));
@@ -58,7 +63,9 @@ void main()
             AddAttribute(new ShaderAttribute(ShaderAttributeType.UV, "in_uv"));
             AddParameter(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
             AddParameter(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
-            AddParameter(new ShaderParam(ShaderParamType.Color, "testColor", "Test Color", Color.White));
+            AddParameter(new ShaderParam(ShaderParamType.Color, "color0", "Color A", Color.White));
+            AddParameter(new ShaderParam(ShaderParamType.Color, "color1", "Color B", Color.Black));
+            AddParameter(new ShaderParam(ShaderParamType.Int, "frequency", "Frequency", 1));
         }
     }
 }

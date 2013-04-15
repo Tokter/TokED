@@ -31,6 +31,9 @@ namespace PluginBase.GameObjects
         private TextureMinFilter _minFilter = TextureMinFilter.Linear;
         private TextureMagFilter _magFilter = TextureMagFilter.Linear;
 
+        private string _parameterCopyShader;
+        private List<ShaderParam> _parameterCopy = new List<ShaderParam>();
+
         private TokGL.Material _material = null;
 
         public Material()
@@ -41,7 +44,7 @@ namespace PluginBase.GameObjects
         public string Shader
         {
             get { return _shader; }
-            set { _shader = value; NotifyChange(); }
+            set { _shader = value; _parameterCopy.Clear(); NotifyChange(); }
         }
 
         public Color Color
@@ -118,11 +121,19 @@ namespace PluginBase.GameObjects
         protected override void OnLoad()
         {
             _material = new TokGL.Material();
+
             var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>(_shader);
             if (shader == null) throw new Exception(string.Format("Did not find shader {0}!", _shader));
+
             _material.Shader = new TokGL.Shader(shader.VertexProgram, shader.FragmentProgram, shader.Attributes, shader.Parameters);
             _material.Activate();
             _material.Color = _color;
+
+            //Apply parameters
+            foreach (var pc in _parameterCopy)
+            {
+                _material.Shader.SetParameter(pc.Name, pc.Get());
+            }
 
             if (File.Exists(_fileName0))
             {
@@ -154,10 +165,24 @@ namespace PluginBase.GameObjects
             _material.Deactivate();
         }
 
+        private void CopyParamaters()
+        {
+            _parameterCopy.Clear();
+            if (_shader == _parameterCopyShader)
+            {
+                foreach (var p in _material.Shader.Parameters)
+                {
+                    _parameterCopy.Add(p.Clone());
+                }
+            }
+            else _parameterCopyShader = _shader;
+        }
+
         protected override void OnUnLoad()
         {
             if (_material != null)
             {
+                CopyParamaters();
                 _material.Dispose();
                 _material = null;
             }

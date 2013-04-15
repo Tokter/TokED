@@ -2,7 +2,10 @@
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +21,7 @@ namespace TokGL
         Texture,
         Model,
         Camera,
+        Color,
     }
 
     public enum ShaderAttributeType
@@ -39,6 +43,11 @@ namespace TokGL
             Location = -1;
             Name = name;
         }
+
+        public ShaderAttribute Clone()
+        {
+            return new ShaderAttribute(Type, Name);
+        }
     }
 
     public class ShaderParam
@@ -46,13 +55,103 @@ namespace TokGL
         public ShaderParamType Type;
         public int Location;
         public string Name;
-        public string LongName;
+        public string LongName;        
         public int IntValue;
         public float FloatValue;
-        public Matrix4 MatrixValue;
         public Vector2 Vec2Value;
         public Vector3 Vec3Value;
         public Vector4 Vec4Value;
+        public Matrix4 MatrixValue;
+
+        public float X
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case ShaderParamType.Vec2: return Vec2Value.X;
+                    case ShaderParamType.Vec3: return Vec3Value.X;
+                    case ShaderParamType.Vec4: return Vec4Value.X;
+                }
+                return 0.0f;
+            }
+            set
+            {
+                switch (Type)
+                {
+                    case ShaderParamType.Vec2: Vec2Value.X = value; break;
+                    case ShaderParamType.Vec3: Vec3Value.X = value; break;
+                    case ShaderParamType.Vec4: Vec4Value.X = value; break;
+                }
+            }
+        }
+
+        public float Y
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case ShaderParamType.Vec2: return Vec2Value.Y;
+                    case ShaderParamType.Vec3: return Vec3Value.Y;
+                    case ShaderParamType.Vec4: return Vec4Value.Y;
+                }
+                return 0.0f;
+            }
+            set
+            {
+                switch (Type)
+                {
+                    case ShaderParamType.Vec2: Vec2Value.Y = value; break;
+                    case ShaderParamType.Vec3: Vec3Value.Y = value; break;
+                    case ShaderParamType.Vec4: Vec4Value.Y = value; break;
+                }
+            }
+        }
+
+        public float Z
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case ShaderParamType.Vec3: return Vec3Value.Z;
+                    case ShaderParamType.Vec4: return Vec4Value.Z;
+                }
+                return 0.0f;
+            }
+            set
+            {
+                switch (Type)
+                {
+                    case ShaderParamType.Vec3: Vec3Value.Z = value; break;
+                    case ShaderParamType.Vec4: Vec4Value.Z = value; break;
+                }
+            }
+        }
+
+        public float W
+        {
+            get { return Vec4Value.W; }
+            set { Vec4Value.W = value; }
+        }
+
+        public Color Color
+        {
+            get { return Color.FromArgb(FloatToByte(Vec4Value.W), FloatToByte(Vec4Value.X), FloatToByte(Vec4Value.Y), FloatToByte(Vec4Value.Z)); }
+            set
+            {
+                Vec4Value.X = value.R / 255.0f;
+                Vec4Value.Y = value.G / 255.0f;
+                Vec4Value.Z = value.B / 255.0f;
+                Vec4Value.W = value.A / 255.0f;
+            }
+        }
+
+        private byte FloatToByte(float f)
+        {
+            return (byte)(Math.Min(Math.Max(f, 0.0f), 1.0f) * 255);
+        }
 
         public ShaderParam(ShaderParamType type, string name, string longName, object value)
         {
@@ -60,12 +159,6 @@ namespace TokGL
             Location = -1;
             Name = name;
             LongName = longName;
-            IntValue = 0;
-            FloatValue = 0;
-            MatrixValue = Matrix4.Identity;
-            Vec2Value = new Vector2();
-            Vec3Value = new Vector3();
-            Vec4Value = new Vector4();
             Set(value);
         }
 
@@ -81,7 +174,30 @@ namespace TokGL
                 case ShaderParamType.Texture: IntValue = (int)value; break;
                 case ShaderParamType.Model: MatrixValue = (Matrix4)value; break;
                 case ShaderParamType.Camera: MatrixValue = (Matrix4)value; break;
+                case ShaderParamType.Color: Color = (Color)value; break;
             }
+        }
+
+        public object Get()
+        {
+            switch (Type)
+            {
+                case ShaderParamType.Int: return IntValue;
+                case ShaderParamType.Float: return FloatValue;
+                case ShaderParamType.Vec2: return Vec2Value;
+                case ShaderParamType.Vec3: return Vec3Value;
+                case ShaderParamType.Vec4: return Vec4Value;
+                case ShaderParamType.Texture: return IntValue;
+                case ShaderParamType.Model: return MatrixValue;
+                case ShaderParamType.Camera: return MatrixValue;
+                case ShaderParamType.Color: return Color;
+            }
+            return null;
+        }
+
+        public ShaderParam Clone()
+        {
+            return new ShaderParam(Type, Name, LongName, Get());
         }
     }
 
@@ -195,7 +311,8 @@ namespace TokGL
                 case ShaderParamType.Texture: GL.Uniform1(param.Location, param.IntValue); break;
                 case ShaderParamType.Vec2: GL.Uniform2(param.Location, ref param.Vec2Value); break;
                 case ShaderParamType.Vec3: GL.Uniform3(param.Location, ref param.Vec3Value); break;
-                case ShaderParamType.Vec4: GL.Uniform4(param.Location, ref param.Vec4Value); break;
+                case ShaderParamType.Vec4:
+                case ShaderParamType.Color: GL.Uniform4(param.Location, ref param.Vec4Value); break;
                 case ShaderParamType.Model: GL.UniformMatrix4(param.Location, 1, false, ref param.MatrixValue.Row0.X); break;
                 case ShaderParamType.Camera: GL.UniformMatrix4(param.Location, 1, false, ref param.MatrixValue.Row0.X); break;
             }
@@ -205,8 +322,13 @@ namespace TokGL
         {
             foreach (var param in _parameters.Values)
             {
-                ApplyParameter(param);
+                if (param.Type != ShaderParamType.Model && param.Type != ShaderParamType.Camera) ApplyParameter(param);
             }
+        }
+
+        public IEnumerable<ShaderParam> Parameters
+        {
+            get { return _parameters.Values; }
         }
 
         public void Dispose()

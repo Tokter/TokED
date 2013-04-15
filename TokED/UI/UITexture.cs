@@ -130,6 +130,10 @@ namespace TokED.UI
             UITexture.RegisterTextureInfo("ArrowHead-Right", 126, 15, 14, 14);
             UITexture.RegisterTextureInfo("ArrowHead-Down", 140, 15, 14, 14);
             UITexture.RegisterTextureInfo("Project", 42, 15, 14, 14);
+
+            UITexture.RegisterTextureInfo("border_default", 165, 0, 15, 15);
+            UITexture.RegisterTextureInfo("border_hot", 180, 0, 15, 15);
+            UITexture.RegisterTextureInfo("border_down", 195, 0, 15, 15);
         }
     }
 }

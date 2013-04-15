@@ -176,8 +176,6 @@ namespace TokED.UI
                 if (newObject != null && newObject != _selectedGameObject)
                 {
                     _selectedGameObject = newObject;
-                    RefreshGameObjectList();
-                    RefreshGameObjectEditors();
                     _removeGameObject.Enabled = (_selectedGameObject != null && _selectedGameObject != _project);
 
                     _project.UnLoad();
@@ -195,6 +193,9 @@ namespace TokED.UI
                     if (_editor == null) _editor = Plugins.Container.ResolveOptionalNamed<Editor>("Editor");
 
                     _editor.SelectedGameObject = _selectedGameObject;
+
+                    RefreshGameObjectList();
+                    RefreshGameObjectEditors();
                 }
             }
         }

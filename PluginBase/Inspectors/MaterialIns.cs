@@ -53,30 +53,31 @@ namespace PluginBase.Inspectors
             _details.UnBind();
             _details.Controls.Clear();
 
-            var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>((this.GameObject as PluginBase.GameObjects.Material).Shader);
-            if (shader.Texture0Enabled)
-            {
-                _fileBox0 = _details.AddLabeledFilename(100, "Texture 0:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-                _fileBox0.Bind(this.GameObject, "Texture0FileName");
-            }
+            var material = this.GameObject as PluginBase.GameObjects.Material;
+            var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>(material.Shader);
+            //if (shader.Texture0Enabled)
+            //{
+            //    _fileBox0 = _details.AddLabeledFilename(100, "Texture 0:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
+            //    _fileBox0.Bind(this.GameObject, "Texture0FileName");
+            //}
 
-            if (shader.Texture1Enabled)
-            {
-                _fileBox1 = _details.AddLabeledFilename(100, "Texture 1:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-                _fileBox1.Bind(this.GameObject, "Texture1FileName");
-            }
+            //if (shader.Texture1Enabled)
+            //{
+            //    _fileBox1 = _details.AddLabeledFilename(100, "Texture 1:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
+            //    _fileBox1.Bind(this.GameObject, "Texture1FileName");
+            //}
 
-            if (shader.Texture2Enabled)
-            {
-                _fileBox2 = _details.AddLabeledFilename(100, "Texture 2:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-                _fileBox2.Bind(this.GameObject, "Texture2FileName");
-            }
+            //if (shader.Texture2Enabled)
+            //{
+            //    _fileBox2 = _details.AddLabeledFilename(100, "Texture 2:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
+            //    _fileBox2.Bind(this.GameObject, "Texture2FileName");
+            //}
 
-            if (shader.Texture3Enabled)
-            {
-                _fileBox3 = _details.AddLabeledFilename(100, "Texture 3:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-                _fileBox3.Bind(this.GameObject, "Texture3FileName");
-            }
+            //if (shader.Texture3Enabled)
+            //{
+            //    _fileBox3 = _details.AddLabeledFilename(100, "Texture 3:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
+            //    _fileBox3.Bind(this.GameObject, "Texture3FileName");
+            //}
 
             var anyTextures = shader.Texture0Enabled || shader.Texture1Enabled || shader.Texture2Enabled || shader.Texture3Enabled;
 
@@ -105,13 +106,38 @@ namespace PluginBase.Inspectors
             }
 
             //Shader Parameters
-            foreach (var p in shader.Parameters)
+            foreach (var p in material.Mat.Shader.Parameters)
             {
                 switch (p.Type)
                 {
+                    case ShaderParamType.Int:
+                        _details.AddLabeledTextBox(100, p.LongName + ":", 1.0f).Bind(p, "IntValue");
+                        break;
+
                     case ShaderParamType.Float:
-                        var field = _details.AddLabeledTextBox(100, p.LongName + ":", p.FloatValue);
-                        //field.Bind(this.Component, "PosX");
+                        _details.AddLabeledTextBox(100, p.LongName + ":", 0.02f).Bind(p, "FloatValue");
+                        break;
+
+                    case ShaderParamType.Vec2:
+                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X");
+                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y");
+                        break;
+
+                    case ShaderParamType.Vec3:
+                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X");
+                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y");
+                        _details.AddLabeledTextBox(100, p.LongName + " Z:", 0.02f).Bind(p, "Z");
+                        break;
+
+                    case ShaderParamType.Vec4:
+                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X");
+                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y");
+                        _details.AddLabeledTextBox(100, p.LongName + " Z:", 0.02f).Bind(p, "Z");
+                        _details.AddLabeledTextBox(100, p.LongName + " W:", 0.02f).Bind(p, "W");
+                        break;
+
+                    case ShaderParamType.Color:
+                        _details.AddLabeledColorButton(100, p.LongName + ":").Bind(p, "Color");
                         break;
                 }
             }

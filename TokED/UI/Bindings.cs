@@ -14,18 +14,23 @@ namespace TokED.UI
         private Control _source;
         private PropertyInfo _sourceProperty;
         private bool _applySourceChanges = true;
-        private INotifyPropertyChanged _target;
+        private object _target;
         private PropertyInfo _targetProperty;
+        private FieldInfo _targetField;
         private bool _applyTargetChanges = true;
         private Func<object, object> _targetValueConverter = null;
 
-        public Binding(Control source, string sourcePropertyName, INotifyPropertyChanged target, string targetPropertyName, Func<object,object> targetValueConverter)
+        public Binding(Control source, string sourcePropertyName, object target, string targetPropertyName, Func<object,object> targetValueConverter)
         {
             _targetValueConverter = targetValueConverter;
 
             _target = target;
             _targetProperty = target.GetType().GetProperty(targetPropertyName);
-            _target.PropertyChanged += TargetPropertyChanged;
+            _targetField = target.GetType().GetField(targetPropertyName);
+            if (_target is INotifyPropertyChanged)
+            {
+                (_target as INotifyPropertyChanged).PropertyChanged += TargetPropertyChanged;
+            }
 
             _source = source;
             //If it's the default property we support two way binding
@@ -49,11 +54,21 @@ namespace TokED.UI
                         sourcePropertyName = "SelectedItem";
                         (_source as DropDownList).SelectedItemChanged += Binding_SelectedItemChanged;
                         break;
+
+                    case "ColorButton":
+                        sourcePropertyName = "Color";
+                        (_source as ColorButton).ColorChanged += Binding_ColorChanged;
+                        break;
                 }
             }
             if (sourcePropertyName == null) throw new NotImplementedException(string.Format("No default property defined for control {0}!", _source.GetType().Name));
             _sourceProperty = source.GetType().GetProperty(sourcePropertyName);
             TargetPropertyChanged(_source, null);
+        }
+
+        void Binding_ColorChanged(object sender, EventArgs e)
+        {
+            SourcePropertyChanged(sender, null);
         }
 
         void Binding_SelectedItemChanged(Control sender, ListBoxItem value)
@@ -101,11 +116,14 @@ namespace TokED.UI
             if (_applySourceChanges)
             {
                 var sourceValue = _sourceProperty.GetValue(_source, null);
-                var targetValue = _targetProperty.GetValue(_target, null);
+                object targetValue = null;
+                if (_targetProperty!=null) targetValue = _targetProperty.GetValue(_target, null);
+                if (_targetField != null) targetValue = _targetField.GetValue(_target);
                 if (!Object.Equals(sourceValue, targetValue))
                 {
                     _applyTargetChanges = false;
-                    _targetProperty.SetValue(_target, Transform(sourceValue, targetValue, _source, _target), null);
+                    if (_targetProperty != null) _targetProperty.SetValue(_target, Transform(sourceValue, targetValue, _source, _target), null);
+                    if (_targetField != null) _targetField.SetValue(_target, Transform(sourceValue, targetValue, _source, _target));
                     _applyTargetChanges = true;
                 }
             }
@@ -116,7 +134,9 @@ namespace TokED.UI
             if (_applyTargetChanges)
             {
                 var sourceValue = _sourceProperty.GetValue(_source, null);
-                var targetValue = _targetProperty.GetValue(_target, null);
+                object targetValue = null;
+                if (_targetProperty != null) targetValue = _targetProperty.GetValue(_target, null);
+                if (_targetField != null) targetValue = _targetField.GetValue(_target);
                 if (!Object.Equals(sourceValue, targetValue))
                 {
                     _applySourceChanges = false;
@@ -137,87 +157,76 @@ namespace TokED.UI
 
         private object Transform(object sourceValue, object targetValue, object source, object target)
         {
-            //if (sourceValue is Enum && target is DropDownList)
-            //{
-            //    foreach (var item in (target as DropDownList).Items)
-            //    {
-            //        if (item.Text == sourceValue.ToString()) return item;
-            //    }
-            //}
-            //else if (targetValue is Enum && source is DropDownList)
-            //{
-            //    return Enum.Parse(targetValue.GetType(), (sourceValue as ListBoxItem).Text);
-            //}
-            //else
-            //{
-                switch (GetTypeName(sourceValue, source))
-                {
-                    case "DropDownList":
-                        switch (GetTypeName(targetValue, target))
-                        {
-                            case "Enum":
-                                return Enum.Parse(targetValue.GetType(), (sourceValue as ListBoxItem).Text);
+            switch (GetTypeName(sourceValue, source))
+            {
+                case "DropDownList":
+                    switch (GetTypeName(targetValue, target))
+                    {
+                        case "Enum":
+                            return Enum.Parse(targetValue.GetType(), (sourceValue as ListBoxItem).Text);
 
-                            case "String":
-                                return (sourceValue as ListBoxItem).Text;
-                        }
-                        break;
+                        case "String":
+                            return (sourceValue as ListBoxItem).Text;
+                    }
+                    break;
 
-                    case "Enum":
-                        switch (GetTypeName(targetValue, target))
-                        {
-                            case "DropDownList":
-                                foreach (var item in (target as DropDownList).Items)
-                                {
-                                    if (item.Text == sourceValue.ToString()) return item;
-                                }
-                                break;
-                        }
-                        break;
+                case "Enum":
+                    switch (GetTypeName(targetValue, target))
+                    {
+                        case "DropDownList":
+                            foreach (var item in (target as DropDownList).Items)
+                            {
+                                if (item.Text == sourceValue.ToString()) return item;
+                            }
+                            break;
+                    }
+                    break;
 
-                    case "Single":
-                        switch (GetTypeName(targetValue, target))
-                        {
-                            case "String": return sourceValue.ToString();
-                        }
-                        break;
+                case "Single":
+                    switch (GetTypeName(targetValue, target))
+                    {
+                        case "String": return sourceValue.ToString();
+                    }
+                    break;
 
-                    case "Boolean":
-                        switch (GetTypeName(targetValue, target))
-                        {
-                            case "String": return sourceValue.ToString();
-                        }
-                        break;
+                case "Boolean":
+                    switch (GetTypeName(targetValue, target))
+                    {
+                        case "String": return sourceValue.ToString();
+                    }
+                    break;
 
-                    case "String":
-                        switch (GetTypeName(targetValue, target))
-                        {
-                            case "Int32": return Convert.ToInt32(sourceValue);
-                            case "Boolean": return Convert.ToBoolean(sourceValue);
-                            case "Single": return Convert.ToSingle(sourceValue);
-                            case "DropDownList":
-                                foreach (var item in (target as DropDownList).Items)
-                                {
-                                    if (item.Text == sourceValue.ToString()) return item;
-                                }
-                                break;
-                        }
-                        break;
+                case "String":
+                    switch (GetTypeName(targetValue, target))
+                    {
+                        case "Int32": return Convert.ToInt32(sourceValue);
+                        case "Boolean": return Convert.ToBoolean(sourceValue);
+                        case "Single": return Convert.ToSingle(sourceValue);
+                        case "DropDownList":
+                            foreach (var item in (target as DropDownList).Items)
+                            {
+                                if (item.Text == sourceValue.ToString()) return item;
+                            }
+                            break;
+                    }
+                    break;
 
-                    case "Int32":
-                        switch (GetTypeName(targetValue, target))
-                        {
-                            case "String": return sourceValue.ToString();
-                        }
-                        break;
-                }
-            //}
+                case "Int32":
+                    switch (GetTypeName(targetValue, target))
+                    {
+                        case "String": return sourceValue.ToString();
+                    }
+                    break;
+            }
             return sourceValue;
         }
 
         public void Dispose()
         {
-            _target.PropertyChanged -= TargetPropertyChanged;
+            if (_target is INotifyPropertyChanged)
+            {
+                (_target as INotifyPropertyChanged).PropertyChanged -= TargetPropertyChanged;
+            }
             switch (_source.GetType().Name)
             {
                 case "TextBoxEx":
@@ -229,6 +238,15 @@ namespace TokED.UI
                 case "CheckBox":
                     (_source as CheckBox).CheckedChanged -= Binding_CheckedChanged;
                     break;
+
+                case "DropDownList":
+                    (_source as DropDownList).SelectedItemChanged -= Binding_SelectedItemChanged;
+                    break;
+
+
+                case "ColorButton":
+                    (_source as ColorButton).ColorChanged -= Binding_ColorChanged;
+                    break;
             }
         }
     }
@@ -237,22 +255,22 @@ namespace TokED.UI
     {
         private static Dictionary<Control, List<Binding>> bindings = new Dictionary<Control, List<Binding>>();
 
-        public static Control Bind(this Control control, INotifyPropertyChanged o, string property)
+        public static Control Bind(this Control control, object o, string property)
         {
             return Bind(control, null, o, property, null);
         }
 
-        public static Control Bind(this Control control, INotifyPropertyChanged o, string property, Func<object, object> targetValueConverter)
+        public static Control Bind(this Control control, object o, string property, Func<object, object> targetValueConverter)
         {
             return Bind(control, null, o, property, targetValueConverter);
         }
 
-        public static Control Bind(this Control control, string controlProperty, INotifyPropertyChanged o, string property)
+        public static Control Bind(this Control control, string controlProperty, object o, string property)
         {
             return Bind(control, controlProperty, o, property, null);
         }
 
-        public static Control Bind(this Control control, string controlProperty, INotifyPropertyChanged o, string property, Func<object, object> targetValueConverter)
+        public static Control Bind(this Control control, string controlProperty, object o, string property, Func<object, object> targetValueConverter)
         {
             if (!bindings.ContainsKey(control))
             {

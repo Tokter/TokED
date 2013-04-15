@@ -319,10 +319,11 @@ namespace TokED.UI
 
 
             ControlStyle borderStyle = new ControlStyle();
-            borderStyle.Hot.Texture = "border.dds";
-            borderStyle.Pressed.Texture = "border.dds";
+            borderStyle.Default.Texture = "border_default";
+            borderStyle.Hot.Texture = "border_hot";
+            borderStyle.Pressed.Texture = "border_down";
             borderStyle.Tiling = TextureMode.Grid;
-            borderStyle.Grid = new Margin(4);
+            borderStyle.Grid = new Margin(2);
 
             ControlStyle labelStyle = new ControlStyle();
             labelStyle.TextAlign = Alignment.TopLeft;
@@ -457,6 +458,16 @@ namespace TokED.UI
             button.Size = new Point(width, height);
             button.Position = new Point(x, y);
             button.Style = style;
+            return button;
+        }
+
+        public static ColorButton AddColorButton(this Control parent, int width, int height, DockStyle dockStyle)
+        {
+            var button = new ColorButton();
+            button.Parent = parent;
+            button.Size = new Point(width, height);
+            button.Dock = dockStyle;
+            button.Color = System.Drawing.Color.Red;
             return button;
         }
 
@@ -661,6 +672,16 @@ namespace TokED.UI
             var checkBox = frame.AddCheckBox();
             checkBox.TabIndex = tabStopIndex++;
             return checkBox;
+        }
+
+        public static ColorButton AddLabeledColorButton(this Control parent, int width, string text)
+        {
+            var frame = parent.AddFrame(0, 20, DockStyle.Top);
+            frame.AddLabel(width, text);
+            frame.Margin = new Margin(10, 0, 0, 0);
+            var button = frame.AddColorButton(20, 20, DockStyle.Fill);
+            button.TabIndex = tabStopIndex++;
+            return button;
         }
 
         public static DropDownList AddEnumList(this Control parent, int width, string text, Type enumType)

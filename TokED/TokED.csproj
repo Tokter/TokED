@@ -65,6 +65,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorChooser\ColorChangedEventArgs.cs" />
+    <Compile Include="ColorChooser\ColorChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorChooser\ColorHandler.cs" />
+    <Compile Include="ColorChooser\ColorWheel.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="Editors\BindingManager.cs" />
     <Compile Include="Editors\Editor.cs" />
@@ -76,6 +82,7 @@
     <Compile Include="ShaderDefinition.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UI\Bindings.cs" />
+    <Compile Include="UI\ColorButton.cs" />
     <Compile Include="UI\ComponentIns.cs" />
     <Compile Include="UI\EditorDesktop.cs" />
     <Compile Include="UI\EditorSkin.cs" />
@@ -133,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\GrassDirtTile64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Transparent Background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

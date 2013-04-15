@@ -104,5 +104,15 @@ namespace TokED.Properties {
                 return ResourceManager.GetString("SaveButtonToolTip", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TransparentBackground {
+            get {
+                object obj = ResourceManager.GetObject("TransparentBackground", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
