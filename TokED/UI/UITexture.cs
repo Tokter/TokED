@@ -29,8 +29,8 @@ namespace TokED.UI
         public static void RegisterTexture(string resourceName)
         {
             _currentMaterial = Material.CreateTextureColor(Texture.CreateFromStream(Plugins.LoadResourceStream(resourceName), true, false));
-            _currentMaterial.Texture0.MagFilter = TextureMagFilter.Nearest;
-            _currentMaterial.Texture0.MinFilter = TextureMinFilter.Nearest;
+            _currentMaterial[TextureUnit.Texture0].MagFilter = TextureMagFilter.Nearest;
+            _currentMaterial[TextureUnit.Texture0].MinFilter = TextureMinFilter.Nearest;
             _currentMaterial.AlphaBlend = true;
             _currentMaterial.DepthTest = false;
         }

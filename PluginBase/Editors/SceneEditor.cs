@@ -26,6 +26,7 @@ namespace PluginBase.Editors
         public override void Load()
         {
             _scene = SelectedGameObject.FindParent<GameObjects.Scene>();
+            _scene.Load();
         }
 
         public override void DrawContent(LineBatch lineBatch, SpriteBatch spriteBatch)

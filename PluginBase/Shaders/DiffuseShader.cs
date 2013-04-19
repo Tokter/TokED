@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -15,11 +16,6 @@ namespace PluginBase.Shaders
     {
         public DiffuseShader()
         {
-            Texture0Enabled = true;
-            Texture1Enabled = false;
-            Texture2Enabled = false;
-            Texture3Enabled = false;
-
             VertexProgram =
 @"#version 150
 
@@ -55,7 +51,7 @@ void main()
             AddAttribute(new ShaderAttribute(ShaderAttributeType.UV, "in_uv"));
             AddParameter(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
             AddParameter(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
-            AddParameter(new ShaderParam(ShaderParamType.Int, "tex", "Base Texture", 0));
+            AddParameter(new ShaderParam(ShaderParamType.Texture, "tex", "Base Texture", TextureUnit.Texture0));
         }
     }
 }

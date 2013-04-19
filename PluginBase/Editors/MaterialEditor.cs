@@ -26,10 +26,10 @@ namespace PluginBase.Editors
             if (_material != null)
             {
                 _material.Load();
-                if (_material.Mat.Texture0 != null)
+                if (_material.Mat[TextureUnit.Texture0] != null)
                 {
-                    Camera.Position = new Vector3(_material.Mat.Texture0.Width / 2.0f, _material.Mat.Texture0.Height / 2.0f, Camera.Position.Z);
-                    Camera.LookAt = new Vector3(_material.Mat.Texture0.Width / 2.0f, _material.Mat.Texture0.Height / 2.0f, Camera.LookAt.Z);
+                    Camera.Position = new Vector3(_material.Mat[TextureUnit.Texture0].Width / 2.0f, _material.Mat[TextureUnit.Texture0].Height / 2.0f, Camera.Position.Z);
+                    Camera.LookAt = new Vector3(_material.Mat[TextureUnit.Texture0].Width / 2.0f, _material.Mat[TextureUnit.Texture0].Height / 2.0f, Camera.LookAt.Z);
                 }
                 ActivateTool("Bottom View");
             }
@@ -45,10 +45,10 @@ namespace PluginBase.Editors
         {
             if (_material != null)
             {
-                if (_material.Mat.Texture0 != null)
+                if (_material.Mat[TextureUnit.Texture0] != null)
                 {
-                    spriteBatch.AddSprite(_material.Mat, 0, 0, 0, 0, _material.Mat.Texture0.Width, _material.Mat.Texture0.Height);
-                    lineBatch.AddBox(0, 0, _material.Mat.Texture0.Width, _material.Mat.Texture0.Height, Color.Red);
+                    spriteBatch.AddSprite(_material.Mat, 0, 0, 0, 0, _material.Mat[TextureUnit.Texture0].Width, _material.Mat[TextureUnit.Texture0].Height);
+                    lineBatch.AddBox(0, 0, _material.Mat[TextureUnit.Texture0].Width, _material.Mat[TextureUnit.Texture0].Height, Color.Red);
                 }
                 else
                 {

@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +43,10 @@ namespace TokGL
             Begin();
         }
 
-        public void End()
+        private float elapsedTime = 0.0f;
+        public void End(FrameEventArgs e)
         {
+            elapsedTime += (float)e.Time;
             Material currentMaterial = null;
             foreach (var ro in _renderObjects)
             {
@@ -57,6 +60,7 @@ namespace TokGL
                     }
                     currentMaterial.Shader.SetModel(ro.Transformation);
                     currentMaterial.Shader.SetCamera(Camera.ViewProjectMatrix);
+                    currentMaterial.Shader.SetTime(elapsedTime);
                     currentMaterial.Shader.ApplyParameters();
 
                     GL.BindVertexArray(ro.VAO);
@@ -68,6 +72,11 @@ namespace TokGL
                     GL.BindVertexArray(0);
                 }
             }
+        }
+
+        public void End()
+        {
+            End(new FrameEventArgs());
         }
 
         public void Dispose()

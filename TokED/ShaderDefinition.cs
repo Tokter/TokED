@@ -15,10 +15,6 @@ namespace TokED
 
         public string VertexProgram { get; set; }
         public string FragmentProgram { get; set; }
-        public bool Texture0Enabled { get; set; }
-        public bool Texture1Enabled { get; set; }
-        public bool Texture2Enabled { get; set; }
-        public bool Texture3Enabled { get; set; }
 
         public string ExportName
         {

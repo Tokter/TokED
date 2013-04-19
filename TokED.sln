@@ -15,19 +15,33 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Documentation|Any CPU = Documentation|Any CPU
+		Nsis|Any CPU = Nsis|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Nsis|Any CPU.ActiveCfg = Release|Any CPU
+		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Nsis|Any CPU.Build.0 = Release|Any CPU
 		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73FD0094-FF12-463A-8797-4D1BE91ED1CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Nsis|Any CPU.ActiveCfg = Release|Any CPU
+		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Nsis|Any CPU.Build.0 = Release|Any CPU
 		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32A134D1-946B-4BE9-8997-C27946B11FD8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Nsis|Any CPU.ActiveCfg = Release|Any CPU
+		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Nsis|Any CPU.Build.0 = Release|Any CPU
 		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E02FEBB-1B57-44E8-A8A6-C3804B122589}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

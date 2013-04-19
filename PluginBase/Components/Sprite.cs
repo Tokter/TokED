@@ -23,12 +23,7 @@ namespace PluginBase.Components
         public SpriteDefinition Definition
         {
             get { return _spriteDef; }
-            set
-            {
-                _spriteDef = value;
-                var materialObj = _spriteDef.FindParent<PluginBase.GameObjects.Material>();
-                _material = materialObj.Mat;
-            }
+            set { _spriteDef = value; }
         }
 
         public override void WriteXml(XmlWriter writer)
@@ -42,6 +37,13 @@ namespace PluginBase.Components
             {
                 _spriteDefName = reader.GetAttribute("Definition");
             }
+        }
+
+        protected override void OnLoad()
+        {
+            var materialObj = _spriteDef.FindParent<PluginBase.GameObjects.Material>();
+            materialObj.Load();
+            _material = materialObj.Mat;
         }
 
         public void Draw(TokGL.LineBatch lineBatch, TokGL.SpriteBatch spriteBatch)

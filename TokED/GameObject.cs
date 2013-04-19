@@ -79,6 +79,16 @@ namespace TokED
             set { _parent = value; NotifyChange(); }
         }
 
+        public GameObject Root
+        {
+            get
+            {
+                GameObject result = this;
+                while (result.Parent != null) result = result.Parent;
+                return result;
+            }
+        }
+
         public IEnumerable<GameObject> Children
         {
             get { return _children; }
@@ -405,9 +415,18 @@ namespace TokED
 
         #region Loading, UnLoading, Clearing & Disposing
 
+        private bool _loaded = false;
         public void Load()
         {
-            OnLoad();
+            if (!_loaded)
+            {
+                OnLoad();
+                _loaded = true;
+            }
+            foreach (var comp in _components.Values)
+            {
+                comp.Load();
+            }
             foreach (var child in _children)
             {
                 child.Load();
@@ -416,7 +435,15 @@ namespace TokED
 
         public void UnLoad()
         {
-            OnUnLoad();
+            if (_loaded)
+            {
+                OnUnLoad();
+                _loaded = false;
+            }
+            foreach (var comp in _components.Values)
+            {
+                comp.UnLoad();
+            }
             foreach (var child in _children)
             {
                 child.UnLoad();

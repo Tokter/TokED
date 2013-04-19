@@ -17,6 +17,7 @@ namespace TokED.UI
         private object _target;
         private PropertyInfo _targetProperty;
         private FieldInfo _targetField;
+        private MethodInfo _targetMethod;
         private bool _applyTargetChanges = true;
         private Func<object, object> _targetValueConverter = null;
 
@@ -27,7 +28,8 @@ namespace TokED.UI
             _target = target;
             _targetProperty = target.GetType().GetProperty(targetPropertyName);
             _targetField = target.GetType().GetField(targetPropertyName);
-            if (_target is INotifyPropertyChanged)
+            _targetMethod = target.GetType().GetMethod(targetPropertyName);
+            if (_target is INotifyPropertyChanged && _targetMethod == null)
             {
                 (_target as INotifyPropertyChanged).PropertyChanged += TargetPropertyChanged;
             }
@@ -63,7 +65,7 @@ namespace TokED.UI
             }
             if (sourcePropertyName == null) throw new NotImplementedException(string.Format("No default property defined for control {0}!", _source.GetType().Name));
             _sourceProperty = source.GetType().GetProperty(sourcePropertyName);
-            TargetPropertyChanged(_source, null);
+            if (_targetMethod == null) TargetPropertyChanged(_source, null);
         }
 
         void Binding_ColorChanged(object sender, EventArgs e)
@@ -124,6 +126,7 @@ namespace TokED.UI
                     _applyTargetChanges = false;
                     if (_targetProperty != null) _targetProperty.SetValue(_target, Transform(sourceValue, targetValue, _source, _target), null);
                     if (_targetField != null) _targetField.SetValue(_target, Transform(sourceValue, targetValue, _source, _target));
+                    if (_targetMethod != null) _targetMethod.Invoke(_target, null);
                     _applyTargetChanges = true;
                 }
             }

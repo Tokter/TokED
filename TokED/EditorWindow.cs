@@ -37,7 +37,7 @@ namespace TokED
         private EditorDesktop _desktop;
 
         public EditorWindow()
-            : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16), "TokED", GameWindowFlags.Default, DisplayDevice.Default, 3, 1, GraphicsContextFlags.ForwardCompatible)
+            : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16), "TokED", GameWindowFlags.Default, DisplayDevice.Default, 4, 0, GraphicsContextFlags.ForwardCompatible)
         {
             VSync = VSyncMode.Off;
             Plugins.LoadPlugins();
@@ -160,7 +160,7 @@ namespace TokED
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             _desktop.Editor.Resize(ClientRectangle.Width, ClientRectangle.Height);
-            _desktop.Editor.Draw();
+            _desktop.Editor.Draw(e);
 
             _desktop.Size = new Point(ClientRectangle.Width, ClientRectangle.Height);
             _desktop.Draw();

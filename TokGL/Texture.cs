@@ -84,6 +84,13 @@ namespace TokGL
             return result;
         }
 
+        public static Texture FromBitmap(Bitmap image, bool preMultiplyAlpha, bool createAlpha)
+        {
+            var result = new Texture();
+            result.LoadFromBitmap(image, preMultiplyAlpha, createAlpha);
+            return result;
+        }
+
         public unsafe void LoadFromBitmap(Bitmap image, bool preMultiplyAlpha, bool createAlpha)
         {
             Bind();

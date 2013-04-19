@@ -175,7 +175,7 @@ namespace TokED.Editors
             _rootControl.Update(this, e);
         }
 
-        public void Draw()
+        public void Draw(FrameEventArgs e)
         {
             //Draw World
             _manager.Camera = _editorCamera;
@@ -192,7 +192,7 @@ namespace TokED.Editors
 
             _spriteBatch.End();
             _lineBatch.End();
-            _manager.End();
+            _manager.End(e);
 
             //Draw Gui
             _manager.Camera = _guiCamera;

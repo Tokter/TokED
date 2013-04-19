@@ -11,12 +11,9 @@ namespace TokGL
 {
     public class Material : IDisposable
     {
+        private Dictionary<TextureUnit, Texture> _textures = new Dictionary<TextureUnit, Texture>();
+
         public Shader Shader { get; set; }
-        public Color Color { get; set; }
-        public Texture Texture0 { get; set; }
-        public Texture Texture1 { get; set; }
-        public Texture Texture2 { get; set; }
-        public Texture Texture3 { get; set; }
         public bool DepthTest { get; set; }
         public bool AlphaBlend { get; set; }
         public bool SmoothLines { get; set; }
@@ -24,18 +21,11 @@ namespace TokGL
         public void Activate()
         {
             Shader.Activate();
-            GL.ActiveTexture(TextureUnit.Texture0);
-            if (Texture0 != null) Texture0.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
-
-            GL.ActiveTexture(TextureUnit.Texture1);
-            if (Texture1 != null) Texture1.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
-            
-            GL.ActiveTexture(TextureUnit.Texture2);
-            if (Texture2 != null) Texture2.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
-
-            GL.ActiveTexture(TextureUnit.Texture3);
-            if (Texture3 != null) Texture3.Bind(); else GL.BindTexture(TextureTarget.Texture2D, 0);
-            
+            foreach (var texUnit in _textures.Keys)
+            {
+                GL.ActiveTexture(texUnit);
+                _textures[texUnit].Bind();
+            }           
             if (DepthTest)
             {
                 GL.Enable(EnableCap.DepthTest);
@@ -66,25 +56,10 @@ namespace TokGL
 
         public void Deactivate()
         {
-            if (Texture0 != null)
+            foreach (var texUnit in _textures.Keys)
             {
-                GL.ActiveTexture(TextureUnit.Texture0);
-                Texture0.Unbind();
-            }
-            if (Texture1 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture1);
-                Texture1.Unbind();
-            }
-            if (Texture2 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture2);
-                Texture2.Unbind();
-            }
-            if (Texture3 != null)
-            {
-                GL.ActiveTexture(TextureUnit.Texture3);
-                Texture3.Unbind();
+                GL.ActiveTexture(texUnit);
+                _textures[texUnit].Unbind();
             }
             Shader.Deactivate();
         }
@@ -92,10 +67,30 @@ namespace TokGL
         public void Dispose()
         {
             if (Shader != null) { Shader.Dispose(); Shader = null; }
-            if (Texture0 != null) { Texture0.Dispose(); Texture0 = null; }
-            if (Texture1 != null) { Texture1.Dispose(); Texture1 = null; }
-            if (Texture2 != null) { Texture2.Dispose(); Texture2 = null; }
-            if (Texture3 != null) { Texture3.Dispose(); Texture3 = null; }
+            foreach (var texture in _textures.Values)
+            {
+                texture.Dispose();
+            }
+            _textures.Clear();
+        }
+
+        public void AddTexture(TextureUnit texUnit, Texture texture)
+        {
+            _textures.Add(texUnit, texture);
+        }
+
+        public Texture this[TextureUnit texUnit]
+        {
+            get
+            {
+                if (!_textures.ContainsKey(texUnit)) return null;
+                return _textures[texUnit]; 
+            }
+        }
+
+        public int TextureCount
+        {
+            get { return _textures.Values.Count(); }
         }
 
         public static Material CreateColor()
@@ -133,10 +128,6 @@ void main()
 {
     final_color = frag_color;
 }", attributes, parameters);
-            mat.Texture0 = null;
-            mat.Texture1 = null;
-            mat.Texture2 = null;
-            mat.Texture3 = null;
             mat.DepthTest = true;
             mat.AlphaBlend = true;
             mat.SmoothLines = true;
@@ -155,7 +146,7 @@ void main()
             var parameters = new List<ShaderParam>();
             parameters.Add(new ShaderParam(ShaderParamType.Camera, "camera", "Camera Matrix", Matrix4.Identity));
             parameters.Add(new ShaderParam(ShaderParamType.Model, "model", "Model Matrix", Matrix4.Identity));
-            parameters.Add(new ShaderParam(ShaderParamType.Texture, "tex", "Texture", 0));
+            parameters.Add(new ShaderParam(ShaderParamType.Texture, "tex", "Texture", TextureUnit.Texture0));
 
             mat.Shader = new Shader(
 @"#version 150
@@ -185,10 +176,7 @@ void main()
 {
     final_color = texture(tex, frag_TexCoord) * frag_Color;
 }", attributes, parameters);
-            mat.Texture0 = texture;
-            mat.Texture1 = null;
-            mat.Texture2 = null;
-            mat.Texture3 = null;
+            mat.AddTexture(TextureUnit.Texture0, texture);
             mat.DepthTest = true;
             mat.AlphaBlend = true;
             mat.SmoothLines = true;

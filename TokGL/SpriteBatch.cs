@@ -101,29 +101,17 @@ namespace TokGL
                 P2 = new Vector2(x + width, y),
                 P3 = new Vector2(x + width, y + height),
                 P4 = new Vector2(x, y + height),
-                UV1 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV2 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV3 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
-                UV4 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
+                UV1 = new Vector2((float)px1 / (float)mat[TextureUnit.Texture0].Width, (float)py1 / (float)mat[TextureUnit.Texture0].Height),
+                UV2 = new Vector2((float)(px1 + width) / (float)mat[TextureUnit.Texture0].Width, (float)py1 / (float)mat[TextureUnit.Texture0].Height),
+                UV3 = new Vector2((float)(px1 + width) / (float)mat[TextureUnit.Texture0].Width, (float)(py1 + height) / (float)mat[TextureUnit.Texture0].Height),
+                UV4 = new Vector2((float)px1 / (float)mat[TextureUnit.Texture0].Width, (float)(py1 + height) / (float)mat[TextureUnit.Texture0].Height),
                 Color = color
             });
         }
 
         public void AddSprite(Material mat, float x, float y, int px1, int py1, int width, int height)
         {
-            if (!_sprites.ContainsKey(mat)) _sprites.Add(mat, new List<Sprite>(1000));
-            _sprites[mat].Add(new Sprite
-            {
-                P1 = new Vector2(x, y),
-                P2 = new Vector2(x + width, y),
-                P3 = new Vector2(x + width, y + height),
-                P4 = new Vector2(x, y + height),
-                UV1 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV2 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV3 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
-                UV4 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
-                Color = mat.Color
-            });
+            AddSprite(mat, x, y, px1, py1, width, height, Color.White);
         }
 
         public void AddSprite(Material mat, Vector2 a, Vector2 b, int px1, int py1, int width, int height, Color color)
@@ -135,29 +123,17 @@ namespace TokGL
                 P2 = new Vector2(b.X, a.Y),
                 P3 = b,
                 P4 = new Vector2(a.X, b.Y),
-                UV1 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV2 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV3 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
-                UV4 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
+                UV1 = new Vector2((float)px1 / (float)mat[TextureUnit.Texture0].Width, (float)py1 / (float)mat[TextureUnit.Texture0].Height),
+                UV2 = new Vector2((float)(px1 + width) / (float)mat[TextureUnit.Texture0].Width, (float)py1 / (float)mat[TextureUnit.Texture0].Height),
+                UV3 = new Vector2((float)(px1 + width) / (float)mat[TextureUnit.Texture0].Width, (float)(py1 + height) / (float)mat[TextureUnit.Texture0].Height),
+                UV4 = new Vector2((float)px1 / (float)mat[TextureUnit.Texture0].Width, (float)(py1 + height) / (float)mat[TextureUnit.Texture0].Height),
                 Color = color
             });
         }
 
         public void AddSprite(Material mat, Vector2 a, Vector2 b, int px1, int py1, int width, int height)
         {
-            if (!_sprites.ContainsKey(mat)) _sprites.Add(mat, new List<Sprite>(1000));
-            _sprites[mat].Add(new Sprite
-            {
-                P1 = a,
-                P2 = new Vector2(b.X, a.Y),
-                P3 = b,
-                P4 = new Vector2(a.X, b.Y),
-                UV1 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV2 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)py1 / (float)mat.Texture0.Height),
-                UV3 = new Vector2((float)(px1 + width) / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
-                UV4 = new Vector2((float)px1 / (float)mat.Texture0.Width, (float)(py1 + height) / (float)mat.Texture0.Height),
-                Color = mat.Color
-            });
+            AddSprite(mat, a, b, px1, py1, width, height);
         }
 
         public void AddSprite(Material mat, Vector2 a, Vector2 b, float u1, float v1, float u2, float v2, Color color)
@@ -179,53 +155,47 @@ namespace TokGL
 
         public void AddSprite(Material mat, Vector2 a, Vector2 b, float u1, float v1, float u2, float v2)
         {
-            if (!_sprites.ContainsKey(mat)) _sprites.Add(mat, new List<Sprite>(1000));
-            _sprites[mat].Add(new Sprite
-            {
-                P1 = a,
-                P2 = new Vector2(b.X, a.Y),
-                P3 = b,
-                P4 = new Vector2(a.X, b.Y),
-                UV1 = new Vector2(u1, v1),
-                UV2 = new Vector2(u2, v1),
-                UV3 = new Vector2(u2, v2),
-                UV4 = new Vector2(u1, v2),
-                Color = mat.Color
-            });
+            AddSprite(mat, a, b, u1, v1, u2, v2, Color.White);
         }
 
         public void AddSprite(Material mat, Vector2 a, Vector2 b, Vector2 c, Vector2 d, Vector2 origin, Color color)
         {
             if (!_sprites.ContainsKey(mat)) _sprites.Add(mat, new List<Sprite>(1000));
-            _sprites[mat].Add(new Sprite
+            if (mat[TextureUnit.Texture0] != null)
             {
-                P1 = a - origin,
-                P2 = b - origin,
-                P3 = c - origin,
-                P4 = d - origin,
-                UV1 = new Vector2(a.X / mat.Texture0.Width, a.Y / mat.Texture0.Height),
-                UV2 = new Vector2(b.X / mat.Texture0.Width, b.Y / mat.Texture0.Height),
-                UV3 = new Vector2(c.X / mat.Texture0.Width, c.Y / mat.Texture0.Height),
-                UV4 = new Vector2(d.X / mat.Texture0.Width, d.Y / mat.Texture0.Height),
-                Color = color
-            });
+                _sprites[mat].Add(new Sprite
+                {
+                    P1 = a - origin,
+                    P2 = b - origin,
+                    P3 = c - origin,
+                    P4 = d - origin,
+                    UV1 = new Vector2(a.X / mat[TextureUnit.Texture0].Width, a.Y / mat[TextureUnit.Texture0].Height),
+                    UV2 = new Vector2(b.X / mat[TextureUnit.Texture0].Width, b.Y / mat[TextureUnit.Texture0].Height),
+                    UV3 = new Vector2(c.X / mat[TextureUnit.Texture0].Width, c.Y / mat[TextureUnit.Texture0].Height),
+                    UV4 = new Vector2(d.X / mat[TextureUnit.Texture0].Width, d.Y / mat[TextureUnit.Texture0].Height),
+                    Color = color
+                });
+            }
+            else
+            {
+                _sprites[mat].Add(new Sprite
+                {
+                    P1 = a - origin,
+                    P2 = b - origin,
+                    P3 = c - origin,
+                    P4 = d - origin,
+                    UV1 = new Vector2(a.X / 256, a.Y / 256),
+                    UV2 = new Vector2(b.X / 256, b.Y / 256),
+                    UV3 = new Vector2(c.X / 256, c.Y / 256),
+                    UV4 = new Vector2(d.X / 256, d.Y / 256),
+                    Color = color
+                });
+            }
         }
 
         public void AddSprite(Material mat, Vector2 a, Vector2 b, Vector2 c, Vector2 d, Vector2 origin)
         {
-            if (!_sprites.ContainsKey(mat)) _sprites.Add(mat, new List<Sprite>(1000));
-            _sprites[mat].Add(new Sprite
-            {
-                P1 = a - origin,
-                P2 = b - origin,
-                P3 = c - origin,
-                P4 = d - origin,
-                UV1 = new Vector2(a.X / mat.Texture0.Width, a.Y / mat.Texture0.Height),
-                UV2 = new Vector2(b.X / mat.Texture0.Width, b.Y / mat.Texture0.Height),
-                UV3 = new Vector2(c.X / mat.Texture0.Width, c.Y / mat.Texture0.Height),
-                UV4 = new Vector2(d.X / mat.Texture0.Width, d.Y / mat.Texture0.Height),
-                Color = mat.Color
-            });
+            AddSprite(mat, a, b, c, d, origin, Color.White);
         }
 
         public void AddText(Font font, int px, int py, string text, Color color, HorizontalAlignment horizontal, VerticalAlignment vertical)
@@ -302,7 +272,8 @@ namespace TokGL
                     //are associated with it.
                     GL.BindVertexArray(ro.VAO);
                     GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Vertex));
-                    GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color));
+                    var hasColor = ro.Material.Shader.HasAttribute(ShaderAttributeType.Color);
+                    if (hasColor) GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color));
                     GL.EnableVertexAttribArray(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.UV));
 
                     GL.BindBuffer(BufferTarget.ArrayBuffer, ro.VBO);
@@ -312,8 +283,8 @@ namespace TokGL
                     GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(_bufferISize * sizeof(uint)), _bufferI, BufferUsageHint.StreamDraw);
 
                     GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Vertex), 3, VertexAttribPointerType.Float, false, SpriteVertex.SizeInBytes, SpriteVertex.PositionStart);
+                    if (hasColor) GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color), 4, VertexAttribPointerType.UnsignedByte, true, SpriteVertex.SizeInBytes, SpriteVertex.ColorStart);
                     GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.UV), 2, VertexAttribPointerType.Float, true, SpriteVertex.SizeInBytes, SpriteVertex.TextureStart);
-                    GL.VertexAttribPointer(ro.Material.Shader.GetAttributeLocation(ShaderAttributeType.Color), 4, VertexAttribPointerType.UnsignedByte, true, SpriteVertex.SizeInBytes, SpriteVertex.ColorStart);
 
                     GL.BindVertexArray(0);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

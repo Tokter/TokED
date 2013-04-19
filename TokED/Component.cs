@@ -59,5 +59,36 @@ namespace TokED
         }
 
         #endregion
+
+        #region Loading & UnLoading
+
+        private bool _loaded = false;
+        public void Load()
+        {
+            if (!_loaded)
+            {
+                OnLoad();
+                _loaded = true;
+            }
+        }
+
+        public void UnLoad()
+        {
+            if (_loaded)
+            {
+                OnUnLoad();
+                _loaded = false;
+            }
+        }
+
+        protected virtual void OnLoad()
+        {
+        }
+
+        protected virtual void OnUnLoad()
+        {
+        }
+
+        #endregion
     }
 }

@@ -50,11 +50,11 @@ void main()
 
     if (tcmod.s < 0.5)
     {
-        if (tcmod.t < 0.5) final_color = color1; else final_color = color0;
+        if (tcmod.t < 0.5) final_color = color1 * frag_Color; else final_color = color0 * frag_Color;
     }
     else
     {
-        if (tcmod.t < 0.5) final_color = color0; else final_color = color1;
+        if (tcmod.t < 0.5) final_color = color0 * frag_Color; else final_color = color1 * frag_Color;
     }
 }";
 

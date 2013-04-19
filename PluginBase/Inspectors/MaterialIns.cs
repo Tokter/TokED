@@ -54,41 +54,10 @@ namespace PluginBase.Inspectors
             _details.Controls.Clear();
 
             var material = this.GameObject as PluginBase.GameObjects.Material;
-            var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>(material.Shader);
-            //if (shader.Texture0Enabled)
-            //{
-            //    _fileBox0 = _details.AddLabeledFilename(100, "Texture 0:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-            //    _fileBox0.Bind(this.GameObject, "Texture0FileName");
-            //}
-
-            //if (shader.Texture1Enabled)
-            //{
-            //    _fileBox1 = _details.AddLabeledFilename(100, "Texture 1:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-            //    _fileBox1.Bind(this.GameObject, "Texture1FileName");
-            //}
-
-            //if (shader.Texture2Enabled)
-            //{
-            //    _fileBox2 = _details.AddLabeledFilename(100, "Texture 2:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-            //    _fileBox2.Bind(this.GameObject, "Texture2FileName");
-            //}
-
-            //if (shader.Texture3Enabled)
-            //{
-            //    _fileBox3 = _details.AddLabeledFilename(100, "Texture 3:", ".png", "Texture (.png)|*.png", "Load Texture from file:");
-            //    _fileBox3.Bind(this.GameObject, "Texture3FileName");
-            //}
-
-            var anyTextures = shader.Texture0Enabled || shader.Texture1Enabled || shader.Texture2Enabled || shader.Texture3Enabled;
+            //var shader = Plugins.Container.ResolveNamed<TokED.ShaderDefinition>(material.Shader);
 
             _depthTest = _details.AddLabeledCheckBox(100, "Depth Test:");
             _depthTest.Bind(this.GameObject, "DepthTest");
-
-            if (anyTextures)
-            {
-                _multAlphaCheck = _details.AddLabeledCheckBox(100, "Pre Mul. Alpha:");
-                _multAlphaCheck.Bind(this.GameObject, "PreMultiplyAlpha");
-            }
 
             _alphaBlend = _details.AddLabeledCheckBox(100, "Alpha Blend:");
             _alphaBlend.Bind(this.GameObject, "AlphaBlend");
@@ -96,48 +65,51 @@ namespace PluginBase.Inspectors
             _smoothLines = _details.AddLabeledCheckBox(100, "Smooth Lines:");
             _smoothLines.Bind(this.GameObject, "SmoothLines");
 
-            if (anyTextures)
-            {
-                _minFilter = _details.AddEnumList(100, "Min Filter:", typeof(TextureMinFilter));
-                _minFilter.Bind(this.GameObject, "MinFilter");
+            _minFilter = _details.AddEnumList(100, "Min Filter:", typeof(TextureMinFilter));
+            _minFilter.Bind(this.GameObject, "MinFilter");
 
-                _magFilter = _details.AddEnumList(100, "Mag Filter:", typeof(TextureMagFilter));
-                _magFilter.Bind(this.GameObject, "MagFilter");
-            }
+            _magFilter = _details.AddEnumList(100, "Mag Filter:", typeof(TextureMagFilter));
+            _magFilter.Bind(this.GameObject, "MagFilter");
 
             //Shader Parameters
-            foreach (var p in material.Mat.Shader.Parameters)
+            foreach (var p in material.Parameters)
             {
                 switch (p.Type)
                 {
                     case ShaderParamType.Int:
-                        _details.AddLabeledTextBox(100, p.LongName + ":", 1.0f).Bind(p, "IntValue");
+                        _details.AddLabeledTextBox(100, p.LongName + ":", 1.0f).Bind(p, "IntValue").Bind(this.GameObject, "ApplyParameters");
                         break;
 
                     case ShaderParamType.Float:
-                        _details.AddLabeledTextBox(100, p.LongName + ":", 0.02f).Bind(p, "FloatValue");
+                        _details.AddLabeledTextBox(100, p.LongName + ":", 0.02f).Bind(p, "FloatValue").Bind(this.GameObject, "ApplyParameters");
                         break;
 
                     case ShaderParamType.Vec2:
-                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X");
-                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y");
+                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X").Bind(this.GameObject, "ApplyParameters");
+                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y").Bind(this.GameObject, "ApplyParameters");
                         break;
 
                     case ShaderParamType.Vec3:
-                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X");
-                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y");
-                        _details.AddLabeledTextBox(100, p.LongName + " Z:", 0.02f).Bind(p, "Z");
+                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X").Bind(this.GameObject, "ApplyParameters");
+                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y").Bind(this.GameObject, "ApplyParameters");
+                        _details.AddLabeledTextBox(100, p.LongName + " Z:", 0.02f).Bind(p, "Z").Bind(this.GameObject, "ApplyParameters");
                         break;
 
                     case ShaderParamType.Vec4:
-                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X");
-                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y");
-                        _details.AddLabeledTextBox(100, p.LongName + " Z:", 0.02f).Bind(p, "Z");
-                        _details.AddLabeledTextBox(100, p.LongName + " W:", 0.02f).Bind(p, "W");
+                        _details.AddLabeledTextBox(100, p.LongName + " X:", 0.02f).Bind(p, "X").Bind(this.GameObject, "ApplyParameters");
+                        _details.AddLabeledTextBox(100, p.LongName + " Y:", 0.02f).Bind(p, "Y").Bind(this.GameObject, "ApplyParameters");
+                        _details.AddLabeledTextBox(100, p.LongName + " Z:", 0.02f).Bind(p, "Z").Bind(this.GameObject, "ApplyParameters");
+                        _details.AddLabeledTextBox(100, p.LongName + " W:", 0.02f).Bind(p, "W").Bind(this.GameObject, "ApplyParameters");
                         break;
 
                     case ShaderParamType.Color:
-                        _details.AddLabeledColorButton(100, p.LongName + ":").Bind(p, "Color");
+                        _details.AddLabeledColorButton(100, p.LongName + ":").Bind(p, "Color").Bind(this.GameObject, "ApplyParameters");
+                        break;
+
+                    case ShaderParamType.Texture:
+                        _details.AddLabeledFilename(100, p.LongName + ":", ".png", "Texture (.png)|*.png", "Load Texture from file:")
+                            .Bind(p, "Filename")
+                            .Bind(this.GameObject, "NotifyChange");
                         break;
                 }
             }

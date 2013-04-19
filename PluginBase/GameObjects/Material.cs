@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -19,74 +20,43 @@ namespace PluginBase.GameObjects
     public class Material : GameObject
     {
         private string _shader = "Diffuse";
-        private Color _color = Color.White;
-        private string _fileName0 = "";
-        private string _fileName1 = "";
-        private string _fileName2 = "";
-        private string _fileName3 = "";
         private bool _depthTest = true;
-        private bool _preMultiplyAlpha = true;
         private bool _alphaBlend = true;
         private bool _smoothLines = true;
         private TextureMinFilter _minFilter = TextureMinFilter.Linear;
         private TextureMagFilter _magFilter = TextureMagFilter.Linear;
 
-        private string _parameterCopyShader;
-        private List<ShaderParam> _parameterCopy = new List<ShaderParam>();
+        private string _parameterShader;
+        private List<ShaderParam> _parameters = new List<ShaderParam>();
 
         private TokGL.Material _material = null;
+        private static Bitmap _notTexture = null;
 
         public Material()
         {
             Name = "Material";
+
+            if (_notTexture == null)
+            {
+                _notTexture = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using(var g = Graphics.FromImage(_notTexture))
+                {
+                    g.DrawLine(Pens.Red, new Point(0,0), new Point(256,256));
+                    g.DrawLine(Pens.Red, new Point(256,0), new Point(0,256));
+                }
+            }
         }
 
         public string Shader
         {
             get { return _shader; }
-            set { _shader = value; _parameterCopy.Clear(); NotifyChange(); }
-        }
-
-        public Color Color
-        {
-            get { return _color; }
-            set { _color = value; NotifyChange(); }
-        }
-
-        public string Texture0FileName
-        {
-            get { return _fileName0; }
-            set { _fileName0 = value; NotifyChange(); }
-        }
-
-        public string Texture1FileName
-        {
-            get { return _fileName1; }
-            set { _fileName1 = value; NotifyChange(); }
-        }
-
-        public string Texture2FileName
-        {
-            get { return _fileName2; }
-            set { _fileName2 = value; NotifyChange(); }
-        }
-
-        public string Texture3FileName
-        {
-            get { return _fileName3; }
-            set { _fileName3 = value; NotifyChange(); }
+            set { _shader = value; NotifyChange(); }
         }
 
         public bool DepthTest
         {
             get { return _depthTest; }
             set { _depthTest = value; NotifyChange(); }
-        }
-
-        public bool PreMultiplyAlpha
-        {
-            get { return _preMultiplyAlpha; }
-            set { _preMultiplyAlpha = value; NotifyChange(); }
         }
 
         public bool AlphaBlend
@@ -127,37 +97,34 @@ namespace PluginBase.GameObjects
 
             _material.Shader = new TokGL.Shader(shader.VertexProgram, shader.FragmentProgram, shader.Attributes, shader.Parameters);
             _material.Activate();
-            _material.Color = _color;
 
-            //Apply parameters
-            foreach (var pc in _parameterCopy)
+            if (_shader != _parameterShader)
             {
-                _material.Shader.SetParameter(pc.Name, pc.Get());
+                //Get default parameters
+                _parameters.Clear();
+                foreach (var p in _material.Shader.Parameters)
+                {
+                    _parameters.Add(p.Clone());
+                }
+                _parameterShader = _shader;
             }
+            else ApplyParameters();
 
-            if (File.Exists(_fileName0))
+            //Load Textures
+            if (_material.TextureCount > 0) throw new Exception("Textures not cleaned up!");
+            foreach (var param in _material.Shader.Parameters)
             {
-                _material.Texture0 = Texture.FromFile(_fileName0, _preMultiplyAlpha, false);
-                _material.Texture0.MinFilter = _minFilter;
-                _material.Texture0.MagFilter = _magFilter;
-            }
-            if (File.Exists(_fileName1))
-            {
-                _material.Texture1 = Texture.FromFile(_fileName1, _preMultiplyAlpha, false);
-                _material.Texture1.MinFilter = _minFilter;
-                _material.Texture1.MagFilter = _magFilter;
-            }
-            if (File.Exists(_fileName2))
-            {
-                _material.Texture2 = Texture.FromFile(_fileName2, _preMultiplyAlpha, false);
-                _material.Texture2.MinFilter = _minFilter;
-                _material.Texture2.MagFilter = _magFilter;
-            }
-            if (File.Exists(_fileName3))
-            {
-                _material.Texture3 = Texture.FromFile(_fileName3, _preMultiplyAlpha, false);
-                _material.Texture3.MinFilter = _minFilter;
-                _material.Texture3.MagFilter = _magFilter;
+                if (param.Type == ShaderParamType.Texture)
+                {
+                    Texture texture;
+                    if (File.Exists(param.Filename))
+                        texture = Texture.FromFile(param.Filename, true, false);
+                    else
+                        texture = Texture.FromBitmap(_notTexture, true, false);
+                    texture.MinFilter = _minFilter;
+                    texture.MagFilter = _magFilter;
+                    _material.AddTexture(param.TexUnit, texture);
+                }
             }
             _material.DepthTest = _depthTest;
             _material.AlphaBlend = _alphaBlend;
@@ -165,24 +132,26 @@ namespace PluginBase.GameObjects
             _material.Deactivate();
         }
 
-        private void CopyParamaters()
+        public void ApplyParameters()
         {
-            _parameterCopy.Clear();
-            if (_shader == _parameterCopyShader)
+            if (_material != null)
             {
-                foreach (var p in _material.Shader.Parameters)
+                foreach (var pc in _parameters)
                 {
-                    _parameterCopy.Add(p.Clone());
+                    _material.Shader.CopyParameter(pc);
                 }
             }
-            else _parameterCopyShader = _shader;
+        }
+
+        public IEnumerable<ShaderParam> Parameters
+        {
+            get { return _parameters; }
         }
 
         protected override void OnUnLoad()
         {
             if (_material != null)
             {
-                CopyParamaters();
                 _material.Dispose();
                 _material = null;
             }
@@ -192,34 +161,127 @@ namespace PluginBase.GameObjects
         {
             base.ReadXml(reader);
             _shader = reader.GetAttribute("Shader");
-            _color = ColorTranslator.FromHtml(reader.GetAttribute("Color"));
-            _fileName0 = reader.GetAttribute("Texture0FileName");
-            _fileName1 = reader.GetAttribute("Texture1FileName");
-            _fileName2 = reader.GetAttribute("Texture2FileName");
-            _fileName3 = reader.GetAttribute("Texture3FileName");
+            _parameterShader = _shader;
             if (reader.GetAttribute("DepthTest") != null) _depthTest = reader.GetAttribute("DepthTest").ToUpper() == "TRUE";
-            if (reader.GetAttribute("PreMultipliedAlpha") != null) _preMultiplyAlpha = reader.GetAttribute("PreMultipliedAlpha").ToUpper() == "TRUE";
             if (reader.GetAttribute("AlphaBlend") != null) _alphaBlend = reader.GetAttribute("AlphaBlend").ToUpper() == "TRUE";
             if (reader.GetAttribute("SmoothLines") != null) _smoothLines = reader.GetAttribute("SmoothLines").ToUpper() == "TRUE";
             if (reader.GetAttribute("MinFilter") != null) _minFilter = (TextureMinFilter)Enum.Parse(typeof(TextureMinFilter), reader.GetAttribute("MinFilter"));
             if (reader.GetAttribute("MagFilter") != null) _magFilter = (TextureMagFilter)Enum.Parse(typeof(TextureMagFilter), reader.GetAttribute("MagFilter"));
+            while (reader.Name != "Parameters") reader.Read();
+            _parameters.Clear();
+            if (!reader.IsEmptyElement)
+            {
+                while (reader.Read() && (reader.NodeType != XmlNodeType.EndElement))
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        var p = new ShaderParam();
+                        p.Type = (ShaderParamType)Enum.Parse(typeof(ShaderParamType), reader.Name); ;
+                        p.Name = reader.GetAttribute("Name");
+                        p.LongName = reader.GetAttribute("Desc");
+                        switch (p.Type)
+                        {
+                            case ShaderParamType.Int:
+                                p.IntValue = Convert.ToInt32(reader.GetAttribute("Value"));
+                                break;
+                            case ShaderParamType.Float:
+                                p.FloatValue = Convert.ToSingle(reader.GetAttribute("Value"));
+                                break;
+                            case ShaderParamType.Vec2:
+                                p.Vec2Value = new Vector2(
+                                    Convert.ToSingle(reader.GetAttribute("X")),
+                                    Convert.ToSingle(reader.GetAttribute("Y"))
+                                );
+                                break;
+                            case ShaderParamType.Vec3:
+                                p.Vec3Value = new Vector3(
+                                    Convert.ToSingle(reader.GetAttribute("X")),
+                                    Convert.ToSingle(reader.GetAttribute("Y")),
+                                    Convert.ToSingle(reader.GetAttribute("Z"))
+                                );
+                                break;
+                            case ShaderParamType.Vec4:
+                                p.Vec4Value = new Vector4(
+                                    Convert.ToSingle(reader.GetAttribute("X")),
+                                    Convert.ToSingle(reader.GetAttribute("Y")),
+                                    Convert.ToSingle(reader.GetAttribute("Z")),
+                                    Convert.ToSingle(reader.GetAttribute("W"))
+                                );
+                                break;
+                            case ShaderParamType.Texture:
+                                p.Filename = reader.GetAttribute("Filename");
+                                p.TexUnit = (TextureUnit)Enum.Parse(typeof(TextureUnit), reader.GetAttribute("TextureUnit"));
+                                break;
+                            case ShaderParamType.Color:
+                                p.Vec4Value = new Vector4(
+                                    Convert.ToSingle(reader.GetAttribute("R")),
+                                    Convert.ToSingle(reader.GetAttribute("G")),
+                                    Convert.ToSingle(reader.GetAttribute("B")),
+                                    Convert.ToSingle(reader.GetAttribute("A"))
+                                );
+                                break;
+                        }
+                        _parameters.Add(p);
+                    }
+                }
+            }
         }
 
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);
             writer.WriteAttributeString("Shader", _shader);
-            writer.WriteAttributeString("Color", ColorTranslator.ToHtml(_color));
-            writer.WriteAttributeString("Texture0FileName", _fileName0);
-            writer.WriteAttributeString("Texture1FileName", _fileName1);
-            writer.WriteAttributeString("Texture2FileName", _fileName2);
-            writer.WriteAttributeString("Texture3FileName", _fileName3);
             writer.WriteAttributeString("DepthTest", _depthTest ? "TRUE" : "FALSE");
-            writer.WriteAttributeString("PreMultipliedAlpha", _preMultiplyAlpha ? "TRUE" : "FALSE");
             writer.WriteAttributeString("AlphaBlend", _alphaBlend ? "TRUE" : "FALSE");
             writer.WriteAttributeString("SmoothLines", _smoothLines ? "TRUE" : "FALSE");
             writer.WriteAttributeString("MinFilter", _minFilter.ToString());
             writer.WriteAttributeString("MagFilter", _magFilter.ToString());
+            writer.WriteStartElement("Parameters");
+            foreach (var a in _parameters)
+            {
+                if (a.IsNotTransient)
+                {
+                    writer.WriteStartElement(a.Type.ToString());
+                    writer.WriteAttributeString("Name", a.Name);
+                    writer.WriteAttributeString("Desc", a.LongName);
+                    switch (a.Type)
+                    {
+                        case ShaderParamType.Int:
+                            writer.WriteAttributeString("Value", a.IntValue.ToString());
+                            break;
+                        case ShaderParamType.Float:
+                            writer.WriteAttributeString("Value", a.FloatValue.ToString());
+                            break;
+                        case ShaderParamType.Vec2:
+                            writer.WriteAttributeString("X", a.Vec2Value.X.ToString());
+                            writer.WriteAttributeString("Y", a.Vec2Value.Y.ToString());
+                            break;
+                        case ShaderParamType.Vec3:
+                            writer.WriteAttributeString("X", a.Vec3Value.X.ToString());
+                            writer.WriteAttributeString("Y", a.Vec3Value.Y.ToString());
+                            writer.WriteAttributeString("Z", a.Vec3Value.Z.ToString());
+                            break;
+                        case ShaderParamType.Vec4:
+                            writer.WriteAttributeString("X", a.Vec4Value.X.ToString());
+                            writer.WriteAttributeString("Y", a.Vec4Value.Y.ToString());
+                            writer.WriteAttributeString("Z", a.Vec4Value.Z.ToString());
+                            writer.WriteAttributeString("W", a.Vec4Value.W.ToString());
+                            break;
+                        case ShaderParamType.Texture:
+                            writer.WriteAttributeString("TextureUnit", a.TexUnit.ToString());
+                            writer.WriteAttributeString("Filename", a.Filename);
+                            break;
+                        case ShaderParamType.Color:
+                            writer.WriteAttributeString("R", a.Vec4Value.X.ToString());
+                            writer.WriteAttributeString("G", a.Vec4Value.Y.ToString());
+                            writer.WriteAttributeString("B", a.Vec4Value.Z.ToString());
+                            writer.WriteAttributeString("A", a.Vec4Value.W.ToString());
+                            break;
+                    }
+                    writer.WriteEndElement();
+                }
+            }
+            writer.WriteEndElement();
         }
     }
 }
