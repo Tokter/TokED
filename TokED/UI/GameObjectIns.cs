@@ -15,7 +15,6 @@ namespace TokED.UI
     {
         private TextBox _textBox;
         private GameObject _gameObject;
-        private List<Binding> _bindings = new List<Binding>();
 
         public GameObject GameObject
         {
@@ -25,11 +24,6 @@ namespace TokED.UI
                 _gameObject = value;
                 Build();
             }
-        }
-
-        protected void AddBinding(Binding binding)
-        {
-            _bindings.Add(binding);
         }
 
         protected virtual void Build()

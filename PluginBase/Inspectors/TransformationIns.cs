@@ -35,9 +35,9 @@ namespace PluginBase.Inspectors
             _scaleZ = this.AddLabeledTextBox(100, "Z Scale:", 0.01f);
         }
 
-        protected override void Bind()
+        protected override void Build()
         {
-            base.Bind();
+            base.Build();
             _posX.Bind(this.Component, "PosX");
             _posY.Bind(this.Component, "PosY");
             _posZ.Bind(this.Component, "PosZ");

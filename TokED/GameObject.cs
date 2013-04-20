@@ -112,17 +112,23 @@ namespace TokED
             return result;
         }
 
-        public GameObject FindChild(string name)
+        public T FindChild<T>(string name) where T : GameObject
         {
-            return _children.First(go => go.Name == name);
-        }
-
-        public List<GameObject> FindChildren<T>() where T : GameObject
-        {
-            var result = new List<GameObject>();
             foreach (var child in _children)
             {
-                if (child is T) result.Add(child);
+                if (child is T && child.Name == name) return child as T;
+                var result = child.FindChild<T>(name);
+                if (result != null) return result;
+            }
+            return null;
+        }
+
+        public List<T> FindChildren<T>() where T : GameObject
+        {
+            var result = new List<T>();
+            foreach (var child in _children)
+            {
+                if (child is T) result.Add(child as T);
                 result.AddRange(child.FindChildren<T>());
             }
             return result;
@@ -141,9 +147,9 @@ namespace TokED
             }
         }
 
-        public void RemoveChild(string name)
+        public void RemoveChild<T>(string name) where T : GameObject
         {
-            RemoveChild(FindChild(name));
+            RemoveChild(FindChild<T>(name));
         }
 
         public void RemoveChild(GameObject child)

@@ -12,7 +12,6 @@ namespace TokED.UI
     public class ComponentIns : Frame, IDisposable
     {
         private Component _component;
-        private List<Binding> _bindings = new List<Binding>();
 
         public Component Component
         {
@@ -20,7 +19,7 @@ namespace TokED.UI
             set
             {
                 _component = value;
-                Bind();
+                Build();
             }
         }
 
@@ -31,12 +30,7 @@ namespace TokED.UI
             this.Dock = DockStyle.Top;
         }
 
-        protected void AddBinding(Binding binding)
-        {
-            _bindings.Add(binding);
-        }
-
-        protected virtual void Bind()
+        protected virtual void Build()
         {
         }
 

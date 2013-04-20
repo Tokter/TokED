@@ -20,30 +20,25 @@ namespace PluginBase.Components
         private SpriteDefinition _spriteDef;
         private TokGL.Material _material = null;
 
-        public SpriteDefinition Definition
+        public string SpriteDefName
         {
-            get { return _spriteDef; }
-            set { _spriteDef = value; }
-        }
-
-        public override void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("Definition", _spriteDef != null ? _spriteDef.Name : "");
-        }
-
-        public override void ReadXml(XmlReader reader)
-        {
-            if (reader.HasAttributes)
-            {
-                _spriteDefName = reader.GetAttribute("Definition");
-            }
+            get { return _spriteDefName; }
+            set { _spriteDefName = value; }
         }
 
         protected override void OnLoad()
         {
-            var materialObj = _spriteDef.FindParent<PluginBase.GameObjects.Material>();
-            materialObj.Load();
-            _material = materialObj.Mat;
+            _spriteDef = this.Owner.Root.FindChild<SpriteDefinition>(_spriteDefName);
+            if (_spriteDef != null)
+            {
+                var materialObj = _spriteDef.FindParent<PluginBase.GameObjects.Material>();
+                materialObj.Load();
+                _material = materialObj.Mat;
+            }
+            else
+            {
+                _material = null;
+            }
         }
 
         public void Draw(TokGL.LineBatch lineBatch, TokGL.SpriteBatch spriteBatch)
@@ -51,6 +46,19 @@ namespace PluginBase.Components
             if (_spriteDef!=null && _material!=null)
             {
                 spriteBatch.AddSprite(_material, _spriteDef.P1, _spriteDef.P2, _spriteDef.P3, _spriteDef.P4, _spriteDef.Origin, Color.White);
+            }
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("Definition", _spriteDefName);
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            if (reader.HasAttributes)
+            {
+                _spriteDefName = reader.GetAttribute("Definition");
             }
         }
     }
