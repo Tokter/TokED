@@ -10,7 +10,7 @@ using TokED;
 
 namespace PluginBase.Components
 {
-    [Export("Transformation", typeof(Component)), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export("Transformation", typeof(Component)), HasIcon("Transformation.png"), PartCreationPolicy(CreationPolicy.NonShared)]
     public class Transformation : Component
     {
         private Matrix4 _transform = Matrix4.Identity;

@@ -1,50 +1,39 @@
 ﻿using Autofac;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
-using Squid;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using TokED.UI;
+using System.Windows.Forms;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using System.Diagnostics;
 using TokGL;
+using TokED.UI;
+using TokED.UI.Tree;
 
 namespace TokED
 {
-    public class KeyboardBuffer : Dictionary<int, bool> { }
-
-    public class EditorWindow : GameWindow
+    public partial class EditorWindow : Form
     {
-        private int _wheel;
-        private int _lastWheel;
-        private int _mouseX;
-        private int _mouseY;
-        private bool[] _buttons = new bool[4];
-        private KeyboardMapper _mapper = new KeyboardMapper();
-        private KeyboardBuffer _keyBuffer = new KeyboardBuffer();
-        private List<KeyData> _keyList = new List<KeyData>();
-
-        private float _fps;
-        private int _frames;
-        private double _frameTime = 0;
-        private TokGLRenderer _renderer;
-
-        private EditorDesktop _desktop;
+        private Stopwatch _sw = new Stopwatch();
+        private EditorModel _model;
 
         public EditorWindow()
-            : base(800, 600, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 16), "TokED", GameWindowFlags.Default, DisplayDevice.Default, 4, 0, GraphicsContextFlags.ForwardCompatible)
         {
-            VSync = VSyncMode.Off;
+            InitializeComponent();
             Plugins.LoadPlugins();
 
-            //FontBuilder builder = new FontBuilder();
-            //builder.Build(new System.Drawing.Font("Arial", 10.0f), System.Drawing.Text.TextRenderingHint.SystemDefault, @"e:\ArialWhite");
-            //builder.Build(new System.Drawing.Font("Arial", 10.0f), System.Drawing.Text.TextRenderingHint.AntiAlias, @"e:\ArialBlack");
+            //Load Icons
+            UIIcon.ImageList = imageList;
+            var icons = Plugins.GetKeys<UIIcon>();
+            foreach (var icon in icons)
+            {
+                Plugins.Container.ResolveNamed<UIIcon>(icon);
+            }
 
             //Load Tools
             var tools = Plugins.GetKeys<EditorTool>();
@@ -52,121 +41,249 @@ namespace TokED
             {
                 Tools.AddTool(Plugins.Container.ResolveKeyed<EditorTool>(tool));
             }
+
+            glControl.MouseMove += glControl_MouseMove;
+            glControl.MouseWheel += glControl_MouseWheel;
+            glControl.MouseDown += glControl_MouseDown;
+            glControl.MouseUp += glControl_MouseUp;
+            glControl.KeyDown += glControl_KeyDown;
+            glControl.KeyUp += glControl_KeyUp;
         }
 
-        protected override void OnLoad(EventArgs e)
+        private double ComputeTimeSlice()
         {
-            _renderer = new TokGLRenderer();
-            GuiHost.Renderer = _renderer;
-
-            _desktop = new UI.EditorDesktop { Name = "desk" };
-            _desktop.ShowCursor = true;
-            _desktop.AutoSize = AutoSize.HorizontalVertical;
-
-            this.Mouse.Move += Mouse_Move;
-            this.Mouse.WheelChanged += Mouse_WheelChanged;
-            this.Mouse.ButtonDown += Mouse_Button;
-            this.Mouse.ButtonUp += Mouse_Button;
-            this.Keyboard.KeyDown += EditorWindow_KeyDown;
-            this.Keyboard.KeyUp += EditorWindow_KeyUp;
+            _sw.Stop();
+            double timeslice = _sw.Elapsed.TotalMilliseconds;
+            _sw.Reset();
+            _sw.Start();
+            return timeslice;
         }
 
-        protected override void OnUnload(EventArgs e)
+        private void glControl_Paint(object sender, PaintEventArgs e)
         {
-            base.OnUnload(e);
+            Draw();
+        }
+
+        private void glControl_Load(object sender, EventArgs e)
+        {
+            Application.Idle += Application_Idle;
+            _sw.Start();
+
+            _model = new EditorModel();
+            bsAvailableGameObjects.DataSource = _model.AvailableGameObjects;
+            bsAvailableComponents.DataSource = _model.AvailableComponents;
+            _model.Project.Parent.Model.ImageList = imageList;
+            tvGameObjects.Model = _model.Project.Parent.Model;
+            _model.Inspectors.ListChanged += Inspectors_ListChanged;
+            Inspectors_ListChanged(this, new ListChangedEventArgs(ListChangedType.ItemAdded, 0));
+        }
+
+        private void Inspectors_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            pContent.Controls.Clear();
+            Inspector ins;
+            for (int i = _model.Inspectors.Count - 1; i >= 0; i--)
+            {
+                ins = _model.Inspectors[i];
+                var expander = new Expander();
+                expander.Dock = DockStyle.Top;
+                Image icon = null;
+                if (ins.ExportName != null)
+                {
+                    var iconName = Inspector.IconName(ins.ExportName);
+                    if (iconName != null) icon = imageList.Images[iconName];
+                }
+                ExpanderHelper.CreateLabelHeader(expander, ins.Tag.ToString(), SystemColors.ActiveBorder, imageList.Images["Collapse"], imageList.Images["Expand"], icon);
+                ins.Dock = DockStyle.Top;
+                expander.Content = ins;
+                pContent.Controls.Add(expander);
+            }
+        }
+
+        private void EditorWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
             RenderObject.FreeAll();
         }
 
-        void EditorWindow_KeyUp(object sender, KeyboardKeyEventArgs e)
+        private int frameCounter = 0;
+        private double frameTime = 0;
+        private void Application_Idle(object sender, EventArgs e)
         {
-            int code = _mapper.Map(e.Key);
-            if (!_keyBuffer.ContainsKey(code)) _keyBuffer.Add(code, false);
-            if (_desktop.FocusedControl == null) _desktop.Editor.KeyUp(e);
-        }
-
-        void EditorWindow_KeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-            int code = _mapper.Map(e.Key);
-            if (!_keyBuffer.ContainsKey(code)) _keyBuffer.Add(code, true);
-            if (_desktop.FocusedControl == null) _desktop.Editor.KeyDown(e);
-        }
-
-        void Mouse_Button(object sender, MouseButtonEventArgs e)
-        {
-            switch (e.Button)
+            double milliseconds = ComputeTimeSlice();
+            Update(milliseconds);
+            frameCounter++;
+            frameTime += milliseconds;
+            if (frameTime > 1000)
             {
-                case MouseButton.Left: _buttons[0] = e.IsPressed; break;
-                case MouseButton.Right: _buttons[1] = e.IsPressed; break;
-                case MouseButton.Middle: _buttons[2] = e.IsPressed; break;
+                slFPS.Text = string.Format("FPS: {0}", frameCounter);
+                slGameObjectCount.Text = string.Format("GO Count: {0}", GameObject.Count);
+                frameTime -= 1000;
+                frameCounter = 0;
             }
-            if (e.X > _desktop.Width || _desktop.Editor.HasActiveTools) _desktop.Editor.MouseButton(e);
+            glControl.Invalidate();
         }
 
-        void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
+        private void Update(double elapsedTime)
         {
-            _wheel = e.Delta > _lastWheel ? -1 : (e.Delta < _lastWheel ? 1 : 0);
-            _lastWheel = e.Delta;
-            if (e.X > _desktop.Width || _desktop.Editor.HasActiveTools) _desktop.Editor.MouseWheel(e);
+            _model.Editor.Update(elapsedTime);
         }
 
-        void Mouse_Move(object sender, MouseMoveEventArgs e)
+        private void Draw()
         {
-            _mouseX = e.X;
-            _mouseY = e.Y;
-            if (e.X > _desktop.Width || _desktop.Editor.HasActiveTools) _desktop.Editor.MouseMove(e);
-        }
-
-        protected override void OnUpdateFrame(FrameEventArgs e)
-        {
-            base.OnUpdateFrame(e);
-
-            _keyList.Clear();
-            foreach (int key in _keyBuffer.Keys)
-                _keyList.Add(new KeyData { Pressed = _keyBuffer[key], Released = !_keyBuffer[key], Scancode = key });
-            _keyBuffer.Clear();
-
-            if (!_desktop.Editor.HasActiveTools)
-            {
-                GuiHost.SetMouse(_mouseX, _mouseY, _wheel);
-                GuiHost.SetButtons(_buttons);
-            }
-            GuiHost.SetKeyboard(_keyList.ToArray());
-            GuiHost.TimeElapsed = (float)(e.Time * 1000);
-            _desktop.Update();
-
-            _desktop.Editor.Update(e);
-        }
-
-        protected override void OnRenderFrame(FrameEventArgs e)
-        {
-            base.OnRenderFrame(e);
-
-            //FPS Calculation
-            _frames++;
-            _frameTime += e.Time;
-            if (_frames >= 10)
-            {
-                _fps = _frames / (float)_frameTime;
-                _frames = 0;
-                _frameTime = 0.0d;
-                this.Title = string.Format("FPS: {0:n1}", _fps);
-            }
-
-            GL.Disable(EnableCap.ScissorTest);
-            GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
-            _renderer.Resize(ClientRectangle.Width, ClientRectangle.Height);
-
+            GL.Viewport(ClientRectangle.Size);
             GL.ClearColor(0.20f, 0.20f, 0.20f, 0.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            _desktop.Editor.Resize(ClientRectangle.Width, ClientRectangle.Height);
-            _desktop.Editor.Draw(e);
-
-            _desktop.Size = new Point(ClientRectangle.Width, ClientRectangle.Height);
-            _desktop.Draw();
-
-            GL.Flush();
-            SwapBuffers();
+            _model.Editor.Resize(ClientRectangle.Width, ClientRectangle.Height);
+            _model.Editor.Draw();
+            glControl.SwapBuffers();
         }
+
+        private void gameObjectTree_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            _model.SelectedGameObject = e.Node.Tag as GameObject;
+        }
+
+        private void bAddGameObject_Click(object sender, EventArgs e)
+        {
+            _model.AddGameObject((cbAvailableGameObjects.SelectedItem as ImageComboBoxItem).Name);
+        }
+
+        private void bRemoveGameObject_Click(object sender, EventArgs e)
+        {
+             //var parent = gameObjectTree.SelectedNode.Parent;
+            //_model.RemoveGameObject();
+            //gameObjectTree.SelectedNode = parent;
+        }
+
+        #region Input
+
+        void glControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            _model.Editor.MouseMove(e);
+        }
+
+        void glControl_MouseWheel(object sender, MouseEventArgs e)
+        {
+            _model.Editor.MouseWheel(e);
+        }
+
+        void glControl_MouseUp(object sender, MouseEventArgs e)
+        {
+            _model.Editor.MouseUp(e);
+        }
+
+        void glControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            _model.Editor.MouseDown(e);
+        }
+
+        void glControl_KeyUp(object sender, KeyEventArgs e)
+        {
+            _model.Editor.KeyUp(e);
+        }
+
+        void glControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            _model.Editor.KeyDown(e);
+        }
+
+
+        #endregion
+
+        private void tvGameObjects_SelectionChanged(object sender, EventArgs e)
+        {
+            if (tvGameObjects.SelectedNode != null)
+                _model.SelectedGameObject = tvGameObjects.SelectedNode.Tag as GameObject;
+            else
+                _model.SelectedGameObject = null;
+        }
+
+        #region Drag & Drop
+
+        private void tvGameObjects_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            tvGameObjects.DoDragDropSelectedNodes(DragDropEffects.Move);
+        }
+
+        private void tvGameObjects_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(TreeNodeAdv[])) && tvGameObjects.DropPosition.Node != null)
+            {
+                TreeNodeAdv[] nodes = e.Data.GetData(typeof(TreeNodeAdv[])) as TreeNodeAdv[];
+                GameObject dropNode = tvGameObjects.DropPosition.Node.Tag as GameObject;
+
+                if (dropNode == _model.Project && tvGameObjects.DropPosition.Position != NodePosition.Inside)
+                {
+                    e.Effect = DragDropEffects.None;
+                    return;
+                }
+
+                if (tvGameObjects.DropPosition.Position != NodePosition.Inside) dropNode = dropNode.Parent;
+
+                foreach (TreeNodeAdv n in nodes)
+                {
+                    var go = n.Tag as GameObject;
+                    if (CheckNodeParent(dropNode, go) == false || dropNode.IsAcceptableChild(go.ExportName) == false)
+                    {
+                        e.Effect = DragDropEffects.None;
+                        return;
+                    }
+                }
+
+                e.Effect = e.AllowedEffect;
+            }
+        }
+
+        private bool CheckNodeParent(GameObject parent, GameObject node)
+        {
+            while (parent != null)
+            {
+                if (node == parent)
+                    return false;
+                else
+                    parent = parent.Parent;
+            }
+            return true;
+        }
+
+        private void tvGameObjects_DragDrop(object sender, DragEventArgs e)
+        {
+            tvGameObjects.BeginUpdate();
+
+            TreeNodeAdv[] nodes = (TreeNodeAdv[])e.Data.GetData(typeof(TreeNodeAdv[]));
+            GameObject dropNode = tvGameObjects.DropPosition.Node.Tag as GameObject;
+            if (tvGameObjects.DropPosition.Position == NodePosition.Inside)
+            {
+                foreach (TreeNodeAdv n in nodes)
+                {
+                    var go = n.Tag as GameObject;
+                    go.Parent.RemoveChild(go);
+                    dropNode.AddChild(go);
+                }
+                tvGameObjects.DropPosition.Node.IsExpanded = true;
+            }
+            else
+            {
+                GameObject parent = dropNode.Parent;
+                int index = dropNode.Index;
+                foreach (TreeNodeAdv n in nodes)
+                {
+                    var go = n.Tag as GameObject;
+                    go.Parent.RemoveChild(go);
+                    parent.InsertChild(index, go);
+                }
+                tvGameObjects.DropPosition.Node.IsExpanded = true;
+            }
+
+            tvGameObjects.EndUpdate();
+        }
+
+        #endregion
+
+        private void bAddComponent_Click(object sender, EventArgs e)
+        {
+            _model.AddComponent((cbAvailableComponents.SelectedItem as ImageComboBoxItem).Name);
+        }
+
     }
 }

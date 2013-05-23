@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,17 +12,44 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using TokED.UI;
+using TokED.UI.Tree;
 
 namespace TokED
 {
+
+    public class GameObjectList : List<GameObject>
+    {
+        public GameObject Parent { get; private set; }
+
+        public GameObjectList(GameObject parent)
+        {
+            Parent = parent;
+        }
+    }
+
+    [Export("GameObject", typeof(GameObject)), HasIcon("GameObject.png"), PartCreationPolicy(CreationPolicy.NonShared)]
     public class GameObject : IXmlSerializable, INotifyPropertyChanged, IDisposable
     {
-        private List<GameObject> _children = new List<GameObject>();
+        private GameObjectList _children;
         private Dictionary<Type, Component> _components = new Dictionary<Type, Component>();
         private string _name;
         private GameObject _parent = null;
         private bool _expanded = true;
         private bool _visible = true;
+        private static int _gameObjectCount = 0;
+
+        public GameObject()
+        {
+            Name = "GameObject";
+            _children = new GameObjectList(this);
+            _gameObjectCount++;
+        }
+
+        public static int Count
+        {
+            get { return _gameObjectCount; }
+        }
 
         /// <summary>
         /// Helper Property to get to the name that the GameObject is exported as
@@ -36,6 +65,12 @@ namespace TokED
                     .Select(a => (a as ExportAttribute).ContractName)
                     .FirstOrDefault();
             }
+        }
+
+        public static string IconName(string gameObjectName)
+        {
+            var parentMeta = Plugins.GetMetadata<GameObject>(gameObjectName);
+            if (parentMeta.ContainsKey("IconName")) return (string)parentMeta["IconName"]; else return null;
         }
 
         /// <summary>
@@ -68,6 +103,7 @@ namespace TokED
                     child.Visible = _visible;
                 }
                 NotifyChange();
+                NotifyModel();
             }
         }
 
@@ -76,7 +112,7 @@ namespace TokED
         public GameObject Parent
         {
             get { return _parent; }
-            set { _parent = value; NotifyChange(); }
+            set { _parent = value; NotifyChange();  }
         }
 
         public GameObject Root
@@ -89,9 +125,17 @@ namespace TokED
             }
         }
 
-        public IEnumerable<GameObject> Children
+        public List<GameObject> Children
         {
             get { return _children; }
+        }
+
+        public void InsertChild(int index, GameObject gameObject)
+        {
+            gameObject.Expanded = true;
+            gameObject.Parent = this;
+            _children.Insert(index, gameObject);
+            FindModel().OnNodeInserted(this, index, gameObject);
         }
 
         public void AddChild(GameObject gameObject)
@@ -99,6 +143,7 @@ namespace TokED
             gameObject.Expanded = true;
             gameObject.Parent = this;
             _children.Add(gameObject);
+            FindModel().OnNodeInserted(this, gameObject.Index, gameObject);
         }
 
         public GameObject AddChild(string name)
@@ -154,7 +199,11 @@ namespace TokED
 
         public void RemoveChild(GameObject child)
         {
-            if (child != null) _children.Remove(child);
+            if (child != null)
+            {
+                FindModel().OnNodeRemoved(this, child.Index, child);
+                _children.Remove(child);
+            }
         }
 
         public int NumChildrens
@@ -354,7 +403,7 @@ namespace TokED
                                 switch (reader.Name)
                                 {
                                     case "Project":
-                                        this.Clear();
+                                        this.Dispose();
                                         ReadGameObject(null, reader);
                                         break;
                                 }
@@ -456,17 +505,6 @@ namespace TokED
             }
         }
 
-        public void Clear()
-        {
-            OnUnLoad();
-            _components.Clear();
-            foreach (var obj in _children)
-            {
-                obj.Clear();
-            }
-            _children.Clear();
-        }
-
         protected virtual void OnLoad()
         {
         }
@@ -477,13 +515,157 @@ namespace TokED
 
         public void Dispose()
         {
-            Clear();
+            OnUnLoad();
+            _components.Clear();
+            foreach (var obj in _children)
+            {
+                obj.Dispose();
+            }
+            _children.Clear();
+            _gameObjectCount--;
         }
 
         #endregion
 
+        #region Game Object Graph Checks
 
+        public bool IsAcceptableChild(string objName)
+        {
+            if (DoesNotAllowChildren()) return false;
+            if (DoesNotAllowChild(objName)) return false;
+            if (!AllowsChild(objName)) return false;
+            if (!HasRequiredParent(objName)) return false;
+            return true;
+        }
 
+        public bool DoesNotAllowChildren()
+        {
+            var parentMeta = Plugins.GetMetadata<GameObject>(ExportName);
+
+            if (parentMeta.ContainsKey("IsNotAllowingChildren") && (bool)parentMeta["IsNotAllowingChildren"] == true)
+            {
+                return true;
+            }
+            if (this.Parent == null)
+                return false;
+            else
+                return Parent.DoesNotAllowChildren();
+        }
+
+        private bool DoesNotAllowChild(string objName)
+        {
+            var parentMeta = Plugins.GetMetadata<GameObject>(ExportName);
+            var meta = Plugins.GetMetadata<GameObject>(objName);
+
+            if (parentMeta.ContainsKey("IsNotAllowingChild"))
+            {
+                foreach (var unacceptable in (parentMeta["IsNotAllowingChild"] as string[]))
+                {
+                    if (objName == unacceptable) return true;
+                }
+            }
+            if (this.Parent == null)
+                return false;
+            else
+                return Parent.DoesNotAllowChild(objName);
+        }
+
+        private bool AllowsChild(string objName)
+        {
+            var parentMeta = Plugins.GetMetadata<GameObject>(ExportName);
+
+            if (parentMeta.ContainsKey("IsAllowingChild"))
+            {
+                foreach (var required in (parentMeta["IsAllowingChild"] as string[]))
+                {
+                    if (objName != required) return false;
+                }
+            }
+            if (this.Parent == null)
+                return true;
+            else
+                return Parent.AllowsChild(objName);
+        }
+
+        private bool HasRequiredParent(string objName)
+        {
+            var parentMeta = Plugins.GetMetadata<GameObject>(ExportName);
+            var meta = Plugins.GetMetadata<GameObject>(objName);
+
+            if (meta.ContainsKey("IsRequiringParent"))
+            {
+                if (ExportName == meta["IsRequiringParent"].ToString()) return true;
+                else
+                {
+                    if (Parent != null)
+                        return Parent.HasRequiredParent(objName);
+                    else
+                        return false;
+                }
+            }
+            else return true;
+        }
+
+        #endregion
+
+        #region ITreeModel
+
+        private GameObjectTreeModel _model;
+        public GameObjectTreeModel Model
+        {
+            get { return _model; }
+            set
+            {
+                _model = value;
+                _model.Root = this;
+            }
+        }
+
+        private GameObjectTreeModel FindModel()
+        {
+            GameObject node = this;
+            while (node != null)
+            {
+                if (node.Model != null) return node.Model;
+                node = node.Parent;
+            }
+            return null;
+        }
+        
+        public int Index
+		{
+			get
+			{
+				if (_parent != null)
+					return _parent.Children.IndexOf(this);
+				else
+					return -1;
+			}
+		}
+
+        protected void NotifyModel()
+        {
+            var model = FindModel();
+            if (model != null && Parent != null)
+            {
+                TreePath path = model.GetPath(Parent);
+                if (path != null)
+                {
+                    TreeModelEventArgs args = new TreeModelEventArgs(path, new int[] { Index }, new object[] { this });
+                    model.OnNodesChanged(args);
+                }
+            }
+        }
+
+        public Image Icon
+        {
+            get
+            {
+                return FindModel().ImageList.Images[GameObject.IconName(this.ExportName)];
+            }
+        }
+
+        #endregion
     }
 }
 

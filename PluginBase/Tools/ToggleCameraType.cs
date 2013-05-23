@@ -1,10 +1,10 @@
-﻿using OpenTK.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokGL;
 
@@ -14,7 +14,7 @@ namespace PluginBase.Tools
     public class ToggleCameraType : EditorTool
     {
         public ToggleCameraType()
-            : base(ToolEvent.CreateDown(Key.Keypad5), false)
+            : base(ToolEvent.CreateDown(Keys.NumPad5), false)
         {
         }
 

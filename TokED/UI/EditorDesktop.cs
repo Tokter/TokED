@@ -23,7 +23,7 @@ namespace TokED.UI
         private Button _removeComponent;
         private Button _saveButton;
         private Button _loadButton;
-        private TreeView _gameObjectTree;
+        //private TreeView _gameObjectTree;
         private TestSplitContainer _splitContainer;
         private StackPanel _inspectorPanel;
         private string _projectFilename = "";
@@ -340,15 +340,15 @@ namespace TokED.UI
         {
             foreach (var c in _inspectorPanel.Content.Controls)
             {
-                if (c is GameObjectIns) (c as GameObjectIns).Dispose();
+                if (c is GameObjectInsOld) (c as GameObjectInsOld).Dispose();
             }
             _inspectorPanel.Content.Controls.Clear();
 
             if (_selectedGameObject != null)
             {
                 _inspectorPanel.AddCategory(_selectedGameObject.ExportName);
-                var frame = Plugins.Container.ResolveOptionalNamed<GameObjectIns>(_selectedGameObject.ExportName);
-                if (frame == null) frame = new GameObjectIns();
+                var frame = Plugins.Container.ResolveOptionalNamed<GameObjectInsOld>(_selectedGameObject.ExportName);
+                if (frame == null) frame = new GameObjectInsOld();
                 frame.GameObject = _selectedGameObject;
                 _inspectorPanel.AddControl(frame);
 
@@ -359,7 +359,7 @@ namespace TokED.UI
                     {
                         cframe.Component = c;
                         _inspectorPanel.AddCategory(c.ExportName);
-                        _inspectorPanel.AddControl(cframe);
+                        //_inspectorPanel.AddControl(cframe);
                     }
                 }
             }

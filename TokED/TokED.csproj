@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,7 +48,13 @@
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\opentk_unoffical.1.1.788.3121\lib\OpenTK.dll</HintPath>
+      <HintPath>..\packages\opentk_compat_glcontrol.1.1.1173.43181\lib\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.Compatibility">
+      <HintPath>..\packages\opentk_compat_glcontrol.1.1.1173.43181\lib\OpenTK.Compatibility.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\packages\opentk_compat_glcontrol.1.1.1173.43181\lib\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="Squid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ba804b1072f6e05, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -56,6 +63,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,35 +81,192 @@
     <Compile Include="ColorChooser\ColorHandler.cs" />
     <Compile Include="ColorChooser\ColorWheel.cs" />
     <Compile Include="Component.cs" />
+    <Compile Include="EditorModel.cs" />
     <Compile Include="Editors\BindingManager.cs" />
     <Compile Include="Editors\Editor.cs" />
     <Compile Include="Editors\EditorControl.cs" />
     <Compile Include="Editors\Handle.cs" />
     <Compile Include="EditorTool.cs" />
+    <Compile Include="EditorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditorWindow.Designer.cs">
+      <DependentUpon>EditorWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="IDrawable.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="ShaderDefinition.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="UI\Bindings.cs" />
     <Compile Include="UI\ColorButton.cs" />
-    <Compile Include="UI\ComponentIns.cs" />
-    <Compile Include="UI\EditorDesktop.cs" />
+    <Compile Include="UI\ComponentIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ComponentIns.Designer.cs">
+      <DependentUpon>ComponentIns.cs</DependentUpon>
+    </Compile>
+    <None Include="Resources\loading_icon" />
+    <None Include="UI\EditorDesktop.cs" />
     <Compile Include="UI\EditorSkin.cs" />
-    <Compile Include="EditorWindow.cs" />
+    <None Include="EditorWindowOld.cs" />
     <Compile Include="GameObject.cs" />
-    <Compile Include="GameObjectAttributes.cs" />
+    <Compile Include="Attributes.cs" />
     <Compile Include="Plugins.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TokGLRenderer.cs" />
-    <Compile Include="UI\GameObjectIns.cs" />
+    <Compile Include="UI\Expander.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\GameObjectIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\GameObjectIns.Designer.cs">
+      <DependentUpon>GameObjectIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GameObjectInsOld.cs" />
+    <Compile Include="UI\GameObjectTreeModel.cs" />
+    <Compile Include="UI\ImageComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\ImageItem.cs" />
     <Compile Include="UI\GameObjectTreeNode.cs" />
+    <Compile Include="UI\Inspector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Inspector.Designer.cs">
+      <DependentUpon>Inspector.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\KeyboardMapper.cs" />
     <Compile Include="UI\StackPanel.cs" />
     <Compile Include="UI\TestSplitContainer.cs" />
     <Compile Include="UI\TextBoxEx.cs" />
+    <Compile Include="UI\TreeView\AutoRowHeightLayout.cs" />
+    <Compile Include="UI\TreeView\BitmapHelper.cs" />
+    <Compile Include="UI\TreeView\ColumnCollection.cs" />
+    <Compile Include="UI\TreeView\DrawContext.cs" />
+    <Compile Include="UI\TreeView\DropNodeValidatingEventArgs.cs" />
+    <Compile Include="UI\TreeView\DropPosition.cs" />
+    <Compile Include="UI\TreeView\EditorContext.cs" />
+    <Compile Include="UI\TreeView\Enums.cs" />
+    <Compile Include="UI\TreeView\FixedRowHeightLayout.cs" />
+    <Compile Include="UI\TreeView\GifDecoder.cs" />
+    <Compile Include="UI\TreeView\IncrementalSearch.cs" />
+    <Compile Include="UI\TreeView\Input\ClickColumnState.cs" />
+    <Compile Include="UI\TreeView\Input\ColumnState.cs" />
+    <Compile Include="UI\TreeView\Input\InputState.cs" />
+    <Compile Include="UI\TreeView\Input\InputWithControl.cs" />
+    <Compile Include="UI\TreeView\Input\InputWithShift.cs" />
+    <Compile Include="UI\TreeView\Input\NormalInputState.cs" />
+    <Compile Include="UI\TreeView\Input\ReorderColumnState.cs" />
+    <Compile Include="UI\TreeView\Input\ResizeColumnState.cs" />
+    <Compile Include="UI\TreeView\IRowLayout.cs" />
+    <Compile Include="UI\TreeView\IToolTipProvider.cs" />
+    <Compile Include="UI\TreeView\ITreeModel.cs" />
+    <Compile Include="UI\TreeView\ListModel.cs" />
+    <Compile Include="UI\TreeView\NativeMethods.cs" />
+    <Compile Include="UI\TreeView\Node.cs" />
+    <Compile Include="UI\TreeView\NodeControlInfo.cs" />
+    <Compile Include="UI\TreeView\NodeControls\BaseTextControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\BindableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\DrawEventArgs.cs" />
+    <Compile Include="UI\TreeView\NodeControls\EditableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\EditEventArgs.cs" />
+    <Compile Include="UI\TreeView\NodeControls\ExpandingIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\InteractiveControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\LabelEventArgs.cs" />
+    <Compile Include="UI\TreeView\NodeControls\NodeCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeControlsCollection.cs" />
+    <Compile Include="UI\TreeView\NodeControls\NodeControlValueEventArgs.cs" />
+    <Compile Include="UI\TreeView\NodeControls\NodeDecimalTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeEventArgs.cs" />
+    <Compile Include="UI\TreeView\NodeControls\NodeIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeIntegerTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodePlusMinus.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeStateIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NodeControls\NodeTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\NumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\PerformanceAnalyzer.cs" />
+    <Compile Include="UI\TreeView\ResourceHelper.cs" />
+    <Compile Include="UI\TreeView\SortedTreeModel.cs" />
+    <Compile Include="UI\TreeView\StringCollectionEditor.cs" />
+    <Compile Include="UI\TreeView\TextHelper.cs" />
+    <Compile Include="UI\TreeView\Threading\AbortableThreadPool.cs" />
+    <Compile Include="UI\TreeView\Threading\WorkItem.cs" />
+    <Compile Include="UI\TreeView\Threading\WorkItemStatus.cs" />
+    <Compile Include="UI\TreeView\TimeCounter.cs" />
+    <Compile Include="UI\TreeView\TreeColumn.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\TreeColumnCollection.cs" />
+    <Compile Include="UI\TreeView\TreeColumnEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreeListAdapter.cs" />
+    <Compile Include="UI\TreeView\TreeModel.cs" />
+    <Compile Include="UI\TreeView\TreeModelBase.cs" />
+    <Compile Include="UI\TreeView\TreeModelEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreeNodeAdv.cs" />
+    <Compile Include="UI\TreeView\TreeNodeAdvMouseEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreePath.cs" />
+    <Compile Include="UI\TreeView\TreePathEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreeViewAdv.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\TreeViewAdv.Designer.cs" />
+    <Compile Include="UI\TreeView\TreeViewAdv.Draw.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\TreeViewAdv.Editor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\TreeViewAdv.Input.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\TreeViewAdv.Properties.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TreeView\TreeViewAdvCancelEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreeViewAdvEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreeViewRowDrawEventArgs.cs" />
+    <Compile Include="UI\UIIcon.cs" />
     <Compile Include="UI\UITexture.cs" />
+    <EmbeddedResource Include="EditorWindow.resx">
+      <DependentUpon>EditorWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -114,7 +279,12 @@
     </Compile>
     <EmbeddedResource Include="Content\ArialBlack.info" />
     <EmbeddedResource Include="Content\ArialWhite.info" />
+    <EmbeddedResource Include="UI\GameObjectIns.resx">
+      <DependentUpon>GameObjectIns.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\GameObject.datasource" />
+    <None Include="Properties\DataSources\GameObjectItem.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -147,6 +317,33 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\check.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Folder.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FolderClosed.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Leaf.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\minus.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\uncheck.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unknown.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DVSplit.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

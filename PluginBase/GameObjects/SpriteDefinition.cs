@@ -10,7 +10,7 @@ using TokED;
 
 namespace PluginBase.GameObjects
 {
-    [Export("SpriteDefinition", typeof(GameObject)), PartCreationPolicy(CreationPolicy.NonShared), RequiresParent("Material"), DoesNotAllowChildren()]
+    [Export("SpriteDefinition", typeof(GameObject)), HasIcon("SpriteDef.png"), PartCreationPolicy(CreationPolicy.NonShared), RequiresParent("Material"), DoesNotAllowChildren()]
     public class SpriteDefinition : GameObject
     {
         private Vector2 _p1 = new Vector2(0, 0);

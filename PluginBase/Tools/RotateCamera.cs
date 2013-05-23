@@ -1,11 +1,11 @@
 ﻿using OpenTK;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokGL;
 
@@ -18,7 +18,7 @@ namespace PluginBase.Tools
         private Vector2 _mouseStartPos;
 
         public RotateCamera()
-            : base(ToolEvent.CreateDown(MouseButton.Middle, Modifier.Shift), true)
+            : base(ToolEvent.CreateDown(MouseButtons.Middle, Keys.Shift), true)
         {
         }
 
@@ -27,20 +27,21 @@ namespace PluginBase.Tools
             return Editor != null && Editor.Camera != null;
         }
 
-        public override void Mouse_Button(MouseButtonEventArgs e)
+        public override void Mouse_Down(MouseEventArgs e)
         {
-            if (e.Button == MouseButton.Middle)
+            if (e.Button == MouseButtons.Middle)
             {
-                if (e.IsPressed)
-                {
-                    _camera = Editor.Camera.Clone();
-                    _mouseStartPos = new Vector2(e.X, e.Y);
-                }
-                else Done = true;
+                _camera = Editor.Camera.Clone();
+                _mouseStartPos = new Vector2(e.X, e.Y);
             }
         }
 
-        public override void Mouse_Move(MouseMoveEventArgs e)
+        public override void Mouse_Up(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle) Done = true;
+        }
+
+        public override void Mouse_Move(MouseEventArgs e)
         {
             var delta = _mouseStartPos - new Vector2(e.X, e.Y);
 

@@ -14,10 +14,15 @@ namespace TokED
         [STAThread]
         static void Main()
         {
-            using (EditorWindow editorWindow = new EditorWindow())
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new EditorWindow());
+            /*
+            using (EditorWindowOld editorWindow = new EditorWindowOld())
             {
                 editorWindow.Run();
             }
+            */
         }
     }
 }

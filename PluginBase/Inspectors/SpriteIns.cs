@@ -12,17 +12,17 @@ using TokED.UI;
 
 namespace PluginBase.Inspectors
 {
-    [Export("Sprite", typeof(ComponentIns)), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export("Sprite", typeof(ComponentIns)), HasIcon("Sprite.png"), PartCreationPolicy(CreationPolicy.NonShared)]
     public class SpriteIns : ComponentIns
     {
-        protected override void Build()
-        {
-            var sprites = new List<String>();
-            foreach (var child in this.Component.Owner.Root.FindChildren<SpriteDefinition>())
-            {
-                sprites.Add(child.Name);
-            }
-            this.AddStringList(100, "Sprite Def.", sprites).Bind(this.Component, "SpriteDefName");
-        }
+        //protected override void Build()
+        //{
+        //    var sprites = new List<String>();
+        //    foreach (var child in this.Component.Owner.Root.FindChildren<SpriteDefinition>())
+        //    {
+        //        sprites.Add(child.Name);
+        //    }
+        //    this.AddStringList(100, "Sprite Def.", sprites).Bind(this.Component, "SpriteDefName");
+        //}
     }
 }

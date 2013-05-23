@@ -1,6 +1,5 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -8,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokGL;
 
 namespace TokED.Editors
@@ -170,12 +170,13 @@ namespace TokED.Editors
 
         #region Rendering
 
-        public void Update(FrameEventArgs e)
+        public void Update(double elapsedTime)
         {
-            _rootControl.Update(this, e);
+            _rootControl.Update(this, elapsedTime);
+            _manager.Update(elapsedTime);
         }
 
-        public void Draw(FrameEventArgs e)
+        public void Draw()
         {
             //Draw World
             _manager.Camera = _editorCamera;
@@ -192,7 +193,7 @@ namespace TokED.Editors
 
             _spriteBatch.End();
             _lineBatch.End();
-            _manager.End(e);
+            _manager.End();
 
             //Draw Gui
             _manager.Camera = _guiCamera;
@@ -251,7 +252,7 @@ namespace TokED.Editors
             }
         }
 
-        public void MouseMove(MouseMoveEventArgs e)
+        public void MouseMove(MouseEventArgs e)
         {
             _tools.MouseMove(e);
             _mousePos = new Vector2(e.X, e.Y);
@@ -282,22 +283,27 @@ namespace TokED.Editors
             if (_mouseOverControl != null) _mouseOverControl.MouseMove(e);
         }
 
-        public void MouseWheel(MouseWheelEventArgs e)
+        public void MouseWheel(MouseEventArgs e)
         {
             _tools.MouseWheel(e);
         }
 
-        public void MouseButton(MouseButtonEventArgs e)
+        public void MouseUp(MouseEventArgs e)
         {
-            _tools.MouseButton(e);
+            _tools.MouseUp(e);
         }
 
-        public void KeyDown(KeyboardKeyEventArgs e)
+        public void MouseDown(MouseEventArgs e)
+        {
+            _tools.MouseDown(e);
+        }
+
+        public void KeyDown(KeyEventArgs e)
         {
             _tools.KeyDown(e);
         }
 
-        public void KeyUp(KeyboardKeyEventArgs e)
+        public void KeyUp(KeyEventArgs e)
         {
             _tools.KeyUp(e);
         }

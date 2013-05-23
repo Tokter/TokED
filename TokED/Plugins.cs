@@ -102,7 +102,13 @@ namespace TokED
                 // Add the key to our list so long as the registration is for the correct type T
                 allKeys.AddRange(typedServices.Where(y => y.ServiceType == typeof(T)).Select(x => x.ServiceKey.ToString()));
             }
+            allKeys.Sort();
             return allKeys;
+        }
+
+        public static bool Has<T>(string name)
+        {
+            return GetKeys<T>().Contains(name);
         }
 
         public static IDictionary<string, object> GetMetadata<T>(string name)

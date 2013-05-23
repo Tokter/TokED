@@ -9,7 +9,7 @@ using TokED;
 
 namespace PluginBase.GameObjects
 {
-    [Export("Project", typeof(GameObject)), PartCreationPolicy(CreationPolicy.Shared), DoesNotAllowChild("Project")]
+    [Export("Project", typeof(GameObject)), HasIcon("Project.png"), PartCreationPolicy(CreationPolicy.Shared), DoesNotAllowChild("Project")]
     public class Project : GameObject
     {
         private int _width = 1280;

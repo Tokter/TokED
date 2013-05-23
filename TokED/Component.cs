@@ -19,14 +19,19 @@ namespace TokED
         {
             get
             {
-                var t = this.GetType();
-                var atr = t.GetCustomAttributes(typeof(ExportAttribute), false);
-                if (atr != null && atr.Length > 0 && atr[0] is ExportAttribute)
-                {
-                    return (atr[0] as ExportAttribute).ContractName;
-                }
-                return null;
+                var test = this.GetType().GetCustomAttributes(typeof(ExportAttribute), false);
+                var test2 = test.Where(a => a is ExportAttribute && (a as ExportAttribute).ContractName != null).Select(a => (a as ExportAttribute).ContractName);
+                return this.GetType().GetCustomAttributes(typeof(ExportAttribute), false)
+                    .Where(a => a is ExportAttribute && (a as ExportAttribute).ContractName != null)
+                    .Select(a => (a as ExportAttribute).ContractName)
+                    .FirstOrDefault();
             }
+        }
+
+        public static string IconName(string componentName)
+        {
+            var parentMeta = Plugins.GetMetadata<Component>(componentName);
+            if (parentMeta.ContainsKey("IconName")) return (string)parentMeta["IconName"]; else return null;
         }
 
         #region XML Serialization

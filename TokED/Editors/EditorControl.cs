@@ -1,5 +1,4 @@
 ﻿using OpenTK;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokGL;
 
 namespace TokED.Editors
@@ -194,7 +194,7 @@ namespace TokED.Editors
             else return false;
         }
 
-        public void Update(Editor editor, OpenTK.FrameEventArgs e)
+        public void Update(Editor editor, double elapsedTime)
         {
             switch (_positionType)
             {
@@ -208,7 +208,7 @@ namespace TokED.Editors
             }
             foreach (var child in _children)
             {
-                child.Update(editor, e);
+                child.Update(editor, elapsedTime);
             }
         }
 
@@ -248,7 +248,7 @@ namespace TokED.Editors
         {
         }
 
-        public virtual void MouseMove(MouseMoveEventArgs e)
+        public virtual void MouseMove(MouseEventArgs e)
         {
         }
 

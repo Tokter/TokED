@@ -1,11 +1,11 @@
 ﻿using OpenTK;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokED.Editors;
 using TokGL;
@@ -22,7 +22,7 @@ namespace PluginBase.Tools
         private Dictionary<EditorControl, Vector3> _startPositions = new Dictionary<EditorControl, Vector3>();
 
         public MoveSelected()
-            : base(ToolEvent.CreateDown(Key.G), true)
+            : base(ToolEvent.CreateDown(Keys.G), true)
         {
         }
 
@@ -36,7 +36,7 @@ namespace PluginBase.Tools
             _startSet = false;
         }
 
-        public override void Mouse_Move(MouseMoveEventArgs e)
+        public override void Mouse_Move(MouseEventArgs e)
         {
             _endMouseRay = Editor.Camera.GetWorldRay(new Vector2(e.X, e.Y));
             if (!_startSet)
@@ -67,16 +67,20 @@ namespace PluginBase.Tools
             }
         }
 
-        public override void Mouse_Button(MouseButtonEventArgs e)
+        public override void Mouse_Down(MouseEventArgs e)
         {
-            if (e.Button == MouseButton.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 foreach (var control in _startPositions.Keys)
                 {
                     control.Position = _startPositions[control];
                 }
-            }
-            Done = true;
+            }            
+        }
+
+        public override void Mouse_Up(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) Done = true;
         }
     }
 }

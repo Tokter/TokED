@@ -9,7 +9,7 @@ using TokED;
 
 namespace PluginBase.GameObjects
 {
-    [Export("Scene", typeof(GameObject)), PartCreationPolicy(CreationPolicy.NonShared), DoesNotAllowChild("Scene")]
+    [Export("Scene", typeof(GameObject)), HasIcon("Scene.png"), PartCreationPolicy(CreationPolicy.NonShared), DoesNotAllowChild("Scene")]
     public class Scene : GameObject
     {
         private int _transitionInTime = 0;

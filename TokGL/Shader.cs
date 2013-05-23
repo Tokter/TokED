@@ -56,8 +56,8 @@ namespace TokGL
         public ShaderParamType Type;
         public int Location;
         public string Name;
-        public string LongName;        
-        public int IntValue;
+        public string LongName { get; set; }
+        public int IntValue { get; set; }
         public float FloatValue;
         public Vector2 Vec2Value;
         public Vector3 Vec3Value;

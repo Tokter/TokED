@@ -1,11 +1,11 @@
 ﻿using OpenTK;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokGL;
 
@@ -15,7 +15,7 @@ namespace PluginBase.Tools
     public class SelectToggle : EditorTool
     {
         public SelectToggle()
-            : base(ToolEvent.CreateDown(MouseButton.Right, Modifier.Shift), false)
+            : base(ToolEvent.CreateDown(MouseButtons.Right, Keys.Shift), false)
         {
         }
 

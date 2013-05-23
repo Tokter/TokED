@@ -1,9 +1,9 @@
-﻿using OpenTK.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED.Editors;
 
 namespace TokED
@@ -12,7 +12,7 @@ namespace TokED
     {
         private static List<EditorTool> _tools = new List<EditorTool>();
         private Stack<EditorTool> _activeTools = new Stack<EditorTool>();
-        private Modifier _modifier = Modifier.None;
+        private Keys _modifier = Keys.None;
         private Editor _editor;
 
         public Tools(Editor editor)
@@ -82,78 +82,46 @@ namespace TokED
             }
         }
 
-        public void MouseMove(MouseMoveEventArgs e)
+        public void MouseMove(MouseEventArgs e)
         {
             Push(ToolEvent.CreateMouseMove());
             if (_activeTools.Count > 0) _activeTools.Peek().Mouse_Move(e);
             CheckIfCurrentToolIsDone();
         }
 
-        public void MouseWheel(MouseWheelEventArgs e)
+        public void MouseWheel(MouseEventArgs e)
         {
             Push(ToolEvent.CreateMouseWheel());
             if (_activeTools.Count > 0) _activeTools.Peek().Mouse_Wheel(e);
             CheckIfCurrentToolIsDone();
         }
 
-        public void MouseButton(MouseButtonEventArgs e)
+        public void MouseUp(MouseEventArgs e)
         {
-            if (e.IsPressed)
-            {
-                Push(ToolEvent.CreateDown(e.Button, _modifier));
-            }
-            else
-            {
-                Push(ToolEvent.CreateUp(e.Button, _modifier));
-            }
-            if (_activeTools.Count > 0) _activeTools.Peek().Mouse_Button(e);
+            Push(ToolEvent.CreateUp(e.Button, _modifier));
+            if (_activeTools.Count > 0) _activeTools.Peek().Mouse_Up(e);
             CheckIfCurrentToolIsDone();
         }
 
-        public void KeyDown(KeyboardKeyEventArgs e)
+        public void MouseDown(MouseEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.ShiftLeft:
-                case Key.ShiftRight:
-                    _modifier |= Modifier.Shift;
-                    break;
+            Push(ToolEvent.CreateDown(e.Button, _modifier));
+            if (_activeTools.Count > 0) _activeTools.Peek().Mouse_Down(e);
+            CheckIfCurrentToolIsDone();
+        }
 
-                case Key.ControlLeft:
-                case Key.ControlRight:
-                    _modifier |= Modifier.Control;
-                    break;
-
-                case Key.AltLeft:
-                case Key.AltRight:
-                    _modifier |= Modifier.Alt;
-                    break;
-            }
-            Push(ToolEvent.CreateDown(e.Key, _modifier));
+        public void KeyDown(KeyEventArgs e)
+        {
+            _modifier = e.Modifiers;
+            Push(ToolEvent.CreateDown(e.KeyCode, _modifier));
             if (_activeTools.Count > 0) _activeTools.Peek().Key_Down(e);
             CheckIfCurrentToolIsDone();
         }
 
-        public void KeyUp(KeyboardKeyEventArgs e)
+        public void KeyUp(KeyEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.ShiftLeft:
-                case Key.ShiftRight:
-                    _modifier ^= Modifier.Shift;
-                    break;
-
-                case Key.ControlLeft:
-                case Key.ControlRight:
-                    _modifier ^= Modifier.Control;
-                    break;
-
-                case Key.AltLeft:
-                case Key.AltRight:
-                    _modifier ^= Modifier.Alt;
-                    break;
-            }
-            Push(ToolEvent.CreateUp(e.Key, _modifier));
+            _modifier = e.Modifiers;
+            Push(ToolEvent.CreateUp(e.KeyCode, _modifier));
             if (_activeTools.Count > 0) _activeTools.Peek().Key_Up(e);
             CheckIfCurrentToolIsDone();
         }

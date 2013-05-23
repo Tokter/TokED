@@ -8,7 +8,7 @@ using TokED;
 
 namespace PluginBase.GameObjects
 {
-    [Export("Folder", typeof(GameObject)), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export("Folder", typeof(GameObject)), HasIcon("Folder.png"), PartCreationPolicy(CreationPolicy.NonShared)]
     public class Folder : GameObject
     {
         public Folder()

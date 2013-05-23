@@ -1,11 +1,11 @@
 ﻿using OpenTK;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokGL;
 
@@ -15,7 +15,7 @@ namespace PluginBase.Tools
     public class FrontView : EditorTool
     {
         public FrontView()
-            : base(ToolEvent.CreateDown(Key.Keypad1), false)
+            : base(ToolEvent.CreateDown(Keys.NumPad1), false)
         {
         }
 

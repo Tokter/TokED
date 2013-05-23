@@ -1,31 +1,31 @@
-﻿using Squid;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED.UI;
+using System.ComponentModel.Composition;
+using PluginBase.GameObjects;
+using TokED;
 
 namespace PluginBase.Inspectors
 {
-    [Export("Scene", typeof(GameObjectIns)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class SceneIns : GameObjectIns
+    [Export("Scene", typeof(GameObjectIns)), HasIcon("Scene.png"), PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class SceneIns : GameObjectIns
     {
-        private TextBox _transitionIn;
-        private TextBox _transitionOut;
-
         public SceneIns()
         {
-            _transitionIn = this.AddLabeledTextBox(100, "Transition In:");
-            _transitionOut = this.AddLabeledTextBox(100, "Transition Out:");
+            InitializeComponent();
         }
 
-        protected override void Build()
+        protected override void Bind()
         {
-            base.Build();
-            _transitionIn.Bind(this.GameObject, "TransitionInTime");
-            _transitionOut.Bind(this.GameObject, "TransitionOutTime");
+            base.Bind();
+            bsScene.DataSource = this.GameObject as Scene;
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using OpenTK;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokGL;
 
@@ -15,7 +15,7 @@ namespace PluginBase.Tools
     public class SelectAll : EditorTool
     {
         public SelectAll()
-            : base(ToolEvent.CreateDown(Key.A), false)
+            : base(ToolEvent.CreateDown(Keys.A), false)
         {
         }
 

@@ -13,7 +13,7 @@ using TokGL;
 
 namespace PluginBase.Components
 {
-    [Export("Sprite", typeof(Component)), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export("Sprite", typeof(Component)), HasIcon("Sprite.png"),  PartCreationPolicy(CreationPolicy.NonShared)]
     public class Sprite : Component, IDrawable
     {
         private string _spriteDefName;

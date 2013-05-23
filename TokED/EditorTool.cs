@@ -1,42 +1,33 @@
-﻿using OpenTK.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED.Editors;
 
 namespace TokED
 {
-    [Flags]
-    public enum Modifier
-    {
-        None = 0,
-        Shift = 1,
-        Control = 2,
-        Alt = 4,
-    }
-
     public enum ToolEventType { KeyDown, KeyUp, MouseDown, MouseUp, MouseMove, MouseWheel }
 
     public struct ToolEvent
     {
         public ToolEventType EventType;
-        public Modifier Modifiers;
-        public Key Key;
-        public MouseButton Button;
+        public Keys Modifiers;
+        public Keys Key;
+        public MouseButtons Button;
 
-        public static ToolEvent CreateDown(Key key)
+        public static ToolEvent CreateDown(Keys key)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.KeyDown;
-            se.Modifiers = Modifier.None;
+            se.Modifiers = Keys.None;
             se.Key = key;
             return se;
         }
 
-        public static ToolEvent CreateDown(Key key, Modifier modifier)
+        public static ToolEvent CreateDown(Keys key, Keys modifier)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.KeyDown;
@@ -45,16 +36,16 @@ namespace TokED
             return se;
         }
 
-        public static ToolEvent CreateDown(MouseButton button)
+        public static ToolEvent CreateDown(MouseButtons button)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.MouseDown;
-            se.Modifiers = Modifier.None;
+            se.Modifiers = Keys.None;
             se.Button = button;
             return se;
         }
 
-        public static ToolEvent CreateDown(MouseButton button, Modifier modifier)
+        public static ToolEvent CreateDown(MouseButtons button, Keys modifier)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.MouseDown;
@@ -63,16 +54,16 @@ namespace TokED
             return se;
         }
 
-        public static ToolEvent CreateUp(Key key)
+        public static ToolEvent CreateUp(Keys key)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.KeyUp;
-            se.Modifiers = Modifier.None;
+            se.Modifiers = Keys.None;
             se.Key = key;
             return se;
         }
 
-        public static ToolEvent CreateUp(Key key, Modifier modifier)
+        public static ToolEvent CreateUp(Keys key, Keys modifier)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.KeyUp;
@@ -81,16 +72,16 @@ namespace TokED
             return se;
         }
 
-        public static ToolEvent CreateUp(MouseButton button)
+        public static ToolEvent CreateUp(MouseButtons button)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.MouseUp;
-            se.Modifiers = Modifier.None;
+            se.Modifiers = Keys.None;
             se.Button = button;
             return se;
         }
 
-        public static ToolEvent CreateUp(MouseButton button, Modifier modifier)
+        public static ToolEvent CreateUp(MouseButtons button, Keys modifier)
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.MouseUp;
@@ -103,7 +94,7 @@ namespace TokED
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.MouseMove;
-            se.Modifiers = Modifier.None;
+            se.Modifiers = Keys.None;
             return se;
         }
 
@@ -111,7 +102,7 @@ namespace TokED
         {
             var se = new ToolEvent();
             se.EventType = ToolEventType.MouseWheel;
-            se.Modifiers = Modifier.None;
+            se.Modifiers = Keys.None;
             return se;
         }
 
@@ -172,23 +163,27 @@ namespace TokED
 
         public Tools StateStack { get; set; }
 
-        public virtual void Mouse_Move(MouseMoveEventArgs e)
+        public virtual void Mouse_Move(MouseEventArgs e)
         {
         }
 
-        public virtual void Mouse_Wheel(MouseWheelEventArgs e)
+        public virtual void Mouse_Wheel(MouseEventArgs e)
         {
         }
 
-        public virtual void Mouse_Button(MouseButtonEventArgs e)
+        public virtual void Mouse_Up(MouseEventArgs e)
         {
         }
 
-        public virtual void Key_Down(KeyboardKeyEventArgs e)
+        public virtual void Mouse_Down(MouseEventArgs e)
         {
         }
 
-        public virtual void Key_Up(KeyboardKeyEventArgs e)
+        public virtual void Key_Down(KeyEventArgs e)
+        {
+        }
+
+        public virtual void Key_Up(KeyEventArgs e)
         {
         }
 

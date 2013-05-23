@@ -524,24 +524,24 @@ namespace TokED.UI
             return dropDownButton;
         }
 
-        public static TreeView AddTreeView(this Control parent, int x, int y, int width, int height)
-        {
-            var treeView = new TreeView();
-            treeView.Parent = parent;
-            treeView.Size = new Point(width, height);
-            treeView.Position = new Point(x, y);
-            treeView.Style = "listboxFrame";
-            treeView.ClipFrame.Margin = new Margin(4);
-            treeView.Scrollbar.Margin = new Margin(1, 1, 1, 1);
-            treeView.Scrollbar.Size = new Squid.Point(13, 13);
-            treeView.Scrollbar.Slider.Style = "vscrollTrack";
-            treeView.Scrollbar.Slider.Button.Style = "vscrollButton";
-            treeView.Scrollbar.ButtonUp.Visible = false;
-            treeView.Scrollbar.ButtonDown.Visible = false;
-            treeView.Scrollbar.Slider.Margin = new Margin(0, 2, 0, 2);
-            treeView.Indent = 15;
-            return treeView;
-        }
+        //public static TreeView AddTreeView(this Control parent, int x, int y, int width, int height)
+        //{
+        //    var treeView = new TreeView();
+        //    treeView.Parent = parent;
+        //    treeView.Size = new Point(width, height);
+        //    treeView.Position = new Point(x, y);
+        //    treeView.Style = "listboxFrame";
+        //    treeView.ClipFrame.Margin = new Margin(4);
+        //    treeView.Scrollbar.Margin = new Margin(1, 1, 1, 1);
+        //    treeView.Scrollbar.Size = new Squid.Point(13, 13);
+        //    treeView.Scrollbar.Slider.Style = "vscrollTrack";
+        //    treeView.Scrollbar.Slider.Button.Style = "vscrollButton";
+        //    treeView.Scrollbar.ButtonUp.Visible = false;
+        //    treeView.Scrollbar.ButtonDown.Visible = false;
+        //    treeView.Scrollbar.Slider.Margin = new Margin(0, 2, 0, 2);
+        //    treeView.Indent = 15;
+        //    return treeView;
+        //}
 
         public static TestSplitContainer AddSplitContainer(this Control parent, Orientation orientation)
         {

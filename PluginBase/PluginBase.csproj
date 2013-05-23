@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\opentk_unoffical.1.1.788.3121\lib\OpenTK.dll</HintPath>
+      <HintPath>..\packages\opentk_compat_glcontrol.1.1.1173.43181\lib\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="Squid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ba804b1072f6e05, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -49,6 +49,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,17 +63,52 @@
     <Compile Include="Editors\SpriteDefinitionEditor.cs" />
     <Compile Include="Editors\MaterialEditor.cs" />
     <Compile Include="GameObjects\Empty.cs" />
-    <Compile Include="Inspectors\ProjectIns.cs" />
-    <Compile Include="Inspectors\SceneIns.cs" />
-    <Compile Include="Inspectors\SpriteDefinitionIns.cs" />
-    <Compile Include="Inspectors\SpriteIns.cs" />
-    <Compile Include="Inspectors\MaterialIns.cs" />
+    <Compile Include="Inspectors\MaterialIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\MaterialIns.Designer.cs">
+      <DependentUpon>MaterialIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\ParameterInt.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParameterInt.Designer.cs">
+      <DependentUpon>ParameterInt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\ProjectIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ProjectIns.Designer.cs">
+      <DependentUpon>ProjectIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\SceneIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\SceneIns.Designer.cs">
+      <DependentUpon>SceneIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\SpriteDefinitionIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\SpriteDefinitionIns.Designer.cs">
+      <DependentUpon>SpriteDefinitionIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\SpriteIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\MaterialInsOld.cs" />
     <Compile Include="GameObjects\Folder.cs" />
     <Compile Include="GameObjects\Project.cs" />
     <Compile Include="GameObjects\Scene.cs" />
     <Compile Include="GameObjects\SpriteDefinition.cs" />
     <Compile Include="GameObjects\Material.cs" />
-    <Compile Include="Inspectors\TransformationIns.cs" />
+    <Compile Include="Inspectors\TransformationIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\TransformationIns.Designer.cs">
+      <DependentUpon>TransformationIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginBaseIcons.cs" />
     <Compile Include="PluginBaseTextures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -111,6 +147,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Inspectors\MaterialIns.resx">
+      <DependentUpon>MaterialIns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterInt.resx">
+      <DependentUpon>ParameterInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ProjectIns.resx">
+      <DependentUpon>ProjectIns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\SceneIns.resx">
+      <DependentUpon>SceneIns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\SpriteDefinitionIns.resx">
+      <DependentUpon>SpriteDefinitionIns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\TransformationIns.resx">
+      <DependentUpon>TransformationIns.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -118,9 +172,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\PluginBase.Components.Transformation.datasource" />
+    <None Include="Properties\DataSources\PluginBase.GameObjects.Material.datasource" />
+    <None Include="Properties\DataSources\PluginBase.GameObjects.Project.datasource" />
+    <None Include="Properties\DataSources\PluginBase.GameObjects.Scene.datasource" />
+    <None Include="Properties\DataSources\PluginBase.GameObjects.SpriteDefinition.datasource" />
+    <None Include="Properties\DataSources\TokGL.ShaderParam.datasource" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\PluginBaseUI.png" />
+    <EmbeddedResource Include="Content\Folder.png" />
+    <EmbeddedResource Include="Content\Material.png" />
+    <EmbeddedResource Include="Content\Object.png" />
+    <EmbeddedResource Include="Content\Scene.png" />
+    <EmbeddedResource Include="Content\SpriteDef.png" />
+    <EmbeddedResource Include="Content\Transformation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Project.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Sprite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

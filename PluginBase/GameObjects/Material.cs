@@ -16,7 +16,7 @@ using TokGL;
 namespace PluginBase.GameObjects
 {
 
-    [Export("Material", typeof(GameObject)), PartCreationPolicy(CreationPolicy.NonShared), AllowsChild("SpriteDefinition")]
+    [Export("Material", typeof(GameObject)), HasIcon("Material.png"), PartCreationPolicy(CreationPolicy.NonShared), AllowsChild("SpriteDefinition")]
     public class Material : GameObject
     {
         private string _shader = "Diffuse";

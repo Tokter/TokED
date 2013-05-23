@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TokED;
 using TokGL;
 
@@ -18,20 +19,19 @@ namespace PluginBase.Tools
         {
         }
 
-        public override void Mouse_Wheel(OpenTK.Input.MouseWheelEventArgs e)
+        public override void Mouse_Wheel(MouseEventArgs e)
         {
             switch (Editor.Camera.CameraType)
             {
                 case CameraType.Orthogonal:
-                    Editor.Camera.Fov /= (float)Math.Pow(1.3d, (e.Delta / 2.0d));
+                    Editor.Camera.Fov /= (float)Math.Pow(1.3d, (e.Delta / 120.0d));
                     break;
 
                 case CameraType.Perspective:
-                    //Editor.Camera.Fov -= 5.0f * (float)e.Delta / 2.0f;
                     var direction = Editor.Camera.Position - Editor.Camera.LookAt;
                     var distance = direction.Length;
                     direction.Normalize();
-                    Editor.Camera.Position = Editor.Camera.LookAt + Vector3.Multiply(direction, distance / (float)Math.Pow(1.3d, (e.Delta / 2.0d)));
+                    Editor.Camera.Position = Editor.Camera.LookAt + Vector3.Multiply(direction, distance / (float)Math.Pow(1.3d, (e.Delta / 120.0d)));
 
                     break;
             }

@@ -1,49 +1,35 @@
-﻿using Squid;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TokED;
-using TokED.UI;
+using System.Windows.Forms;
+using System.ComponentModel.Composition;
 
 namespace TokED.UI
 {
-    [Export("GameObject", typeof(GameObjectIns)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class GameObjectIns : Frame, IDisposable
+    [Export("GameObject", typeof(GameObjectIns)), HasIcon("GameObject.png"), PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class GameObjectIns : Inspector
     {
-        private TextBox _textBox;
         private GameObject _gameObject;
+
+        public GameObjectIns()
+        {
+            InitializeComponent();
+        }
 
         public GameObject GameObject
         {
             get { return _gameObject; }
-            set
-            {
-                _gameObject = value;
-                Build();
-            }
+            set { _gameObject = value; Bind(); }
         }
 
-        protected virtual void Build()
+        protected override void Bind()
         {
-            this.ResetTabIndex();
-            this.AutoSize = Squid.AutoSize.Vertical;
-            this.Dock = DockStyle.Top;
-            _textBox = this.AddLabeledTextBox(100, "Name:");             
-            _textBox.Bind(this.GameObject, "Name");
-        }
-
-        protected void ReBuild()
-        {
-            this.UnBind();
-            Build();
-        }
-
-        public virtual void Dispose()
-        {
-            this.UnBind();
+            bsGameObject.DataSource = _gameObject;
         }
     }
 }
