@@ -170,10 +170,10 @@ namespace TokED.Editors
 
         #region Rendering
 
-        public void Update(double elapsedTime)
+        public void Update(double deltaSeconds)
         {
-            _rootControl.Update(this, elapsedTime);
-            _manager.Update(elapsedTime);
+            _rootControl.Update(this, deltaSeconds);
+            _manager.Update(deltaSeconds);
         }
 
         public void Draw()

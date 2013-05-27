@@ -69,11 +69,29 @@
     <Compile Include="Inspectors\MaterialIns.Designer.cs">
       <DependentUpon>MaterialIns.cs</DependentUpon>
     </Compile>
+    <Compile Include="Inspectors\ParameterColor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParameterColor.Designer.cs">
+      <DependentUpon>ParameterColor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\ParameterFloat.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParameterFloat.Designer.cs">
+      <DependentUpon>ParameterFloat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Inspectors\ParameterInt.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Inspectors\ParameterInt.Designer.cs">
       <DependentUpon>ParameterInt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\ParameterVec2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParameterVec2.Designer.cs">
+      <DependentUpon>ParameterVec2.cs</DependentUpon>
     </Compile>
     <Compile Include="Inspectors\ProjectIns.cs">
       <SubType>UserControl</SubType>
@@ -150,8 +168,17 @@
     <EmbeddedResource Include="Inspectors\MaterialIns.resx">
       <DependentUpon>MaterialIns.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterColor.resx">
+      <DependentUpon>ParameterColor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterFloat.resx">
+      <DependentUpon>ParameterFloat.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\ParameterInt.resx">
       <DependentUpon>ParameterInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterVec2.resx">
+      <DependentUpon>ParameterVec2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\ProjectIns.resx">
       <DependentUpon>ProjectIns.cs</DependentUpon>

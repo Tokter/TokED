@@ -43,10 +43,10 @@ namespace TokGL
             Begin();
         }
 
-        private float totalTime = 0.0f;
-        public void Update(double elapsedTime)
+        private float _elapsedTime = 0.0f;
+        public void Update(double deltaSeconds)
         {
-            totalTime += (float)elapsedTime;
+            _elapsedTime += (float)deltaSeconds;
         }
 
         public void End()
@@ -64,7 +64,7 @@ namespace TokGL
                     }
                     currentMaterial.Shader.SetModel(ro.Transformation);
                     currentMaterial.Shader.SetCamera(Camera.ViewProjectMatrix);
-                    currentMaterial.Shader.SetTime(totalTime);
+                    currentMaterial.Shader.SetTime(_elapsedTime);
                     currentMaterial.Shader.ApplyParameters();
 
                     GL.BindVertexArray(ro.VAO);

@@ -11,13 +11,13 @@ using TokGL;
 
 namespace PluginBase.Inspectors
 {
-    public partial class ParameterInt : UserControl
+    public partial class ParameterVec2 : UserControl
     {
         private PluginBase.GameObjects.Material _mat;
-        private int _mouseStartValue;
+        private float _mouseStartValue;
         private int _mouseStartX, _mouseStartY;
 
-        public ParameterInt()
+        public ParameterVec2()
         {
             InitializeComponent();
         }
@@ -37,7 +37,7 @@ namespace PluginBase.Inspectors
         {
             if (e.Button == MouseButtons.Middle)
             {
-                _mouseStartValue = (bsParameter.Current as ShaderParam).IntValue;
+                _mouseStartValue = (bsParameter.Current as ShaderParam).X;
                 _mouseStartX = e.X;
                 _mouseStartY = e.Y;
             }
@@ -47,9 +47,29 @@ namespace PluginBase.Inspectors
         {
             if (e.Button == MouseButtons.Middle)
             {
-                var delta = (int)Math.Sqrt((e.X - _mouseStartX) * (e.X - _mouseStartX) + (e.Y - _mouseStartY) * (e.Y - _mouseStartY));
+                var delta = Math.Sqrt((e.X - _mouseStartX) * (e.X - _mouseStartX) + (e.Y - _mouseStartY) * (e.Y - _mouseStartY));
                 if (e.X < _mouseStartX) delta = -delta;
-                (bsParameter.Current as ShaderParam).IntValue = _mouseStartValue + delta;
+                (bsParameter.Current as ShaderParam).X = _mouseStartValue + (float)delta;
+            }
+        }
+
+        private void textBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                _mouseStartValue = (bsParameter.Current as ShaderParam).Y;
+                _mouseStartX = e.X;
+                _mouseStartY = e.Y;
+            }
+        }
+
+        private void textBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                var delta = Math.Sqrt((e.X - _mouseStartX) * (e.X - _mouseStartX) + (e.Y - _mouseStartY) * (e.Y - _mouseStartY));
+                if (e.X < _mouseStartX) delta = -delta;
+                (bsParameter.Current as ShaderParam).Y = _mouseStartValue + (float)delta;
             }
         }
     }

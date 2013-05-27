@@ -110,7 +110,7 @@ namespace TokED
         private void Application_Idle(object sender, EventArgs e)
         {
             double milliseconds = ComputeTimeSlice();
-            Update(milliseconds);
+            Update(milliseconds / 1000.0d);
             frameCounter++;
             frameTime += milliseconds;
             if (frameTime > 1000)
@@ -123,9 +123,9 @@ namespace TokED
             glControl.Invalidate();
         }
 
-        private void Update(double elapsedTime)
+        private void Update(double deltaSeconds)
         {
-            _model.Editor.Update(elapsedTime);
+            _model.Editor.Update(deltaSeconds);
         }
 
         private void Draw()

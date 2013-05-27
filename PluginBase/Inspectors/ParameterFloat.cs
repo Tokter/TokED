@@ -11,13 +11,13 @@ using TokGL;
 
 namespace PluginBase.Inspectors
 {
-    public partial class ParameterInt : UserControl
+    public partial class ParameterFloat : UserControl
     {
         private PluginBase.GameObjects.Material _mat;
-        private int _mouseStartValue;
+        private float _mouseStartValue;
         private int _mouseStartX, _mouseStartY;
 
-        public ParameterInt()
+        public ParameterFloat()
         {
             InitializeComponent();
         }
@@ -37,7 +37,7 @@ namespace PluginBase.Inspectors
         {
             if (e.Button == MouseButtons.Middle)
             {
-                _mouseStartValue = (bsParameter.Current as ShaderParam).IntValue;
+                _mouseStartValue = (bsParameter.Current as ShaderParam).FloatValue;
                 _mouseStartX = e.X;
                 _mouseStartY = e.Y;
             }
@@ -47,10 +47,11 @@ namespace PluginBase.Inspectors
         {
             if (e.Button == MouseButtons.Middle)
             {
-                var delta = (int)Math.Sqrt((e.X - _mouseStartX) * (e.X - _mouseStartX) + (e.Y - _mouseStartY) * (e.Y - _mouseStartY));
+                var delta = Math.Sqrt((e.X - _mouseStartX) * (e.X - _mouseStartX) + (e.Y - _mouseStartY) * (e.Y - _mouseStartY));
                 if (e.X < _mouseStartX) delta = -delta;
-                (bsParameter.Current as ShaderParam).IntValue = _mouseStartValue + delta;
+                (bsParameter.Current as ShaderParam).FloatValue = _mouseStartValue + (float)delta * 0.1f;
             }
         }
+
     }
 }

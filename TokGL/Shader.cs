@@ -51,25 +51,37 @@ namespace TokGL
         }
     }
 
-    public class ShaderParam
+    public class ShaderParam : INotifyPropertyChanged
     {
         public ShaderParamType Type;
         public int Location;
-        public string Name;
+        public string Name { get; set; }
         public string LongName { get; set; }
-        public int IntValue { get; set; }
-        public float FloatValue;
         public Vector2 Vec2Value;
         public Vector3 Vec3Value;
         public Vector4 Vec4Value;
         public Matrix4 MatrixValue;
         public TextureUnit TexUnit;
 
+        private int _intValue = 0;
+        public int IntValue
+        {
+            get { return _intValue; }
+            set { _intValue = value; NotifyChange(); }
+        }
+
+        private float _floatValue = 0.0f;
+        public float FloatValue
+        {
+            get { return _floatValue; }
+            set { _floatValue = value; NotifyChange(); }
+        }
+
         private string _filename;
         public string Filename
         {
             get { return _filename; }
-            set { _filename = value; }
+            set { _filename = value; NotifyChange(); }
         }
 
         public float X
@@ -92,6 +104,7 @@ namespace TokGL
                     case ShaderParamType.Vec3: Vec3Value.X = value; break;
                     case ShaderParamType.Vec4: Vec4Value.X = value; break;
                 }
+                NotifyChange();
             }
         }
 
@@ -115,6 +128,7 @@ namespace TokGL
                     case ShaderParamType.Vec3: Vec3Value.Y = value; break;
                     case ShaderParamType.Vec4: Vec4Value.Y = value; break;
                 }
+                NotifyChange();
             }
         }
 
@@ -136,13 +150,14 @@ namespace TokGL
                     case ShaderParamType.Vec3: Vec3Value.Z = value; break;
                     case ShaderParamType.Vec4: Vec4Value.Z = value; break;
                 }
+                NotifyChange();
             }
         }
 
         public float W
         {
             get { return Vec4Value.W; }
-            set { Vec4Value.W = value; }
+            set { Vec4Value.W = value; NotifyChange(); }
         }
 
         public Color Color
@@ -154,6 +169,7 @@ namespace TokGL
                 Vec4Value.Y = value.G / 255.0f;
                 Vec4Value.Z = value.B / 255.0f;
                 Vec4Value.W = value.A / 255.0f;
+                NotifyChange();
             }
         }
 
@@ -229,6 +245,25 @@ namespace TokGL
         {
             get { return (Type != ShaderParamType.Model && Type != ShaderParamType.Camera && Type != ShaderParamType.Time); }
         }
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyChange([CallerMemberName] string propertyName = "")
+        {
+            OnPropertyChanged(propertyName);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public virtual void OnPropertyChanged(string name)
+        {
+        }
+
+        #endregion
     }
 
     public class Shader : IDisposable

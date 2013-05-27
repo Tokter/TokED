@@ -1,6 +1,6 @@
 ﻿namespace PluginBase.Inspectors
 {
-    partial class ParameterInt
+    partial class ParameterFloat
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,23 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tbValue = new System.Windows.Forms.TextBox();
             this.lLabel = new System.Windows.Forms.Label();
+            this.tbValue = new System.Windows.Forms.TextBox();
             this.bsParameter = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.bsParameter)).BeginInit();
             this.SuspendLayout();
-            // 
-            // tbValue
-            // 
-            this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbValue.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bsParameter, "IntValue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged, null, "N0"));
-            this.tbValue.Location = new System.Drawing.Point(100, 3);
-            this.tbValue.Name = "tbValue";
-            this.tbValue.Size = new System.Drawing.Size(141, 20);
-            this.tbValue.TabIndex = 0;
-            this.tbValue.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbValue_MouseDown);
-            this.tbValue.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tbValue_MouseMove);
             // 
             // lLabel
             // 
@@ -54,21 +42,33 @@
             this.lLabel.Location = new System.Drawing.Point(3, 6);
             this.lLabel.Name = "lLabel";
             this.lLabel.Size = new System.Drawing.Size(35, 13);
-            this.lLabel.TabIndex = 1;
+            this.lLabel.TabIndex = 3;
             this.lLabel.Text = "label1";
+            // 
+            // tbValue
+            // 
+            this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbValue.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bsParameter, "FloatValue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged, null, "N2"));
+            this.tbValue.Location = new System.Drawing.Point(100, 3);
+            this.tbValue.Name = "tbValue";
+            this.tbValue.Size = new System.Drawing.Size(141, 20);
+            this.tbValue.TabIndex = 2;
+            this.tbValue.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbValue_MouseDown);
+            this.tbValue.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tbValue_MouseMove);
             // 
             // bsParameter
             // 
             this.bsParameter.DataSource = typeof(TokGL.ShaderParam);
             this.bsParameter.CurrentItemChanged += new System.EventHandler(this.bsParameter_CurrentItemChanged);
             // 
-            // ParameterInt
+            // ParameterFloat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.lLabel);
             this.Controls.Add(this.tbValue);
-            this.Name = "ParameterInt";
+            this.Name = "ParameterFloat";
             this.Size = new System.Drawing.Size(244, 27);
             ((System.ComponentModel.ISupportInitialize)(this.bsParameter)).EndInit();
             this.ResumeLayout(false);
@@ -79,7 +79,7 @@
         #endregion
 
         private System.Windows.Forms.BindingSource bsParameter;
-        private System.Windows.Forms.TextBox tbValue;
         private System.Windows.Forms.Label lLabel;
+        private System.Windows.Forms.TextBox tbValue;
     }
 }

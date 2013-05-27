@@ -57,9 +57,27 @@ namespace PluginBase.Inspectors
                 switch (param.Type)
                 {
                     case ShaderParamType.Int:
-                        var pUC = new ParameterInt();
-                        pUC.Bind(param, material);
-                        _parameters.Add(pUC); 
+                        var paramInt = new ParameterInt();
+                        paramInt.Bind(param, material);
+                        _parameters.Add(paramInt); 
+                        break;
+
+                    case ShaderParamType.Float:
+                        var paramFloat = new ParameterFloat();
+                        paramFloat.Bind(param, material);
+                        _parameters.Add(paramFloat);
+                        break;
+
+                    case ShaderParamType.Color:
+                        var paramColor = new ParameterColor();
+                        paramColor.Bind(param, material);
+                        _parameters.Add(paramColor);
+                        break;
+
+                    case ShaderParamType.Vec2:
+                        var paramVec2 = new ParameterVec2();
+                        paramVec2.Bind(param, material);
+                        _parameters.Add(paramVec2);
                         break;
                 }
             }
