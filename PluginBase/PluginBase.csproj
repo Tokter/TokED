@@ -93,6 +93,18 @@
     <Compile Include="Inspectors\ParameterVec2.Designer.cs">
       <DependentUpon>ParameterVec2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Inspectors\ParameterVec3.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParameterVec3.Designer.cs">
+      <DependentUpon>ParameterVec3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\ParameterVec4.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParameterVec4.Designer.cs">
+      <DependentUpon>ParameterVec4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Inspectors\ProjectIns.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -179,6 +191,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\ParameterVec2.resx">
       <DependentUpon>ParameterVec2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterVec3.resx">
+      <DependentUpon>ParameterVec3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterVec4.resx">
+      <DependentUpon>ParameterVec4.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\ProjectIns.resx">
       <DependentUpon>ProjectIns.cs</DependentUpon>

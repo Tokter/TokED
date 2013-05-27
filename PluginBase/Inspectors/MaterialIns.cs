@@ -79,6 +79,18 @@ namespace PluginBase.Inspectors
                         paramVec2.Bind(param, material);
                         _parameters.Add(paramVec2);
                         break;
+
+                    case ShaderParamType.Vec3:
+                        var paramVec3 = new ParameterVec3();
+                        paramVec3.Bind(param, material);
+                        _parameters.Add(paramVec3);
+                        break;
+
+                    case ShaderParamType.Vec4:
+                        var paramVec4 = new ParameterVec4();
+                        paramVec4.Bind(param, material);
+                        _parameters.Add(paramVec4);
+                        break;
                 }
             }
 
