@@ -77,11 +77,11 @@ namespace TokGL
             set { _floatValue = value; NotifyChange(); }
         }
 
-        private string _filename;
-        public string Filename
+        private List<string> _filenames = new List<string>();
+        public List<string> Filenames
         {
-            get { return _filename; }
-            set { _filename = value; NotifyChange(); }
+            get { return _filenames; }
+            set { _filenames = value; NotifyChange(); }
         }
 
         public float X
@@ -182,13 +182,14 @@ namespace TokGL
         {
         }
 
-        public ShaderParam(ShaderParamType type, string name, string longName, string filename, object value)
+        public ShaderParam(ShaderParamType type, string name, string longName, List<string> filenames, object value)
         {
             Type = type;
             Location = -1;
             Name = name;
             LongName = longName;
-            Filename = filename;
+            Filenames.Clear();
+            foreach (var f in filenames) Filenames.Add(f);
             Set(value);
         }
 
@@ -198,7 +199,7 @@ namespace TokGL
             Location = -1;
             Name = name;
             LongName = longName;
-            Filename = null;
+            Filenames = null;
             Set(value);
         }
 
@@ -231,7 +232,7 @@ namespace TokGL
             Vec4Value = param.Vec4Value;
             MatrixValue = param.MatrixValue;
             TexUnit = param.TexUnit;
-            Filename = param.Filename;
+            Filenames = param.Filenames;
         }
 
         public ShaderParam Clone()

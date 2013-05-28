@@ -76,6 +76,7 @@ namespace TokED
             tvGameObjects.Model = _model.Project.Parent.Model;
             _model.Inspectors.ListChanged += Inspectors_ListChanged;
             Inspectors_ListChanged(this, new ListChangedEventArgs(ListChangedType.ItemAdded, 0));
+            _model.Editor.Resize(glControl.ClientRectangle.Width, glControl.ClientRectangle.Height);
         }
 
         private void Inspectors_ListChanged(object sender, ListChangedEventArgs e)
@@ -123,6 +124,11 @@ namespace TokED
             glControl.Invalidate();
         }
 
+        private void glControl_Resize(object sender, EventArgs e)
+        {
+            if (_model != null) _model.Editor.Resize(glControl.ClientRectangle.Width, glControl.ClientRectangle.Height);
+        }
+
         private void Update(double deltaSeconds)
         {
             _model.Editor.Update(deltaSeconds);
@@ -130,10 +136,9 @@ namespace TokED
 
         private void Draw()
         {
-            GL.Viewport(ClientRectangle.Size);
+            GL.Viewport(glControl.ClientRectangle.Size);
             GL.ClearColor(0.20f, 0.20f, 0.20f, 0.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            _model.Editor.Resize(ClientRectangle.Width, ClientRectangle.Height);
             _model.Editor.Draw();
             glControl.SwapBuffers();
         }

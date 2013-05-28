@@ -21,6 +21,7 @@ namespace PluginBase
             RegisterIcon("Transformation.png");
             RegisterIcon("Project.png");
             RegisterIcon("Sprite.png");
+            RegisterIcon("Texture.png");
         }
     }
 }

@@ -62,12 +62,20 @@
     <Compile Include="Editors\SceneEditor.cs" />
     <Compile Include="Editors\SpriteDefinitionEditor.cs" />
     <Compile Include="Editors\MaterialEditor.cs" />
+    <Compile Include="Editors\TextureEdtior.cs" />
     <Compile Include="GameObjects\Empty.cs" />
+    <Compile Include="GameObjects\Texture.cs" />
     <Compile Include="Inspectors\MaterialIns.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Inspectors\MaterialIns.Designer.cs">
       <DependentUpon>MaterialIns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Inspectors\ParamaterTexture.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\ParamaterTexture.Designer.cs">
+      <DependentUpon>ParamaterTexture.cs</DependentUpon>
     </Compile>
     <Compile Include="Inspectors\ParameterColor.cs">
       <SubType>UserControl</SubType>
@@ -132,6 +140,12 @@
     <Compile Include="GameObjects\Scene.cs" />
     <Compile Include="GameObjects\SpriteDefinition.cs" />
     <Compile Include="GameObjects\Material.cs" />
+    <Compile Include="Inspectors\TextureIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\TextureIns.Designer.cs">
+      <DependentUpon>TextureIns.cs</DependentUpon>
+    </Compile>
     <Compile Include="Inspectors\TransformationIns.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -207,6 +221,9 @@
     <EmbeddedResource Include="Inspectors\SpriteDefinitionIns.resx">
       <DependentUpon>SpriteDefinitionIns.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\TextureIns.resx">
+      <DependentUpon>TextureIns.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\TransformationIns.resx">
       <DependentUpon>TransformationIns.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +239,7 @@
     <None Include="Properties\DataSources\PluginBase.GameObjects.Project.datasource" />
     <None Include="Properties\DataSources\PluginBase.GameObjects.Scene.datasource" />
     <None Include="Properties\DataSources\PluginBase.GameObjects.SpriteDefinition.datasource" />
+    <None Include="Properties\DataSources\PluginBase.GameObjects.Texture.datasource" />
     <None Include="Properties\DataSources\TokGL.ShaderParam.datasource" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +255,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\Sprite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\Texture.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
