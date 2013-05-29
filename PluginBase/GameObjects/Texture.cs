@@ -16,7 +16,7 @@ namespace PluginBase.GameObjects
         Bitmap GetBitmap();
     }
 
-    [Export("Texture", typeof(GameObject)), HasIcon("Texture.png"), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export("Texture", typeof(GameObject)), HasIcon("Texture.png"), PartCreationPolicy(CreationPolicy.NonShared), DoesNotAllowChildren()]
     public class Texture : GameObject, ITexture
     {
         private string _filename = "";

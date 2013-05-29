@@ -22,6 +22,7 @@ namespace PluginBase
             RegisterIcon("Project.png");
             RegisterIcon("Sprite.png");
             RegisterIcon("Texture.png");
+            RegisterIcon("TextureAtlas.png");
         }
     }
 }

@@ -62,9 +62,11 @@
     <Compile Include="Editors\SceneEditor.cs" />
     <Compile Include="Editors\SpriteDefinitionEditor.cs" />
     <Compile Include="Editors\MaterialEditor.cs" />
+    <Compile Include="Editors\TextureAtlasEditor.cs" />
     <Compile Include="Editors\TextureEdtior.cs" />
     <Compile Include="GameObjects\Empty.cs" />
     <Compile Include="GameObjects\Texture.cs" />
+    <Compile Include="GameObjects\TextureAtlas.cs" />
     <Compile Include="Inspectors\MaterialIns.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -140,6 +142,12 @@
     <Compile Include="GameObjects\Scene.cs" />
     <Compile Include="GameObjects\SpriteDefinition.cs" />
     <Compile Include="GameObjects\Material.cs" />
+    <Compile Include="Inspectors\TextureAtlasIns.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Inspectors\TextureAtlasIns.Designer.cs">
+      <DependentUpon>TextureAtlasIns.cs</DependentUpon>
+    </Compile>
     <Compile Include="Inspectors\TextureIns.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -221,6 +229,9 @@
     <EmbeddedResource Include="Inspectors\SpriteDefinitionIns.resx">
       <DependentUpon>SpriteDefinitionIns.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\TextureAtlasIns.resx">
+      <DependentUpon>TextureAtlasIns.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\TextureIns.resx">
       <DependentUpon>TextureIns.cs</DependentUpon>
     </EmbeddedResource>
@@ -240,6 +251,7 @@
     <None Include="Properties\DataSources\PluginBase.GameObjects.Scene.datasource" />
     <None Include="Properties\DataSources\PluginBase.GameObjects.SpriteDefinition.datasource" />
     <None Include="Properties\DataSources\PluginBase.GameObjects.Texture.datasource" />
+    <None Include="Properties\DataSources\PluginBase.GameObjects.TextureAtlasItem.datasource" />
     <None Include="Properties\DataSources\TokGL.ShaderParam.datasource" />
   </ItemGroup>
   <ItemGroup>
@@ -258,6 +270,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\Texture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\TextureAtlas.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
