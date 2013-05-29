@@ -91,6 +91,12 @@ namespace PluginBase.Inspectors
                         paramVec4.Bind(param, material);
                         _parameters.Add(paramVec4);
                         break;
+
+                    case ShaderParamType.Texture:
+                        var paramTex = new ParameterTexture();
+                        paramTex.Bind(param, material);
+                        _parameters.Add(paramTex);
+                        break;
                 }
             }
 

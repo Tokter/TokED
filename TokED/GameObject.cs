@@ -179,6 +179,17 @@ namespace TokED
             return result;
         }
 
+        public List<GameObject> FindChildrenWithInterface<T>()
+        {
+            var result = new List<GameObject>();
+            foreach (var child in _children)
+            {
+                if (child is T) result.Add(child);
+                result.AddRange(child.FindChildrenWithInterface<T>());
+            }
+            return result;
+        }
+
         public T FindParent<T>() where T : GameObject
         {
             if (this is T)

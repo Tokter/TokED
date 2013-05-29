@@ -118,13 +118,10 @@ namespace PluginBase.GameObjects
                 {
                     TokGL.Texture texture;
 
-                    if (param.Filenames!= null && param.Filenames.Count == 1 && File.Exists(param.Filenames[0]))
+                    if (!string.IsNullOrWhiteSpace(param.TextureName))
                     {
-                        texture = TokGL.Texture.FromFile(param.Filenames[0], true, false);
-                    }
-                    else if (param.Filenames != null && param.Filenames.Count > 1)
-                    {
-                        texture = TokGL.Texture.FromBitmap(_notTexture, true, false);
+                        var t = this.Root.FindChild<GameObject>(param.TextureName) as ITexture;
+                        texture = TokGL.Texture.FromBitmap(t.GetBitmap(), true, false);
                     }
                     else
                     {
@@ -218,7 +215,7 @@ namespace PluginBase.GameObjects
                                 );
                                 break;
                             case ShaderParamType.Texture:
-                                //p.Filenames = reader.GetAttribute("Filename");
+                                p.TextureName = reader.GetAttribute("Texture");
                                 p.TexUnit = (TextureUnit)Enum.Parse(typeof(TextureUnit), reader.GetAttribute("TextureUnit"));
                                 break;
                             case ShaderParamType.Color:
@@ -278,12 +275,7 @@ namespace PluginBase.GameObjects
                             break;
                         case ShaderParamType.Texture:
                             writer.WriteAttributeString("TextureUnit", a.TexUnit.ToString());
-                            foreach (var fileName in a.Filenames)
-                            {
-                                writer.WriteStartElement("Texture");
-                                writer.WriteAttributeString("Filename", fileName);
-                                writer.WriteEndElement();
-                            }
+                            writer.WriteAttributeString("Texture", a.TextureName);
                             break;
                         case ShaderParamType.Color:
                             writer.WriteAttributeString("R", a.Vec4Value.X.ToString());

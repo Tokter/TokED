@@ -73,11 +73,11 @@
     <Compile Include="Inspectors\MaterialIns.Designer.cs">
       <DependentUpon>MaterialIns.cs</DependentUpon>
     </Compile>
-    <Compile Include="Inspectors\ParamaterTexture.cs">
+    <Compile Include="Inspectors\ParameterTexture.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Inspectors\ParamaterTexture.Designer.cs">
-      <DependentUpon>ParamaterTexture.cs</DependentUpon>
+    <Compile Include="Inspectors\ParameterTexture.Designer.cs">
+      <DependentUpon>ParameterTexture.cs</DependentUpon>
     </Compile>
     <Compile Include="Inspectors\ParameterColor.cs">
       <SubType>UserControl</SubType>
@@ -210,6 +210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\ParameterInt.resx">
       <DependentUpon>ParameterInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspectors\ParameterTexture.resx">
+      <DependentUpon>ParameterTexture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspectors\ParameterVec2.resx">
       <DependentUpon>ParameterVec2.cs</DependentUpon>
